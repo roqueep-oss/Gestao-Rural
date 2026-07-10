@@ -6381,5 +6381,29 @@
             document.dispatchEvent(new Event('DOMContentLoaded'));
         }
     </script>
+
+        // ================================================================
+        // INICIALIZAÇÃO PRINCIPAL
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            GR.Login.init();
+            GR.Idiomas.init();
+            GR.Theme.init();
+            GR.State.init();
+
+            // Garantir que a UI seja iniciada depois que o State estiver pronto
+            setTimeout(function() {
+                GR.UI.init();
+                GR.Backup.init();
+            }, 500);
+
+            console.log('✅ Sistema Gestão Rural v20 - COMPLETO E FUNCIONAL!');
+            console.log('✅ Melhorias: Notificações, CSV, Impressão, Dashboard Customizável, Histórico, PDF Import com OCR');
+        });
+
+        if (document.readyState !== 'loading') {
+            document.dispatchEvent(new Event('DOMContentLoaded'));
+        }
+    </script>
 </body>
 </html>
