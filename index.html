@@ -1,0 +1,3656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Rural - Sistema Completo</title>
+
+    <!-- OUTRAS BIBLIOTECAS (não modulares) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <!-- FIREBASE MODULAR (IMPORTADO COMO MÓDULO) -->
+    <script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js",
+            "firebase/analytics": "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js"
+        }
+    }
+    </script>
+
+    <style>
+        /* ================================================================
+           TODO O SEU CSS AQUI (copie do seu arquivo original)
+           ================================================================ */
+        :root {
+            --primary: #4caf50;
+            --primary-dark: #2e7d32;
+            --accent: #ff9800;
+            --bg: #f0f4f0;
+            --surface: #fff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --radius: 12px;
+            --transition: 0.2s ease;
+            --danger: #f44336;
+            --success: #4CAF50;
+            --warning: #ff9800;
+            --info: #00BCD4;
+            --border: #e2e8f0;
+            --focus-ring: 0 0 0 3px rgba(76,175,80,0.5);
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --font-size-base: 14px;
+        }
+        [data-theme="escuro"] {
+            --bg: #1a1a2e;
+            --surface: #2d2d44;
+            --text: #e8e8f0;
+            --text-light: #b0b0c8;
+            --border: #444466;
+            --shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        [data-theme="azul"] {
+            --bg: #e3f2fd;
+            --surface: #ffffff;
+            --text: #0d47a1;
+            --text-light: #1565c0;
+            --primary: #1976d2;
+            --primary-dark: #0d47a1;
+            --border: #90caf9;
+            --card-shadow: 0 2px 8px rgba(13,71,161,0.06);
+        }
+        [data-theme="verde"] {
+            --bg: #e8f5e9;
+            --surface: #ffffff;
+            --text: #1b5e20;
+            --text-light: #2e7d32;
+            --primary: #388e3c;
+            --primary-dark: #1b5e20;
+            --border: #a5d6a7;
+            --card-shadow: 0 2px 8px rgba(27,94,32,0.06);
+        }
+        [data-theme="roxo"] {
+            --bg: #f3e5f5;
+            --surface: #ffffff;
+            --text: #4a148c;
+            --text-light: #6a1b9a;
+            --primary: #7b1fa2;
+            --primary-dark: #4a148c;
+            --border: #ce93d8;
+            --card-shadow: 0 2px 8px rgba(74,20,140,0.06);
+        }
+        [data-theme="vermelho"] {
+            --bg: #ffebee;
+            --surface: #ffffff;
+            --text: #b71c1c;
+            --text-light: #c62828;
+            --primary: #d32f2f;
+            --primary-dark: #b71c1c;
+            --border: #ef9a9a;
+            --card-shadow: 0 2px 8px rgba(183,28,28,0.06);
+        }
+        [data-theme="laranja"] {
+            --bg: #fff3e0;
+            --surface: #ffffff;
+            --text: #bf360c;
+            --text-light: #e65100;
+            --primary: #f57c00;
+            --primary-dark: #bf360c;
+            --border: #ffcc80;
+            --card-shadow: 0 2px 8px rgba(191,54,12,0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: var(--font-size-base);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1b5e20, #43a047);
+            color: #fff;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 4px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+            white-space: nowrap;
+            background: #78909c;
+            text-decoration: none;
+            min-height: 28px;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background: var(--primary);
+        }
+        .btn-success {
+            background: var(--success);
+        }
+        .btn-warning {
+            background: var(--warning);
+        }
+        .btn-danger {
+            background: var(--danger);
+        }
+        .btn-info {
+            background: var(--info);
+        }
+        .btn-small {
+            padding: 3px 6px;
+            font-size: 10px;
+            border-radius: 4px;
+            min-width: 24px;
+            height: 24px;
+            justify-content: center;
+        }
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 10px;
+            min-height: 24px;
+        }
+        .btn-secondary {
+            background: #78909c;
+        }
+        .config-btn {
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-weight: 600;
+        }
+        .config-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 5px 8px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 12px;
+            background: #f8fafc;
+            transition: var(--transition);
+            color: var(--text);
+            min-height: 30px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: var(--focus-ring);
+        }
+        .form-group {
+            margin-bottom: 8px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 2px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 11px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: var(--card-shadow);
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+        thead th {
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 5px 8px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        tbody td {
+            padding: 5px 8px;
+            border-bottom: 1px solid var(--border);
+            font-size: 11px;
+        }
+        tbody tr:hover {
+            background: #f1f8e9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 14px;
+            width: 92%;
+            max-width: 850px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+            animation: scaleIn 0.2s ease;
+            color: var(--text);
+            position: relative;
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #999;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .close-btn:hover {
+            color: var(--danger);
+            transform: scale(1.1);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        .badge-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .badge-warning {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .badge-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .badge-info {
+            background: #e1f5fe;
+            color: #0277bd;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-width: 90%;
+        }
+        .toast {
+            padding: 8px 14px;
+            border-radius: 4px;
+            color: #fff;
+            font-weight: 500;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 12px;
+            max-width: 400px;
+        }
+        .toast-success {
+            background: var(--success);
+        }
+        .toast-error {
+            background: var(--danger);
+        }
+        .toast-warning {
+            background: var(--warning);
+        }
+        .toast-info {
+            background: var(--info);
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        .tabs, .prop-tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 8px;
+            background: var(--surface);
+            padding: 3px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .tab, .prop-tab {
+            flex: 0 0 auto;
+            padding: 5px 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            font-size: 10px;
+            white-space: nowrap;
+            color: var(--text-light);
+            transition: 0.15s;
+        }
+        .tab:hover, .prop-tab:hover {
+            background: #e8f5e9;
+        }
+        .tab.active, .prop-tab.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .stats-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 8px 10px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border-left: 3px solid var(--primary);
+        }
+        .stats-card .number {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .stats-card .label {
+            font-size: 10px;
+            color: var(--text-light);
+            margin-top: 1px;
+        }
+        .stats-card.danger {
+            border-left-color: var(--danger);
+        }
+        .stats-card.warning {
+            border-left-color: var(--warning);
+        }
+        .stats-card.info {
+            border-left-color: var(--info);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px 12px;
+            color: #999;
+        }
+        .empty-state .icon {
+            font-size: 30px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .empty-state .message {
+            font-size: 12px;
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+        .login-tabs button {
+            padding: 5px 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #e2e8f0;
+            color: var(--text);
+            transition: 0.2s;
+            font-size: 12px;
+        }
+        .login-tabs button.active {
+            background: var(--primary);
+            color: #fff;
+        }
+        .login-tabs button:hover {
+            transform: scale(1.02);
+        }
+        .login-options {
+            margin-top: 4px;
+            font-size: 10px;
+            color: var(--text-light);
+        }
+        .login-options a {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .empty-state .message {
+            font-size: 12px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        .config-panel {
+            background: var(--surface);
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-size: 11px;
+        }
+        .config-panel h3 {
+            font-size: 12px;
+            margin-bottom: 3px;
+            color: var(--primary-dark);
+        }
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 4px;
+            margin: 1px 0;
+            background: var(--surface);
+            border-radius: 3px;
+            border: 1px solid var(--border);
+            font-size: 10px;
+        }
+
+        .doc-icons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        .doc-icon-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 8px;
+            text-align: center;
+            width: 70px;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        .doc-icon-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            background: #e8f5e9;
+            border-color: var(--primary);
+        }
+        .doc-icon-card .icon {
+            font-size: 24px;
+        }
+        .doc-icon-card .label {
+            font-size: 9px;
+            font-weight: 600;
+            margin-top: 2px;
+            color: var(--text);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+        }
+        .dashboard-grid .widget-container {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 8px;
+            box-shadow: var(--card-shadow);
+            border: 2px solid transparent;
+        }
+        .dashboard-grid .widget-container .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .dashboard-grid .widget-container .widget-header h4 {
+            font-size: 12px;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+        .dashboard-grid .widget-container canvas {
+            max-height: 180px;
+            width: 100% !important;
+        }
+        .dashboard-grid .widget-container .widget-content {
+            min-height: 100px;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .kpi-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 6px 8px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+        .kpi-card .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .kpi-card .label {
+            font-size: 9px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: var(--surface);
+            border-radius: 3px;
+            border-left: 3px solid var(--warning);
+            margin-bottom: 2px;
+        }
+        .alert-item .icon {
+            font-size: 14px;
+        }
+        .alert-item .content {
+            flex: 1;
+            font-size: 11px;
+        }
+        .alert-item .content .title {
+            font-weight: 600;
+        }
+        .alert-item.critical {
+            border-left-color: var(--danger);
+        }
+        .alert-item.warning {
+            border-left-color: var(--warning);
+        }
+        .alert-item.info {
+            border-left-color: var(--info);
+        }
+
+        .credito-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .credito-stats-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 6px 8px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border-left: 3px solid var(--primary);
+        }
+        .credito-stats-card .number {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .credito-stats-card .label {
+            font-size: 9px;
+            color: var(--text-light);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--primary);
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8fafc;
+            color: var(--text);
+        }
+        .file-upload:hover {
+            background: #e8f5e9;
+            border-color: var(--primary-dark);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 3px 0;
+        }
+        .progress-bar .progress {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .backup-banner {
+            background: #fff3e0;
+            border-left: 4px solid var(--warning);
+            padding: 6px 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 11px;
+            color: #e65100;
+        }
+        .backup-banner .backup-time {
+            font-weight: 600;
+            color: #bf360c;
+        }
+
+        .pdf-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            padding: 4px 8px;
+            background: var(--surface);
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+        .pdf-controls .btn {
+            font-size: 11px;
+            padding: 4px 10px;
+        }
+        .pdf-controls .btn-icon {
+            font-size: 14px;
+            padding: 2px 6px;
+            min-width: 30px;
+            justify-content: center;
+        }
+        .pdf-controls .zoom-level {
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 44px;
+            text-align: center;
+            color: var(--text);
+        }
+        .pdf-controls .page-info {
+            font-size: 11px;
+            color: var(--text-light);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        #pdf-visual-container {
+            flex: 1;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            overflow: auto;
+            position: relative;
+            background: #f8fafc;
+            min-height: 300px;
+            height: 100%;
+            cursor: default;
+        }
+
+        .historico-item {
+            padding: 3px 6px;
+            margin: 1px 0;
+            border-radius: 3px;
+            font-size: 10px;
+            border-left: 3px solid var(--info);
+            background: var(--surface);
+        }
+        .historico-item .data-hora {
+            font-size: 8px;
+            color: var(--text-light);
+        }
+        .historico-item .acao {
+            font-weight: 600;
+        }
+        .historico-item .detalhes {
+            color: var(--text-light);
+        }
+
+        .phone-input-group {
+            display: flex;
+            gap: 4px;
+        }
+        .phone-input-group .ddd-input {
+            width: 50px;
+        }
+        .phone-input-group .phone-input {
+            flex: 1;
+        }
+
+        #scanner-container {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        #scanner-container video {
+            width: 100%;
+            height: auto;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+        .font-controls .btn {
+            font-size: 10px;
+            padding: 2px 6px;
+            min-width: 24px;
+            height: 24px;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .font-controls .btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .font-controls .font-size-label {
+            font-size: 10px;
+            color: #fff;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 4px 8px;
+            }
+            .header h1 {
+                font-size: 15px;
+            }
+            .header-right .form-control {
+                width: 80px !important;
+                font-size: 10px;
+                padding: 2px 4px;
+            }
+            .header-right .config-btn {
+                font-size: 9px;
+                padding: 2px 5px;
+            }
+            .modal-content {
+                padding: 8px;
+                max-width: 98%;
+            }
+            .tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .tab {
+                padding: 3px 6px;
+                font-size: 9px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stats-card .number {
+                font-size: 16px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .credito-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 13px;
+            }
+            .header-right .form-control {
+                width: 60px !important;
+            }
+            .modal-title {
+                font-size: 15px;
+            }
+            .tab {
+                padding: 2px 4px;
+                font-size: 8px;
+            }
+            .stats-card .number {
+                font-size: 14px;
+            }
+            .container {
+                padding: 4px;
+            }
+            .card {
+                padding: 6px;
+            }
+            #pdf-visual-container {
+                min-height: 200px;
+            }
+            .credito-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .header, .tabs, .prop-tabs, .btn, .close-btn, .no-print {
+                display: none !important;
+            }
+            .modal {
+                position: static !important;
+                display: block !important;
+                background: none !important;
+            }
+            .modal-content {
+                box-shadow: none !important;
+                max-height: none !important;
+                overflow: visible !important;
+                padding: 8px !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                break-inside: avoid;
+            }
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================================ -->
+    <!-- SKIP LINK + TOAST                                               -->
+    <!-- ================================================================ -->
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+    <!-- ================================================================ -->
+    <!-- LOGIN                                                           -->
+    <!-- ================================================================ -->
+    <div id="modal-login" class="modal active" style="display:flex" role="dialog" aria-modal="true" aria-labelledby="login-title">
+        <div class="modal-content" style="max-width:400px;text-align:center">
+            <h2 id="login-title">🔐 Gestão Rural</h2>
+            <p style="margin:3px 0 8px 0;color:var(--text-light);font-size:12px;">Sistema de Gerenciamento de Propriedades</p>
+            <div class="login-tabs" role="tablist">
+                <button class="active" role="tab" aria-selected="true" id="tab-login" onclick="GR.Login.mostrarAba('login')">🔑 Entrar</button>
+                <button role="tab" aria-selected="false" id="tab-cadastro" onclick="GR.Login.mostrarAba('cadastro')">📝 Cadastrar</button>
+            </div>
+            <div id="login-aba" role="tabpanel" aria-labelledby="tab-login">
+                <div class="form-group"><input type="email" id="login-usuario" class="form-control" placeholder="Email" autofocus aria-label="Email"></div>
+                <div class="form-group"><input type="password" id="login-senha" class="form-control" placeholder="Senha" aria-label="Senha"></div>
+                <button class="btn btn-primary" id="btn-entrar" style="width:100%;padding:8px">🔓 Entrar</button>
+                <div class="login-options"><span>Use email e senha cadastrados</span></div>
+            </div>
+            <div id="cadastro-aba" style="display:none;" role="tabpanel" aria-labelledby="tab-cadastro">
+                <div class="form-group"><input type="email" id="cadastro-usuario" class="form-control" placeholder="Email" aria-label="Email"></div>
+                <div class="form-group"><input type="password" id="cadastro-senha" class="form-control" placeholder="Senha (mínimo 6 caracteres)" aria-label="Senha"></div>
+                <div class="form-group"><input type="password" id="cadastro-confirmar" class="form-control" placeholder="Confirmar senha" aria-label="Confirmar senha"></div>
+                <button class="btn btn-success" id="btn-cadastrar" style="width:100%;padding:8px">📝 Cadastrar</button>
+                <div class="login-options" style="margin-top:4px;"><span>Já tem conta? <a onclick="GR.Login.mostrarAba('login')" style="cursor:pointer;">Entrar</a></span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- HEADER                                                          -->
+    <!-- ================================================================ -->
+    <div class="header" id="header-principal" style="display:none;">
+        <h1>🚜 Gestão Rural</h1>
+        <div class="header-right">
+            <span id="usuario-logado" style="color:#fff;font-weight:600;font-size:12px;"></span>
+            <span id="nivel-usuario" style="color:#ffeb3b;font-weight:600;font-size:10px;background:rgba(0,0,0,0.2);padding:1px 6px;border-radius:3px;"></span>
+            <button class="config-btn" onclick="GR.UI.toggleModoEscuro()" id="btn-tema" aria-label="Alternar tema" title="Alternar tema">🌓</button>
+            <button class="config-btn" onclick="GR.Backup.openBackupModal()" aria-label="Backup" title="Backup">💾</button>
+            <button class="config-btn" onclick="GR.UI.openConfigurations()" aria-label="Configurações" title="Configurações">⚙️</button>
+            <button class="config-btn" onclick="GR.Login.logout()" aria-label="Sair" title="Sair">🚪</button>
+            <button class="config-btn" onclick="GR.Notificacoes.abrirModal()" aria-label="Notificações" title="Notificações" style="position:relative;">🔔<span id="notificacao-badge" style="display:none;position:absolute;top:-5px;right:-5px;background:red;color:#fff;border-radius:50%;padding:1px 5px;font-size:8px;font-weight:bold;">0</span></button>
+        </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- CONTAINER PRINCIPAL                                             -->
+    <!-- ================================================================ -->
+    <div class="container" id="container-principal" style="display:none;">
+
+        <!-- BANNER DE BACKUP -->
+        <div id="backup-banner" class="backup-banner" style="display:none;">
+            <span>💾 <strong>Backup Automático:</strong> Último backup em <span id="backup-last-time" class="backup-time">Nunca</span></span>
+            <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                <button class="btn btn-success btn-sm" onclick="GR.Backup.fazerBackupManual()">📤 Fazer Backup Agora</button>
+                <button class="btn btn-info btn-sm" onclick="GR.Backup.baixarBackup()">⬇️ Baixar</button>
+            </div>
+        </div>
+
+        <!-- Propriedades Tabs -->
+        <div class="prop-tabs" id="prop-tabs-container" role="tablist"></div>
+
+        <!-- Tabs Principais -->
+        <div class="tabs" id="sub-tabs-container" role="tablist">
+            <button class="tab active" data-tab="dashboard" role="tab" aria-selected="true">📊 Dashboard</button>
+            <button class="tab" data-tab="acoes" role="tab" aria-selected="false">📋 Ações</button>
+            <button class="tab" data-tab="orcamentos" role="tab" aria-selected="false">💰 Orçamentos</button>
+            <button class="tab" data-tab="operacoescredito" role="tab" aria-selected="false">💳 Crédito</button>
+            <button class="tab" data-tab="insumos" role="tab" aria-selected="false">🧪 Insumos</button>
+            <button class="tab" data-tab="pecuaria" role="tab" aria-selected="false">🐄 Pecuária</button>
+            <button class="tab" data-tab="funcionarios" role="tab" aria-selected="false">👨‍🌾 Funcionários</button>
+            <button class="tab" data-tab="partesrelacionadas" role="tab" aria-selected="false">👥 Parceiros</button>
+            <button class="tab" data-tab="contabilidade" role="tab" aria-selected="false">🧾 Contabilidade</button>
+            <button class="tab" data-tab="documentos" role="tab" aria-selected="false">📁 Documentos</button>
+            <button class="tab" data-tab="analisesquimicas" role="tab" aria-selected="false">🧪 Análises</button>
+            <button class="tab" data-tab="viveiro" role="tab" aria-selected="false">🌱 Viveiro</button>
+            <button class="tab" data-tab="relatorios" role="tab" aria-selected="false">📊 Relatórios</button>
+            <button class="tab" data-tab="configuracoes" role="tab" aria-selected="false">⚙️ Config.</button>
+            <button class="tab" data-tab="historico" role="tab" aria-selected="false">📜 Histórico</button>
+        </div>
+
+        <!-- Conteúdo -->
+        <div id="sub-tab-content"></div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- MODAIS (Resumidos para não estourar o limite)                    -->
+    <!-- ================================================================ -->
+    <!-- Modal: Notificações -->
+    <div id="modal-notificacoes" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <h2 class="modal-title">🔔 Notificações</h2>
+                <button class="close-btn" onclick="GR.Modal.close('modal-notificacoes')">×</button>
+            </div>
+            <div id="lista-notificacoes" style="max-height:400px;overflow-y:auto;">
+                <div class="empty-state"><span class="icon">🔔</span><div class="message">Nenhuma notificação</div></div>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:3px;flex-wrap:wrap;">
+                <button class="btn btn-success btn-sm" onclick="GR.Notificacoes.marcarTodasLidas()">✅ Marcar todas como lidas</button>
+                <button class="btn btn-danger btn-sm" onclick="GR.Notificacoes.limparTodas()">🗑️ Limpar todas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Backup -->
+    <div id="modal-backup" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content" style="max-width:300px;">
+            <div class="modal-header">
+                <h2 class="modal-title">💾 Backup</h2>
+                <button class="close-btn" onclick="GR.Modal.close('modal-backup')">×</button>
+            </div>
+            <button class="btn btn-primary" onclick="GR.Backup.exportar()" style="width:100%;margin-bottom:3px;">📤 Exportar</button>
+            <input type="file" id="backup-file" accept=".json" style="display:none">
+            <button class="btn btn-secondary" onclick="document.getElementById('backup-file').click()" style="width:100%;">📥 Restaurar</button>
+        </div>
+    </div>
+
+    <!-- Modal: Configurações -->
+    <div id="modal-config" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="config-modal-title">Adicionar</h2>
+                <button class="close-btn" onclick="GR.Modal.close('modal-config')">×</button>
+            </div>
+            <div id="config-modal-body"></div>
+            <button class="btn btn-success" onclick="GR.Config.salvar()">💾 Salvar</button>
+        </div>
+    </div>
+
+    <script type="module">
+    // ================================================================
+    // IMPORTA FIREBASE MODULAR
+    // ================================================================
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+    import { getAnalytics } from "firebase/analytics";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyChuaGrBbiTXSgJaH127GOroFfFSX_Uj4s",
+        authDomain: "gestao-rural-1f1e3.firebaseapp.com",
+        projectId: "gestao-rural-1f1e3",
+        storageBucket: "gestao-rural-1f1e3.firebasestorage.app",
+        messagingSenderId: "1024304603397",
+        appId: "1:1024304603397:web:795ac7ce9a5ad607a6576c",
+        measurementId: "G-5K8PB64QE8"
+    };
+
+    // Inicializa Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // ================================================================
+    // EXPÕE Firebase para o escopo global (para usar no resto do código)
+    // ================================================================
+    window.firebase = { app, db, auth };
+    window.firebaseApp = app;
+    window.firestore = db;
+    window.firebaseAuth = auth;
+
+    // ================================================================
+    // TOAST (versão simplificada)
+    // ================================================================
+    window.GR = window.GR || {};
+
+    GR.Toast = {
+        show: function(msg, type) {
+            const c = document.getElementById('toast-container');
+            if (!c) return;
+            const t = document.createElement('div');
+            t.className = 'toast toast-' + type;
+            t.textContent = msg;
+            t.setAttribute('role', 'alert');
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        },
+        success: function(msg) { this.show(msg, 'success'); },
+        error: function(msg) { this.show(msg, 'error'); },
+        warning: function(msg) { this.show(msg, 'warning'); },
+        info: function(msg) { this.show(msg, 'info'); }
+    };
+
+    // ================================================================
+    // MODAL
+    // ================================================================
+    GR.Modal = {
+        open: function(id) {
+            const modal = document.getElementById(id);
+            if (modal) { modal.classList.add('active');
+                modal.style.display = 'flex'; }
+        },
+        close: function(id) {
+            const modal = document.getElementById(id);
+            if (modal) { modal.classList.remove('active');
+                modal.style.display = 'none'; }
+        }
+    };
+
+    // ================================================================
+    // STORE COM FIREBASE
+    // ================================================================
+    GR.Store = {
+        _cache: {},
+        _listeners: {},
+
+        load: async function(key) {
+            try {
+                const docRef = doc(db, 'dados', key);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data().value || [];
+                    this._cache[key] = data;
+                    return data;
+                }
+                return [];
+            } catch (err) {
+                console.warn('Erro ao carregar', key, err);
+                // Fallback localStorage
+                try {
+                    const raw = localStorage.getItem('gr_' + key);
+                    return raw ? JSON.parse(raw) : [];
+                } catch(e) { return []; }
+            }
+        },
+
+        save: async function(key, data) {
+            try {
+                this._cache[key] = data;
+                const docRef = doc(db, 'dados', key);
+                await setDoc(docRef, {
+                    value: data,
+                    updatedAt: serverTimestamp()
+                });
+                // Fallback localStorage
+                try {
+                    localStorage.setItem('gr_' + key, JSON.stringify(data));
+                } catch(e) {}
+                return true;
+            } catch (err) {
+                console.warn('Erro ao salvar', key, err);
+                try {
+                    localStorage.setItem('gr_' + key, JSON.stringify(data));
+                } catch(e) {}
+                return false;
+            }
+        },
+
+        listen: function(key, callback) {
+            const docRef = doc(db, 'dados', key);
+            const unsubscribe = onSnapshot(docRef, (doc) => {
+                if (doc.exists()) {
+                    const data = doc.data().value || [];
+                    this._cache[key] = data;
+                    if (callback) callback(data);
+                } else {
+                    if (callback) callback([]);
+                }
+            });
+            return unsubscribe;
+        }
+    };
+
+    // ================================================================
+    // STATE - Inicialização
+    // ================================================================
+    GR.State = {
+        data: {
+            tarefas: [],
+            orcamentos: [],
+            contratos: [],
+            contratosParceiros: [],
+            documentos: [],
+            despesas: [],
+            receitas: [],
+            insumos: [],
+            propriedadesList: [],
+            partesRelacionadas: [],
+            moedasList: [],
+            medidasList: [],
+            tiposAcoes: [],
+            categoriasInsumos: [],
+            modalidadesCredito: [],
+            tiposParceiro: [],
+            instituicoesFinanceiras: [],
+            fornecedores: [],
+            nomesInsumos: [],
+            analises: [],
+            funcionarios: [],
+            animais: [],
+            pesagens: [],
+            vacinas: [],
+            estoqueHistorico: [],
+            alertas: [],
+            viveiroInsumos: [],
+            viveiroServicos: [],
+            viveiroMudas: [],
+            viveiroTrabalhadores: [],
+            viveiroFinanceiro: [],
+            recibosObra: [],
+            modelosRecibo: [],
+            usuarios: [],
+            permissoes: [],
+            sistemaConfig: { sistemaMedidas: 'metrico' },
+            notificacoes: [],
+            historico: [],
+            dashboardConfig: { widgets: ['kpi', 'grafico', 'vencimentos', 'poraba', 'alertas'] }
+        },
+        ui: {
+            propriedadeAtiva: 'todas',
+            subTabAtiva: 'dashboard',
+            termoBusca: ''
+        },
+
+        init: async function() {
+            // Carrega do localStorage como fallback
+            Object.keys(this.data).forEach(k => {
+                try {
+                    const raw = localStorage.getItem('gr_' + k);
+                    if (raw) this.data[k] = JSON.parse(raw);
+                } catch(e) {}
+            });
+
+            // Carrega do Firebase
+            for (const key of Object.keys(this.data)) {
+                const data = await GR.Store.load(key);
+                if (data && data.length > 0) {
+                    this.data[key] = data;
+                }
+            }
+
+            // Configurações padrão
+            if (!this.data.propriedadesList || !this.data.propriedadesList.length) {
+                this.data.propriedadesList = [
+                    { id: GR.Utils.gerarId(), nome: 'Fazenda Boa Vista' },
+                    { id: GR.Utils.gerarId(), nome: 'Sítio São João' }
+                ];
+                await GR.Store.save('propriedadesList', this.data.propriedadesList);
+            }
+
+            if (!this.data.sistemaConfig) {
+                this.data.sistemaConfig = { sistemaMedidas: 'metrico' };
+            }
+            if (!this.data.dashboardConfig || !this.data.dashboardConfig.widgets) {
+                this.data.dashboardConfig = { widgets: ['kpi', 'grafico', 'vencimentos', 'poraba', 'alertas'] };
+            }
+
+            this._aplicarSistemaMedidas();
+            this._carregarNotificacoesBadge();
+            this._setupRealtimeListeners();
+        },
+
+        _setupRealtimeListeners: function() {
+            // Escuta mudanças em tempo real
+            for (const key of Object.keys(this.data)) {
+                GR.Store.listen(key, (data) => {
+                    if (data) {
+                        this.data[key] = data;
+                        // Atualiza localStorage
+                        try {
+                            localStorage.setItem('gr_' + key, JSON.stringify(data));
+                        } catch(e) {}
+                        // Atualiza UI se necessário
+                        if (this.ui.subTabAtiva) {
+                            GR.UI.refreshCurrentView();
+                        }
+                    }
+                });
+            }
+        },
+
+        saveCollection: function(key) {
+            if (this.data.hasOwnProperty(key)) {
+                GR.Store.save(key, this.data[key]);
+            }
+            if (key === 'sistemaConfig') {
+                localStorage.setItem('gr_sistemaConfig', JSON.stringify(this.data.sistemaConfig));
+                this._aplicarSistemaMedidas();
+            }
+            if (key === 'dashboardConfig') {
+                localStorage.setItem('gr_dashboardConfig', JSON.stringify(this.data.dashboardConfig));
+            }
+        },
+
+        _aplicarSistemaMedidas: function() {
+            const isImperial = this.data.sistemaConfig && this.data.sistemaConfig.sistemaMedidas === 'imperial';
+            const peso = isImperial ? 'lb' : 'kg';
+            document.documentElement.style.setProperty('--unidade-peso', `'${peso}'`);
+        },
+
+        _carregarNotificacoesBadge: function() {
+            const naoLidas = (this.data.notificacoes || []).filter(n => !n.lida).length;
+            const badge = document.getElementById('notificacao-badge');
+            if (badge) {
+                if (naoLidas > 0) {
+                    badge.style.display = 'inline';
+                    badge.textContent = naoLidas;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        },
+
+        adicionarHistorico: function(acao, modulo, detalhes) {
+            const entry = {
+                id: GR.Utils.gerarId(),
+                data: new Date().toISOString(),
+                usuario: GR.Login.usuarioAtual || 'sistema',
+                acao: acao,
+                modulo: modulo || 'geral',
+                detalhes: detalhes || ''
+            };
+            this.data.historico.unshift(entry);
+            if (this.data.historico.length > 1000) {
+                this.data.historico = this.data.historico.slice(0, 1000);
+            }
+            this.saveCollection('historico');
+            return entry;
+        }
+    };
+
+    // ================================================================
+    // UTILS
+    // ================================================================
+    GR.Utils = {
+        gerarId: function() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+        },
+        escapeHtml: function(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        },
+        formatarDataBR: function(d) {
+            if (!d) return '';
+            const partes = d.split('-');
+            if (partes.length !== 3) return d;
+            return partes[2] + '/' + partes[1] + '/' + partes[0];
+        },
+        formatarMoedaBR: function(valor) {
+            if (valor === undefined || valor === null) return 'R$ 0,00';
+            const num = typeof valor === 'number' ? valor : parseFloat(valor);
+            if (isNaN(num)) return 'R$ 0,00';
+            let partes = num.toFixed(2).split('.');
+            let inteiro = partes[0];
+            inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            return 'R$ ' + inteiro + ',' + partes[1];
+        },
+        formatarMoedaSemSimbolo: function(valor) {
+            if (valor === undefined || valor === null) return '0,00';
+            const num = typeof valor === 'number' ? valor : parseFloat(valor);
+            if (isNaN(num)) return '0,00';
+            let partes = num.toFixed(2).split('.');
+            let inteiro = partes[0];
+            inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            return inteiro + ',' + partes[1];
+        },
+        parseMoedaBR: function(str) {
+            if (!str) return 0;
+            if (typeof str === 'number') return str;
+            const num = parseFloat(str.replace(/[R$\s.]/g, '').replace(',', '.'));
+            return isNaN(num) ? 0 : num;
+        },
+        formatarCPF: function(cpf) {
+            const n = cpf.replace(/\D/g, '');
+            if (n.length === 11) return n.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            return cpf;
+        },
+        validarCPF: function(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+            let s = 0;
+            for (let i = 1; i <= 9; i++) s += parseInt(cpf[i - 1]) * (11 - i);
+            let r = (s * 10) % 11;
+            if (r === 10) r = 0;
+            if (r !== parseInt(cpf[9])) return false;
+            s = 0;
+            for (let i = 1; i <= 10; i++) s += parseInt(cpf[i - 1]) * (12 - i);
+            r = (s * 10) % 11;
+            if (r === 10) r = 0;
+            return r === parseInt(cpf[10]);
+        },
+        validarTelefone: function(ddd, num) {
+            const d = ddd.replace(/\D/g, ''),
+                n = num.replace(/\D/g, '');
+            if (ddd && !/^[1-9]{2}$/.test(d)) return false;
+            if (num && !/^\d{8,9}$/.test(n)) return false;
+            return true;
+        },
+        formatarTelefone: function(ddd, num) {
+            if (!ddd || !num) return '';
+            const n = num.replace(/\D/g, '');
+            if (n.length === 9) return '(' + ddd + ') ' + n.substr(0, 5) + '-' + n.substr(5);
+            if (n.length === 8) return '(' + ddd + ') ' + n.substr(0, 4) + '-' + n.substr(4);
+            return '(' + ddd + ') ' + num;
+        },
+        formatarDataHora: function(dataISO) {
+            if (!dataISO) return '';
+            const d = new Date(dataISO);
+            return d.toLocaleString('pt-BR');
+        },
+        now: function() {
+            return new Date().toISOString();
+        },
+        getPartePorNome: function(nome) {
+            return GR.State.data.partesRelacionadas.find(p => p.nome === nome);
+        },
+        calcularDiasParaVencimento: function(dataVencimento) {
+            if (!dataVencimento) return null;
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const venc = new Date(dataVencimento);
+            venc.setHours(0, 0, 0, 0);
+            return Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
+        },
+        ordenarParcelasPorDataDecrescente: function(parcelas) {
+            if (!parcelas || !parcelas.length) return parcelas;
+            return parcelas.sort((a, b) => {
+                const dataA = a.vencimento ? new Date(a.vencimento.split('/').reverse().join('-')) : new Date(0);
+                const dataB = b.vencimento ? new Date(b.vencimento.split('/').reverse().join('-')) : new Date(0);
+                return dataB - dataA;
+            });
+        },
+        enviarNotificacao: function(titulo, corpo) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            try {
+                new Notification(titulo, { body: corpo });
+            } catch(e) {}
+        },
+        enviarWhatsApp: function(msg, telefone) {
+            const numero = telefone ? telefone.replace(/\D/g, '') : '';
+            if (numero) window.open('https://wa.me/55' + numero + '?text=' + encodeURIComponent(msg), '_blank');
+        },
+        formatarMoedaInput: function(input) {
+            if (!input) return;
+            let valor = input.value.replace(/\D/g, '');
+            if (!valor || valor === '0') { input.value = '0,00'; return; }
+            let num = (parseFloat(valor) / 100).toFixed(2);
+            let partes = num.split('.');
+            let inteiro = partes[0];
+            inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            input.value = inteiro + ',' + partes[1];
+        },
+        debounce: function(fn, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), delay || 300);
+            };
+        }
+    };
+
+    // ================================================================
+    // LOGIN
+    // ================================================================
+    GR.Login = {
+        usuarioAtual: null,
+        nivelAtual: null,
+
+        init: function() {
+            const usuarioLogado = localStorage.getItem('gr_usuario_logado');
+            if (usuarioLogado) {
+                this.usuarioAtual = usuarioLogado;
+                this.nivelAtual = localStorage.getItem('gr_nivel_logado') || 'usuario';
+                this._entrarNoSistema();
+            }
+
+            document.getElementById('btn-entrar').onclick = function() { GR.Login.fazerLogin(); };
+            document.getElementById('btn-cadastrar').onclick = function() { GR.Login.cadastrar(); };
+            document.getElementById('login-senha').onkeydown = function(e) { if (e.key === 'Enter') GR.Login.fazerLogin(); };
+            document.getElementById('cadastro-senha').onkeydown = function(e) { if (e.key === 'Enter') document.getElementById('cadastro-confirmar').focus(); };
+            document.getElementById('cadastro-confirmar').onkeydown = function(e) { if (e.key === 'Enter') GR.Login.cadastrar(); };
+        },
+
+        mostrarAba: function(aba) {
+            document.querySelectorAll('.login-tabs button').forEach(b => b.classList.remove('active'));
+            if (aba === 'login') {
+                document.querySelector('.login-tabs button:first-child').classList.add('active');
+                document.getElementById('login-aba').style.display = 'block';
+                document.getElementById('cadastro-aba').style.display = 'none';
+                document.getElementById('login-usuario').focus();
+            } else {
+                document.querySelector('.login-tabs button:last-child').classList.add('active');
+                document.getElementById('login-aba').style.display = 'none';
+                document.getElementById('cadastro-aba').style.display = 'block';
+                document.getElementById('cadastro-usuario').focus();
+            }
+        },
+
+        fazerLogin: function() {
+            const email = document.getElementById('login-usuario').value.trim();
+            const senha = document.getElementById('login-senha').value;
+            if (!email || !senha) {
+                GR.Toast.error('Preencha email e senha!');
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, senha)
+                .then((userCredential) => {
+                    this.usuarioAtual = userCredential.user.email;
+                    this.nivelAtual = 'usuario';
+                    localStorage.setItem('gr_usuario_logado', this.usuarioAtual);
+                    localStorage.setItem('gr_nivel_logado', 'usuario');
+                    this._entrarNoSistema();
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/user-not-found') {
+                        GR.Toast.error('Usuário não encontrado. Cadastre-se primeiro!');
+                    } else if (error.code === 'auth/wrong-password') {
+                        GR.Toast.error('Senha incorreta!');
+                    } else {
+                        GR.Toast.error('Erro: ' + error.message);
+                    }
+                });
+        },
+
+        cadastrar: function() {
+            const email = document.getElementById('cadastro-usuario').value.trim();
+            const senha = document.getElementById('cadastro-senha').value;
+            const confirmar = document.getElementById('cadastro-confirmar').value;
+
+            if (!email) {
+                GR.Toast.error('Digite um email!');
+                return;
+            }
+            if (senha.length < 6) {
+                GR.Toast.error('Senha deve ter no mínimo 6 caracteres!');
+                return;
+            }
+            if (senha !== confirmar) {
+                GR.Toast.error('As senhas não coincidem!');
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, senha)
+                .then((userCredential) => {
+                    this.usuarioAtual = userCredential.user.email;
+                    this.nivelAtual = 'usuario';
+                    localStorage.setItem('gr_usuario_logado', this.usuarioAtual);
+                    localStorage.setItem('gr_nivel_logado', 'usuario');
+                    GR.Toast.success('Cadastro realizado com sucesso!');
+                    this._entrarNoSistema();
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/email-already-in-use') {
+                        GR.Toast.error('Este email já está cadastrado!');
+                    } else {
+                        GR.Toast.error('Erro: ' + error.message);
+                    }
+                });
+        },
+
+        _entrarNoSistema: function() {
+            document.getElementById('modal-login').style.display = 'none';
+            document.getElementById('modal-login').classList.remove('active');
+            document.getElementById('header-principal').style.display = 'flex';
+            document.getElementById('container-principal').style.display = 'block';
+            document.getElementById('usuario-logado').textContent = '👤 ' + this.usuarioAtual;
+            const nivelEl = document.getElementById('nivel-usuario');
+            if (nivelEl) {
+                nivelEl.textContent = this.nivelAtual === 'master' ? '👑 Master' : '👤 Usuário';
+            }
+            GR.Toast.success('Bem-vindo, ' + this.usuarioAtual + '!');
+            GR.App.init();
+        },
+
+        logout: function() {
+            signOut(auth).then(() => {
+                this.usuarioAtual = null;
+                this.nivelAtual = null;
+                localStorage.removeItem('gr_usuario_logado');
+                localStorage.removeItem('gr_nivel_logado');
+                document.getElementById('header-principal').style.display = 'none';
+                document.getElementById('container-principal').style.display = 'none';
+                document.getElementById('modal-login').style.display = 'flex';
+                document.getElementById('modal-login').classList.add('active');
+                document.getElementById('login-senha').value = '';
+                document.getElementById('login-usuario').focus();
+                GR.Toast.info('Desconectado!');
+            });
+        }
+    };
+
+    // ================================================================
+    // NOTIFICAÇÕES
+    // ================================================================
+    GR.Notificacoes = {
+        abrirModal: function() { this.render();
+            GR.Modal.open('modal-notificacoes'); },
+        render: function() {
+            const div = document.getElementById('lista-notificacoes');
+            if (!div) return;
+            const notificacoes = GR.State.data.notificacoes || [];
+            if (!notificacoes.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">🔔</span><div class="message">Nenhuma notificação</div></div>';
+                return;
+            }
+            let html = '';
+            notificacoes.forEach(n => {
+                html += '<div class="historico-item" style="' + (!n.lida ? 'border-left-color:var(--primary);background:#e8f5e9;' : '') + '">' +
+                    '<div><span class="acao">' + (n.tipo === 'sucesso' ? '✅' : n.tipo === 'alerta' ? '⚠️' : n.tipo === 'erro' ? '❌' : '🔔') + ' ' + GR.Utils.escapeHtml(n.titulo) + '</span></div>' +
+                    '<div class="detalhes">' + GR.Utils.escapeHtml(n.mensagem) + '</div>' +
+                    '<div class="data-hora">' + GR.Utils.formatarDataHora(n.data) + '</div>' +
+                    (!n.lida ? '<button class="btn btn-sm btn-success" onclick="GR.Notificacoes.marcarLida(\'' + n.id + '\')" style="margin-top:2px;">✅ Marcar lida</button>' : '') +
+                    '</div>';
+            });
+            div.innerHTML = html;
+        },
+        marcarLida: function(id) {
+            const notif = GR.State.data.notificacoes.find(n => n.id === id);
+            if (notif) {
+                notif.lida = true;
+                GR.State.saveCollection('notificacoes');
+                GR.State._carregarNotificacoesBadge();
+                this.render();
+            }
+        },
+        marcarTodasLidas: function() {
+            (GR.State.data.notificacoes || []).forEach(n => n.lida = true);
+            GR.State.saveCollection('notificacoes');
+            GR.State._carregarNotificacoesBadge();
+            this.render();
+            GR.Toast.success('Todas marcadas como lidas!');
+        },
+        limparTodas: function() {
+            if (!confirm('Limpar todas as notificações?')) return;
+            GR.State.data.notificacoes = [];
+            GR.State.saveCollection('notificacoes');
+            GR.State._carregarNotificacoesBadge();
+            this.render();
+            GR.Toast.success('Notificações limpas!');
+        }
+    };
+
+    // ================================================================
+    // BACKUP
+    // ================================================================
+    GR.Backup = {
+        _ultimoBackup: null,
+
+        openBackupModal: function() { GR.Modal.open('modal-backup'); },
+
+        exportar: function() {
+            const bk = {};
+            Object.keys(GR.State.data).forEach(k => { bk[k] = GR.State.data[k]; });
+            const blob = new Blob([JSON.stringify(bk)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'backup_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            GR.Modal.close('modal-backup');
+            GR.Toast.success('Backup exportado!');
+        },
+
+        baixarBackup: function() {
+            const bk = {};
+            Object.keys(GR.State.data).forEach(k => { bk[k] = GR.State.data[k]; });
+            const blob = new Blob([JSON.stringify(bk)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'backup_manual_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            GR.Toast.success('⬇️ Backup baixado!');
+        },
+
+        fazerBackupManual: function() {
+            this._salvarBackup();
+            GR.Toast.success('✅ Backup manual realizado!');
+            this._atualizarBanner();
+        },
+
+        _salvarBackup: function() {
+            try {
+                const bk = {};
+                Object.keys(GR.State.data).forEach(k => { bk[k] = GR.State.data[k]; });
+                localStorage.setItem('gr_backup_automatico', JSON.stringify(bk));
+                this._ultimoBackup = new Date().toISOString();
+                localStorage.setItem('gr_backup_ultimo', this._ultimoBackup);
+            } catch(e) { console.warn('Erro ao fazer backup:', e); }
+        },
+
+        _atualizarBanner: function() {
+            const banner = document.getElementById('backup-banner');
+            const timeEl = document.getElementById('backup-last-time');
+            if (!banner || !timeEl) return;
+            if (this._ultimoBackup) {
+                timeEl.textContent = new Date(this._ultimoBackup).toLocaleString('pt-BR');
+                banner.style.display = 'flex';
+            } else {
+                banner.style.display = 'flex';
+                timeEl.textContent = 'Nunca';
+            }
+        },
+
+        init: function() {
+            this._ultimoBackup = localStorage.getItem('gr_backup_ultimo') || null;
+            this._atualizarBanner();
+
+            const input = document.getElementById('backup-file');
+            if (input) {
+                input.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        try {
+                            const data = JSON.parse(ev.target.result);
+                            Object.keys(data).forEach(k => {
+                                if (GR.State.data.hasOwnProperty(k)) {
+                                    GR.State.data[k] = data[k];
+                                    GR.State.saveCollection(k);
+                                }
+                            });
+                            GR.Toast.success('✅ Restaurado! Recarregando...');
+                            e.target.value = '';
+                            setTimeout(() => location.reload(), 1500);
+                        } catch(err) {
+                            GR.Toast.error('❌ Arquivo inválido!');
+                            e.target.value = '';
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+            }
+
+            // Backup automático a cada 6 horas
+            setInterval(() => this._salvarBackup(), 6 * 60 * 60 * 1000);
+            window.addEventListener('beforeunload', () => this._salvarBackup());
+        }
+    };
+
+    // ================================================================
+    // UI
+    // ================================================================
+    GR.UI = {
+        init: function() {
+            if (!GR.State.data.propriedadesList || !GR.State.data.propriedadesList.length) {
+                GR.State.data.propriedadesList = [
+                    { id: GR.Utils.gerarId(), nome: 'Fazenda Boa Vista' },
+                    { id: GR.Utils.gerarId(), nome: 'Sítio São João' }
+                ];
+                GR.State.saveCollection('propriedadesList');
+            }
+
+            this.setupEventListeners();
+            this.atualizarPropTabs();
+            this.showSubTab('dashboard');
+            this._setupFileUploads();
+
+            // Tema
+            const savedTheme = localStorage.getItem('gr_theme') || 'claro';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            // Notificações
+            setTimeout(() => {
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+            }, 5000);
+
+            // Verifica vencimentos
+            setTimeout(() => GR.State.verificarVencimentos(), 2000);
+            setInterval(() => GR.State.verificarVencimentos(), 300000);
+        },
+
+        setupEventListeners: function() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    GR.UI.showSubTab(this.dataset.tab);
+                });
+            });
+
+            const respField = document.getElementById('tarefa-responsavel');
+            if (respField) {
+                respField.addEventListener('input', function() {
+                    GR.Modules.Tarefas.atualizarInfoParte();
+                });
+            }
+        },
+
+        toggleModoEscuro: function() {
+            const themes = ['claro', 'escuro', 'azul', 'verde', 'roxo', 'vermelho', 'laranja'];
+            const current = document.documentElement.getAttribute('data-theme') || 'claro';
+            let idx = themes.indexOf(current) + 1;
+            if (idx >= themes.length) idx = 0;
+            const novo = themes[idx];
+            document.documentElement.setAttribute('data-theme', novo);
+            localStorage.setItem('gr_theme', novo);
+            const btn = document.getElementById('btn-tema');
+            if (btn) btn.textContent = novo === 'escuro' ? '☀️' : '🌙';
+        },
+
+        openConfigurations: function() { this.showSubTab('configuracoes'); },
+
+        atualizarPropTabs: function() {
+            const container = document.getElementById('prop-tabs-container');
+            if (!container) return;
+            container.innerHTML = '';
+            const props = GR.State.data.propriedadesList || [];
+            const propAtiva = GR.State.ui.propriedadeAtiva || 'todas';
+
+            const btnAll = document.createElement('button');
+            btnAll.className = 'prop-tab' + (propAtiva === 'todas' ? ' active' : '');
+            btnAll.textContent = '🏠 Todas';
+            btnAll.onclick = () => GR.UI.setPropriedadeAtiva('todas');
+            container.appendChild(btnAll);
+
+            props.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = 'prop-tab' + (propAtiva === p.nome ? ' active' : '');
+                btn.textContent = p.nome;
+                btn.onclick = () => GR.UI.setPropriedadeAtiva(p.nome);
+                container.appendChild(btn);
+            });
+
+            this._atualizarSelectsPropriedade();
+        },
+
+        _atualizarSelectsPropriedade: function() {
+            const props = GR.State.data.propriedadesList || [];
+            const propAtiva = GR.State.ui.propriedadeAtiva || 'todas';
+
+            const selectIds = [
+                'tarefa-propriedade', 'orc-propriedade', 'contrato-propriedade',
+                'doc-propriedade', 'insumo-propriedade', 'analise-propriedade',
+                'func-propriedade', 'animal-propriedade', 'desp-propriedade',
+                'rec-propriedade', 'parceiro-propriedade'
+            ];
+
+            selectIds.forEach(id => {
+                const select = document.getElementById(id);
+                if (!select) return;
+                const valorAtual = select.value;
+                select.innerHTML = '';
+                const optEmpty = document.createElement('option');
+                optEmpty.value = '';
+                optEmpty.textContent = 'Selecione uma propriedade';
+                select.appendChild(optEmpty);
+                props.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.nome;
+                    opt.textContent = p.nome;
+                    select.appendChild(opt);
+                });
+                if (valorAtual && Array.from(select.options).some(o => o.value === valorAtual)) {
+                    select.value = valorAtual;
+                } else if (propAtiva !== 'todas' && Array.from(select.options).some(o => o.value === propAtiva)) {
+                    select.value = propAtiva;
+                }
+            });
+        },
+
+        setPropriedadeAtiva: function(nome) {
+            GR.State.ui.propriedadeAtiva = nome;
+            this.atualizarPropTabs();
+            this.refreshCurrentView();
+            const nomeExibicao = nome === 'todas' ? 'Todas as propriedades' : nome;
+            GR.Toast.info('📌 Propriedade selecionada: ' + nomeExibicao);
+        },
+
+        showSubTab: function(tab) {
+            GR.State.ui.subTabAtiva = tab;
+            document.querySelectorAll('.tab').forEach(el => {
+                el.classList.toggle('active', el.dataset.tab === tab);
+            });
+            this.refreshCurrentView();
+        },
+
+        refreshCurrentView: function() {
+            const tab = GR.State.ui.subTabAtiva;
+            const content = document.getElementById('sub-tab-content');
+            if (!content) return;
+            content.innerHTML = '';
+
+            switch (tab) {
+                case 'dashboard':
+                    this._renderDashboard(content);
+                    break;
+                case 'acoes':
+                    this._renderAcoes(content);
+                    break;
+                case 'orcamentos':
+                    this._renderOrcamentos(content);
+                    break;
+                case 'operacoescredito':
+                    this._renderOperacoesCredito(content);
+                    break;
+                case 'insumos':
+                    this._renderInsumos(content);
+                    break;
+                case 'pecuaria':
+                    this._renderPecuaria(content);
+                    break;
+                case 'funcionarios':
+                    this._renderFuncionarios(content);
+                    break;
+                case 'partesrelacionadas':
+                    this._renderPartesRelacionadas(content);
+                    break;
+                case 'contabilidade':
+                    this._renderContabilidade(content);
+                    break;
+                case 'documentos':
+                    this._renderDocumentos(content);
+                    break;
+                case 'analisesquimicas':
+                    this._renderAnalises(content);
+                    break;
+                case 'viveiro':
+                    this._renderViveiro(content);
+                    break;
+                case 'relatorios':
+                    this._renderRelatorios(content);
+                    break;
+                case 'configuracoes':
+                    this._renderConfiguracoes(content);
+                    break;
+                case 'historico':
+                    this._renderHistorico(content);
+                    break;
+                default:
+                    content.innerHTML = '<div class="card"><p>Conteúdo não implementado.</p></div>';
+            }
+        },
+
+        _renderDashboard: function(container) {
+            container.innerHTML = '<div class="card" id="dashboard-container"><h3>📊 Dashboard</h3><div id="dashboard-content">Carregando...</div></div>';
+            this._refreshDashboard();
+        },
+
+        _refreshDashboard: function() {
+            const container = document.getElementById('dashboard-content');
+            if (!container) return;
+
+            const widgets = GR.State.data.dashboardConfig.widgets || ['kpi', 'grafico', 'vencimentos', 'poraba', 'alertas'];
+            let html = '<div class="dashboard-grid" id="dashboard-grid">';
+
+            widgets.forEach(w => {
+                html += '<div class="widget-container" data-widget="' + w + '">';
+                html += '<div class="widget-header">';
+                html += '<h4>' + this._getWidgetTitle(w) + '</h4>';
+                html += '</div>';
+                html += '<div class="widget-content" id="widget-' + w + '"></div>';
+                html += '</div>';
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            widgets.forEach(w => this._renderWidget(w));
+        },
+
+        _getWidgetTitle: function(w) {
+            const titles = {
+                'kpi': '📊 Indicadores',
+                'grafico': '📈 Despesas x Receitas',
+                'vencimentos': '📅 Vencimentos',
+                'poraba': '📊 Dados por Aba',
+                'alertas': '🔔 Alertas'
+            };
+            return titles[w] || w;
+        },
+
+        _renderWidget: function(w) {
+            const container = document.getElementById('widget-' + w);
+            if (!container) return;
+
+            if (w === 'kpi') {
+                const totalTarefas = GR.State.data.tarefas.length;
+                const totalContratos = GR.State.data.contratos.length;
+                const totalInsumos = GR.State.data.insumos.reduce((s, i) => s + i.quantidade, 0);
+                const totalAnimais = GR.State.data.animais.length;
+                container.innerHTML = '<div class="kpi-grid">' +
+                    '<div class="kpi-card"><div class="value">' + totalTarefas + '</div><div class="label">Ações</div></div>' +
+                    '<div class="kpi-card"><div class="value">' + totalContratos + '</div><div class="label">Contratos</div></div>' +
+                    '<div class="kpi-card"><div class="value">' + totalInsumos + '</div><div class="label">Insumos (un)</div></div>' +
+                    '<div class="kpi-card"><div class="value">' + totalAnimais + '</div><div class="label">Animais</div></div>' +
+                    '</div>';
+            } else if (w === 'grafico') {
+                container.innerHTML = '<canvas id="dashboard-chart-widget" style="max-height:180px;width:100%;"></canvas>';
+                setTimeout(() => this._renderGraficoDashboardWidget(), 100);
+            } else if (w === 'vencimentos') {
+                container.innerHTML = '<canvas id="chart-vencimentos-widget" style="max-height:180px;width:100%;"></canvas>';
+                setTimeout(() => this._renderGraficoVencimentosWidget(), 100);
+            } else if (w === 'poraba') {
+                container.innerHTML = '<div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:3px;">' +
+                    '<select id="chart-aba-select-widget" class="form-control" style="flex:1;min-width:80px;font-size:10px;"><option value="insumos">Insumos</option><option value="contratos">Contratos</option><option value="animais">Animais</option><option value="tarefas">Tarefas</option></select>' +
+                    '<select id="chart-tipo-select-widget" class="form-control" style="flex:1;min-width:70px;font-size:10px;"><option value="bar">Barras</option><option value="pie">Pizza</option><option value="line">Linha</option></select>' +
+                    '<button class="btn btn-sm btn-primary" onclick="GR.UI._gerarGraficoPorAbaWidget()">Gerar</button>' +
+                    '</div><canvas id="chart-por-aba-widget" style="max-height:150px;width:100%;"></canvas>';
+                setTimeout(() => this._gerarGraficoPorAbaWidget(), 100);
+            } else if (w === 'alertas') {
+                const hoje = new Date().toISOString().split('T')[0];
+                const alertas = [];
+                GR.State.data.contratos.forEach(c => {
+                    if (c.parcelas) {
+                        c.parcelas.forEach(p => {
+                            if (p.status === 'Pendente' && p.vencimento) {
+                                const diff = (new Date(p.vencimento) - new Date(hoje)) / 86400000;
+                                if (diff >= 0 && diff <= 3) {
+                                    alertas.push('🔴 Parcela do contrato ' + c.numero + ' vence em ' + Math.ceil(diff) + ' dias.');
+                                }
+                            }
+                        });
+                    }
+                });
+                GR.State.data.insumos.forEach(i => {
+                    if (i.quantidade < 10 && i.quantidade > 0) {
+                        alertas.push('⚠️ Estoque baixo de ' + i.nome + ' (' + i.quantidade + ' ' + (i.unidade || 'un') + ')');
+                    }
+                    if (i.validade) {
+                        const diff = (new Date(i.validade) - new Date(hoje)) / 86400000;
+                        if (diff >= 0 && diff <= 7) {
+                            alertas.push('⚠️ Insumo ' + i.nome + ' vence em ' + Math.ceil(diff) + ' dias.');
+                        }
+                    }
+                });
+                if (alertas.length) {
+                    container.innerHTML = alertas.map(a => {
+                        return '<div class="alert-item critical"><span class="icon">🔔</span><div class="content"><div class="title">' + a + '</div></div></div>';
+                    }).join('');
+                } else {
+                    container.innerHTML = '<div style="color:#999;padding:10px;text-align:center;">✅ Nenhum alerta no momento.</div>';
+                }
+            }
+        },
+
+        _renderGraficoDashboardWidget: function() {
+            const canvas = document.getElementById('dashboard-chart-widget');
+            if (!canvas || typeof Chart === 'undefined') return;
+            const ctx = canvas.getContext('2d');
+            const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
+            const receitas = [1200, 1500, 800, 2000, 1700, 1100];
+            const despesas = [900, 1100, 700, 1500, 1300, 1000];
+            if (window._dashboardChartWidgetInstance) window._dashboardChartWidgetInstance.destroy();
+            window._dashboardChartWidgetInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: meses,
+                    datasets: [
+                        { label: 'Receitas', data: receitas, backgroundColor: '#4caf50' },
+                        { label: 'Despesas', data: despesas, backgroundColor: '#f44336' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        },
+
+        _renderGraficoVencimentosWidget: function() {
+            const canvas = document.getElementById('chart-vencimentos-widget');
+            if (!canvas || typeof Chart === 'undefined') return;
+
+            const vencimentosProximos = [];
+            const hojeObj = new Date();
+            hojeObj.setHours(0, 0, 0, 0);
+            GR.State.data.contratos.forEach(c => {
+                if (c.parcelas) {
+                    c.parcelas.forEach(p => {
+                        if (p.status === 'Pendente' && p.vencimento) {
+                            const venc = new Date(p.vencimento);
+                            venc.setHours(0, 0, 0, 0);
+                            const diff = Math.ceil((venc - hojeObj) / (1000 * 60 * 60 * 24));
+                            if (diff >= 0 && diff <= 365) {
+                                vencimentosProximos.push({ diff: diff, valor: parseFloat(p.valor), contrato: c.numero });
+                            }
+                        }
+                    });
+                }
+            });
+
+            if (vencimentosProximos.length === 0) {
+                canvas.parentNode.innerHTML = '<div style="color:#999;padding:10px;text-align:center;">Nenhum vencimento nos próximos 365 dias.</div>';
+                return;
+            }
+
+            const grupos = { '0-15': 0, '16-30': 0, '31-60': 0, '61-180': 0, '181-365': 0 };
+            vencimentosProximos.forEach(d => {
+                const diff = d.diff;
+                let label = '';
+                if (diff <= 15) label = '0-15';
+                else if (diff <= 30) label = '16-30';
+                else if (diff <= 60) label = '31-60';
+                else if (diff <= 180) label = '61-180';
+                else if (diff <= 365) label = '181-365';
+                if (label) grupos[label] = (grupos[label] || 0) + 1;
+            });
+
+            const labels = ['0-15 dias', '16-30 dias', '31-60 dias', '61-180 dias', '181-365 dias'];
+            const counts = [grupos['0-15'] || 0, grupos['16-30'] || 0, grupos['31-60'] || 0, grupos['61-180'] || 0, grupos['181-365'] || 0];
+            const cores = ['#f44336', '#ff9800', '#ffc107', '#4caf50', '#2196f3'];
+            const ctx = canvas.getContext('2d');
+
+            if (window._chartVencimentosWidgetInstance) window._chartVencimentosWidgetInstance.destroy();
+            window._chartVencimentosWidgetInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ label: 'Nº de Parcelas', data: counts, backgroundColor: cores }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { font: { size: 8 } } } },
+                    scales: { y: { beginAtZero: true, ticks: { font: { size: 8 } } } }
+                }
+            });
+        },
+
+        _gerarGraficoPorAbaWidget: function() {
+            const canvas = document.getElementById('chart-por-aba-widget');
+            if (!canvas || typeof Chart === 'undefined') return;
+            const aba = document.getElementById('chart-aba-select-widget') ? document.getElementById('chart-aba-select-widget').value : 'insumos';
+            const tipo = document.getElementById('chart-tipo-select-widget') ? document.getElementById('chart-tipo-select-widget').value : 'bar';
+            let dados = [];
+            let labels = [];
+            const cores = ['#4caf50', '#2196f3', '#ff9800', '#f44336', '#9c27b0', '#00bcd4', '#8bc34a'];
+
+            if (aba === 'insumos') {
+                const insumos = GR.State.data.insumos || [];
+                insumos.forEach((i, idx) => {
+                    labels.push(i.nome);
+                    dados.push(i.quantidade);
+                });
+            } else if (aba === 'contratos') {
+                const contratos = GR.State.data.contratos || [];
+                contratos.forEach((c, idx) => {
+                    labels.push(c.numero || 'Contrato ' + (idx + 1));
+                    dados.push(c.valor || 0);
+                });
+            } else if (aba === 'animais') {
+                const animais = GR.State.data.animais || [];
+                animais.forEach((a, idx) => {
+                    labels.push(a.nome || a.identificacao || 'Animal ' + (idx + 1));
+                    dados.push(a.peso || 0);
+                });
+            } else if (aba === 'tarefas') {
+                const tarefas = GR.State.data.tarefas || [];
+                const agrupado = {};
+                tarefas.forEach(t => {
+                    const key = t.tipo || 'Outra';
+                    agrupado[key] = (agrupado[key] || 0) + 1;
+                });
+                for (const key in agrupado) { labels.push(key);
+                    dados.push(agrupado[key]); }
+            }
+
+            if (dados.length === 0) { dados = [0];
+                labels = ['Sem dados']; }
+
+            if (window._chartPorAbaWidgetInstance) window._chartPorAbaWidgetInstance.destroy();
+            let chartType = tipo;
+            if (chartType === 'pie' && dados.length > 1) chartType = 'pie';
+            else if (chartType === 'pie') chartType = 'bar';
+
+            window._chartPorAbaWidgetInstance = new Chart(canvas, {
+                type: chartType,
+                data: {
+                    labels: labels.slice(0, 20),
+                    datasets: [{ label: 'Valores', data: dados.slice(0, 20), backgroundColor: cores.slice(0, dados.length) }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: chartType === 'pie' || dados.length < 10 } } }
+            });
+        },
+
+        _setupFileUploads: function() {
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+                if (input.id !== 'analise-file-input' && input.id !== 'nfe-file-input' && input.id !== 'pdf-file-input') {
+                    input.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const labelId = this.id.replace('-input', '-name') || this.id + '-name';
+                        const label = document.getElementById(labelId);
+                        if (label) label.textContent = file.name;
+                        GR.Store.saveFile(file).then(fileId => {
+                            if (fileId) {
+                                if (this.id === 'orc-file-input') GR.State.ui.orcArquivoSelecionadoId = fileId;
+                                else if (this.id === 'doc-file-input') GR.State.ui.docArquivoSelecionadoId = fileId;
+                                else if (this.id === 'parceiro-doc-input') GR.State.ui.parceiroDocSelecionadoId = fileId;
+                                else GR.State.ui.arquivoSelecionadoId = fileId;
+                                GR.Toast.success('Arquivo anexado!');
+                            }
+                        });
+                    });
+                }
+            });
+        },
+
+        // ================================================================
+        // RENDERIZAÇÃO DOS MÓDULOS (Versões simplificadas)
+        // ================================================================
+
+        _renderAcoes: function(container) {
+            container.innerHTML = '<div class="card"><h3>📋 Ações</h3><div id="lista-acoes"></div><button class="btn btn-primary" onclick="GR.Modules.Tarefas.abrirModal()">➕ Nova Ação</button></div>';
+            GR.Modules.Tarefas.render();
+        },
+
+        _renderOrcamentos: function(container) {
+            container.innerHTML = '<div class="card"><h3>💰 Orçamentos</h3><div id="lista-orcamentos"></div><button class="btn btn-primary" onclick="GR.Modules.Orcamentos.abrirModal()">➕ Novo Orçamento</button></div>';
+            GR.Modules.Orcamentos.render();
+        },
+
+        _renderOperacoesCredito: function(container) {
+            container.innerHTML = '<div class="card"><h3>💳 Operações de Crédito</h3><div id="lista-contratos"></div><button class="btn btn-primary" onclick="GR.Modules.Contratos.abrirModal()">➕ Nova Operação</button></div>';
+            GR.Modules.Contratos.render();
+        },
+
+        _renderInsumos: function(container) {
+            container.innerHTML = '<div class="card"><h3>🧪 Insumos</h3><div class="stats-grid"><div class="stats-card"><div class="number" id="total-insumos">0</div><div class="label">Total</div></div><div class="stats-card"><div class="number" id="valor-estoque">R$ 0,00</div><div class="label">Valor Estoque</div></div></div><div id="lista-insumos"></div><button class="btn btn-primary" onclick="GR.Modules.Insumos.abrirModal()">➕ Novo Insumo</button></div>';
+            GR.Modules.Insumos.render();
+        },
+
+        _renderPecuaria: function(container) {
+            container.innerHTML = '<div class="card"><h3>🐄 Pecuária</h3><div id="lista-animais"></div><button class="btn btn-primary" onclick="GR.Modules.Pecuaria.abrirModalAnimal()">➕ Novo Animal</button></div>';
+            GR.Modules.Pecuaria.renderAnimais();
+        },
+
+        _renderFuncionarios: function(container) {
+            container.innerHTML = '<div class="card"><h3>👨‍🌾 Funcionários</h3><div id="lista-funcionarios"></div><button class="btn btn-primary" onclick="GR.Modules.Funcionarios.abrirModal()">➕ Novo Funcionário</button></div>';
+            GR.Modules.Funcionarios.render();
+        },
+
+        _renderPartesRelacionadas: function(container) {
+            container.innerHTML = '<div class="card"><h3>👥 Parceiros</h3><div id="lista-parceiros"></div><button class="btn btn-primary" onclick="GR.Modules.Parceiros.abrirModal()">➕ Novo Parceiro</button><hr><h3>👤 Partes Relacionadas</h3><div id="conf-partes"></div><button class="btn btn-secondary" onclick="GR.Modules.PartesRelacionadas.abrirModal()">➕ Nova Parte</button></div>';
+            GR.Modules.Parceiros.render();
+            GR.Modules.PartesRelacionadas.render();
+        },
+
+        _renderContabilidade: function(container) {
+            container.innerHTML = '<div class="card"><h3>🧾 Contabilidade</h3><div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-success" onclick="GR.Modal.open(\'modal-receita\')">➕ Receita</button><button class="btn btn-danger" onclick="GR.Modal.open(\'modal-despesa\')">➕ Despesa</button></div><div id="lista-contabilidade"></div></div>';
+            this._renderContabilidadeDados();
+        },
+
+        _renderContabilidadeDados: function() {
+            const div = document.getElementById('lista-contabilidade');
+            if (!div) return;
+            const receitas = GR.State.data.receitas || [];
+            const despesas = GR.State.data.despesas || [];
+            const filtro = GR.State.ui.propriedadeAtiva;
+            const filtroFn = item => filtro === 'todas' || item.propriedade === filtro;
+            const recFiltradas = receitas.filter(filtroFn);
+            const despFiltradas = despesas.filter(filtroFn);
+            const totalReceitas = recFiltradas.reduce((s, r) => s + r.valor, 0);
+            const totalDespesas = despFiltradas.reduce((s, d) => s + d.valor, 0);
+            const saldo = totalReceitas - totalDespesas;
+
+            let html = '<div class="stats-grid"><div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalReceitas) + '</div><div class="label">Receitas</div></div><div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalDespesas) + '</div><div class="label">Despesas</div></div><div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(saldo) + '</div><div class="label">Saldo</div></div></div>';
+            html += '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Descrição</th><th>Data</th><th>Valor</th><th>Ações</th></tr></thead><tbody>';
+            recFiltradas.forEach(r => {
+                html += '<tr><td><span class="badge badge-success">Receita</span></td><td>' + GR.Utils.escapeHtml(r.descricao) + '</td><td>' + GR.Utils.formatarDataBR(r.data) + '</td><td>' + GR.Utils.formatarMoedaBR(r.valor) + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Contabilidade.excluir(\'receitas\',\'' + r.id + '\')">🗑️</button></td></tr>';
+            });
+            despFiltradas.forEach(d => {
+                html += '<tr><td><span class="badge badge-danger">Despesa</span></td><td>' + GR.Utils.escapeHtml(d.descricao) + '</td><td>' + GR.Utils.formatarDataBR(d.data) + '</td><td>' + GR.Utils.formatarMoedaBR(d.valor) + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Contabilidade.excluir(\'despesas\',\'' + d.id + '\')">🗑️</button></td></tr>';
+            });
+            html += '</tbody></table></div>';
+            div.innerHTML = html;
+        },
+
+        _renderDocumentos: function(container) {
+            container.innerHTML = '<div class="card"><h3>📁 Documentos</h3><div class="doc-icons">' +
+                ['Escritura', 'CCIR', 'ITR', 'Matricula', 'Contrato', 'NotaFiscal', 'Licenca', 'Certidao', 'Outros'].map(t => {
+                    return '<div class="doc-icon-card" onclick="GR.Modules.Documentos.abrirModalComTipo(\'' + t + '\')"><div class="icon">📄</div><div class="label">' + t + '</div></div>';
+                }).join('') +
+                '</div><div id="lista-documentos"></div></div>';
+            GR.Modules.Documentos.render();
+        },
+
+        _renderAnalises: function(container) {
+            container.innerHTML = '<div class="card"><h3>🧪 Análises Químicas</h3><div id="lista-analises"></div><button class="btn btn-primary" onclick="GR.Analises.abrirModal()">➕ Nova Análise</button></div>';
+            GR.Analises.render();
+        },
+
+        _renderViveiro: function(container) {
+            container.innerHTML = '<div class="card"><h3>🌱 Viveiro</h3><div id="viveiro-content"></div></div>';
+            GR.Modules.Viveiro.render();
+        },
+
+        _renderRelatorios: function(container) {
+            container.innerHTML = '<div class="card"><h3>📊 Relatórios</h3><div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-primary" onclick="GR.Relatorios.gerarRelatorioFinanceiro()">💰 Financeiro</button><button class="btn btn-success" onclick="GR.Relatorios.gerarRelatorioEstoque()">📦 Estoque</button><button class="btn btn-warning" onclick="GR.Relatorios.gerarRelatorioPecuaria()">🐄 Pecuária</button></div><div id="relatorio-content"></div></div>';
+        },
+
+        _renderConfiguracoes: function(container) {
+            container.innerHTML = '<div class="card"><h3>⚙️ Configurações</h3><div class="config-grid">' +
+                '<div class="config-panel"><h3>🏷️ Propriedades</h3><div id="conf-propriedades"></div><button class="btn btn-sm btn-primary" onclick="GR.Config.abrirConfig(\'propriedades\')">➕ Adicionar</button></div>' +
+                '<div class="config-panel"><h3>📂 Categorias</h3><div id="conf-categorias"></div><button class="btn btn-sm btn-primary" onclick="GR.Config.abrirConfig(\'categoriasInsumos\')">➕ Adicionar</button></div>' +
+                '<div class="config-panel"><h3>🏷️ Modalidades</h3><div id="conf-modalidades"></div><button class="btn btn-sm btn-primary" onclick="GR.Config.abrirConfig(\'modalidadesCredito\')">➕ Adicionar</button></div>' +
+                '<div class="config-panel"><h3>🏦 Instituições</h3><div id="conf-instituicoes"></div><button class="btn btn-sm btn-primary" onclick="GR.Config.abrirConfig(\'instituicoesFinanceiras\')">➕ Adicionar</button></div>' +
+                '<div class="config-panel"><h3>📦 Fornecedores</h3><div id="conf-fornecedores"></div><button class="btn btn-sm btn-primary" onclick="GR.Config.abrirConfig(\'fornecedores\')">➕ Adicionar</button></div>' +
+                '</div></div>';
+            this._renderConfiguracoesDados();
+        },
+
+        _renderConfiguracoesDados: function() {
+            if (!GR.State.data.propriedadesList) GR.State.data.propriedadesList = [];
+            if (!GR.State.data.categoriasInsumos) GR.State.data.categoriasInsumos = [];
+            if (!GR.State.data.modalidadesCredito) GR.State.data.modalidadesCredito = [];
+            if (!GR.State.data.instituicoesFinanceiras) GR.State.data.instituicoesFinanceiras = [];
+            if (!GR.State.data.fornecedores) GR.State.data.fornecedores = [];
+
+            this._renderConfigList('conf-propriedades', GR.State.data.propriedadesList, 'nome');
+            this._renderConfigList('conf-categorias', GR.State.data.categoriasInsumos, 'nome');
+            this._renderConfigList('conf-modalidades', GR.State.data.modalidadesCredito, 'nome');
+            this._renderConfigList('conf-instituicoes', GR.State.data.instituicoesFinanceiras, 'nome');
+            this._renderConfigList('conf-fornecedores', GR.State.data.fornecedores, 'nome');
+        },
+
+        _renderConfigList: function(elementId, list, labelKey) {
+            const div = document.getElementById(elementId);
+            if (!div) return;
+            if (!list || !list.length) {
+                div.innerHTML = '<small style="color:#999;">Nenhum item cadastrado</small>';
+                return;
+            }
+            div.innerHTML = list.map(item => {
+                const nome = item[labelKey] || item.nome || item;
+                const id = item.id || nome;
+                return '<div class="config-item">' +
+                    '<span>' + GR.Utils.escapeHtml(nome) + '</span>' +
+                    '<div><button class="btn btn-primary btn-small" onclick="GR.Config.editarItem(\'' + elementId + '\',\'' + id + '\')">✏️</button>' +
+                    '<button class="btn btn-danger btn-small" onclick="GR.Config.excluirItem(\'' + elementId + '\',\'' + id + '\')">×</button></div>' +
+                    '</div>';
+            }).join('');
+        },
+
+        _renderHistorico: function(container) {
+            const historico = GR.State.data.historico || [];
+            let html = '<div class="card"><h3>📜 Histórico de Atividades</h3>';
+            if (!historico.length) {
+                html += '<div class="empty-state"><span class="icon">📜</span><div class="message">Nenhuma atividade registrada</div></div>';
+            } else {
+                html += '<div class="table-responsive"><table><thead><tr><th>Data/Hora</th><th>Usuário</th><th>Ação</th><th>Detalhes</th></tr></thead><tbody>';
+                historico.slice(0, 100).forEach(h => {
+                    html += '<tr><td>' + GR.Utils.formatarDataHora(h.data) + '</td><td>' + GR.Utils.escapeHtml(h.usuario) + '</td><td>' + GR.Utils.escapeHtml(h.acao) + '</td><td>' + GR.Utils.escapeHtml(h.detalhes) + '</td></tr>';
+                });
+                html += '</tbody></table></div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    };
+
+    // ================================================================
+    // MÓDULOS (Versões simplificadas)
+    // ================================================================
+    GR.Modules = GR.Modules || {};
+
+    // Tarefas
+    GR.Modules.Tarefas = {
+        abrirModal: function() {
+            document.getElementById('tarefa-tipo').value = '';
+            document.getElementById('tarefa-data').value = '';
+            document.getElementById('tarefa-responsavel').value = '';
+            document.getElementById('tarefa-custo').value = '0,00';
+            document.getElementById('tarefa-propriedade').value = '';
+            GR.Modal.open('modal-tarefa');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-acoes');
+            if (!div) return;
+            const items = GR.State.data.tarefas || [];
+            const filtrados = items.filter(item => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return item.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+            if (!filtrados.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">📋</span><div class="message">Nenhuma ação cadastrada</div></div>';
+                return;
+            }
+            let html = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Data</th><th>Responsável</th><th>Custo</th><th>Ações</th></tr></thead><tbody>';
+            filtrados.forEach(t => {
+                html += '<tr><td><strong>' + GR.Utils.escapeHtml(t.tipo) + '</strong></td><td>' + GR.Utils.formatarDataBR(t.data) + '</td><td>' + GR.Utils.escapeHtml(t.responsavel) + '</td><td>' + GR.Utils.formatarMoedaBR(t.custo) + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Tarefas.excluir(\'' + t.id + '\')">🗑️</button></td></tr>';
+            });
+            html += '</tbody></table></div>';
+            div.innerHTML = html;
+        },
+
+        salvar: function() {
+            const tipo = document.getElementById('tarefa-tipo').value.trim();
+            const data = document.getElementById('tarefa-data').value;
+            const resp = document.getElementById('tarefa-responsavel').value.trim();
+            const custo = GR.Utils.parseMoedaBR(document.getElementById('tarefa-custo').value);
+            const prop = document.getElementById('tarefa-propriedade').value;
+            if (!tipo || !data || !resp) { GR.Toast.error('Campos obrigatórios!'); return; }
+            GR.State.data.tarefas.push({
+                id: GR.Utils.gerarId(),
+                tipo: GR.Utils.escapeHtml(tipo),
+                data: data,
+                responsavel: GR.Utils.escapeHtml(resp),
+                custo: custo || 0,
+                propriedade: GR.Utils.escapeHtml(prop)
+            });
+            GR.State.saveCollection('tarefas');
+            GR.Modal.close('modal-tarefa');
+            this.render();
+            GR.Toast.success('Ação salva!');
+            GR.State.adicionarHistorico('criou ação', 'Ações', 'Ação: ' + tipo);
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir esta ação?')) return;
+            const items = GR.State.data.tarefas;
+            const idx = items.findIndex(t => t.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('tarefas');
+                this.render();
+                GR.Toast.success('Excluído!');
+                GR.State.adicionarHistorico('excluiu ação', 'Ações', 'Ação ID: ' + id); }
+        },
+
+        atualizarInfoParte: function() {
+            // Função simplificada
+        }
+    };
+
+    // Orçamentos
+    GR.Modules.Orcamentos = {
+        abrirModal: function() {
+            document.getElementById('orc-numero').value = '';
+            document.getElementById('orc-data').value = '';
+            document.getElementById('orc-nome').value = '';
+            document.getElementById('orc-cpfcnpj').value = '';
+            document.getElementById('orc-valor').value = '0,00';
+            document.getElementById('orc-status').value = 'Pendente';
+            GR.Modal.open('modal-orcamento');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-orcamentos');
+            if (!div) return;
+            const items = GR.State.data.orcamentos || [];
+            const filtrados = items.filter(item => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return item.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+            if (!filtrados.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">💰</span><div class="message">Nenhum orçamento</div></div>';
+                return;
+            }
+            let html = '<div class="table-responsive"><table><thead><tr><th>Nº</th><th>Data</th><th>Empresa</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>';
+            filtrados.forEach(o => {
+                const statusBadge = o.status === 'Aprovado' ? '<span class="badge badge-success">Aprovado</span>' :
+                    o.status === 'Recusado' ? '<span class="badge badge-danger">Recusado</span>' :
+                    '<span class="badge badge-warning">Pendente</span>';
+                html += '<tr><td><strong>' + GR.Utils.escapeHtml(o.numero) + '</strong></td><td>' + GR.Utils.formatarDataBR(o.data) + '</td><td>' + GR.Utils.escapeHtml(o.nome) + '</td><td>' + GR.Utils.formatarMoedaBR(o.valor) + '</td><td>' + statusBadge + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Orcamentos.excluir(\'' + o.id + '\')">🗑️</button></td></tr>';
+            });
+            html += '</tbody></table></div>';
+            div.innerHTML = html;
+        },
+
+        salvar: function() {
+            const n = document.getElementById('orc-numero').value.trim();
+            const d = document.getElementById('orc-data').value;
+            const nome = document.getElementById('orc-nome').value.trim();
+            const cpfcnpj = document.getElementById('orc-cpfcnpj').value.trim();
+            const v = GR.Utils.parseMoedaBR(document.getElementById('orc-valor').value);
+            const status = document.getElementById('orc-status').value;
+            if (!n || !d || !nome || !cpfcnpj || !v) { GR.Toast.error('Campos obrigatórios!'); return; }
+            GR.State.data.orcamentos.push({
+                id: GR.Utils.gerarId(),
+                numero: GR.Utils.escapeHtml(n),
+                data: d,
+                nome: GR.Utils.escapeHtml(nome),
+                cpfcnpj: cpfcnpj,
+                valor: v || 0,
+                status: status,
+                propriedade: GR.State.ui.propriedadeAtiva === 'todas' ? '' : GR.State.ui.propriedadeAtiva
+            });
+            GR.State.saveCollection('orcamentos');
+            GR.Modal.close('modal-orcamento');
+            this.render();
+            GR.Toast.success('Orçamento salvo!');
+            GR.State.adicionarHistorico('criou orçamento', 'Orçamentos', 'Orçamento: ' + n);
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir este orçamento?')) return;
+            const items = GR.State.data.orcamentos;
+            const idx = items.findIndex(o => o.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('orcamentos');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Contratos
+    GR.Modules.Contratos = {
+        abrirModal: function() {
+            document.getElementById('contrato-numero').value = '';
+            document.getElementById('contrato-data').value = '';
+            document.getElementById('contrato-valor').value = '0,00';
+            document.getElementById('contrato-status').value = 'Ativo';
+            document.getElementById('contrato-propriedade').value = '';
+            document.getElementById('contrato-mutuario').value = '';
+            document.getElementById('contrato-modalidade').value = '';
+            document.getElementById('contrato-instituicao').value = '';
+            document.getElementById('contrato-taxa-juros').value = '';
+            document.getElementById('contrato-saldo-quitacao').value = '0,00';
+            document.getElementById('contrato-data-saldo').value = '';
+            GR.Modal.open('modal-contrato');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-contratos');
+            if (!div) return;
+            const items = GR.State.data.contratos || [];
+            const filtrados = items.filter(item => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return item.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+
+            let totalAtivos = filtrados.filter(c => c.status === 'Ativo').length;
+            let saldoDevedor = 0;
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            filtrados.forEach(c => {
+                if (c.parcelas) {
+                    c.parcelas.forEach(p => {
+                        if (p.status === 'Pendente' && p.vencimento) {
+                            saldoDevedor += parseFloat(p.valor) || 0;
+                        }
+                    });
+                }
+            });
+
+            let statsHtml = '<div class="credito-stats-grid">' +
+                '<div class="credito-stats-card"><div class="number">' + totalAtivos + '</div><div class="label">Contratos Ativos</div></div>' +
+                '<div class="credito-stats-card danger"><div class="number">' + GR.Utils.formatarMoedaBR(saldoDevedor) + '</div><div class="label">Saldo Devedor</div></div>' +
+                '</div>';
+
+            if (!filtrados.length) {
+                div.innerHTML = statsHtml + '<div class="empty-state"><span class="icon">💳</span><div class="message">Nenhuma operação de crédito</div></div>';
+                return;
+            }
+
+            let rows = filtrados.map(c => {
+                const statusBadge = c.status === 'Ativo' ? '<span class="badge badge-success">Ativo</span>' :
+                    c.status === 'Quitado' ? '<span class="badge badge-info">Quitado</span>' :
+                    '<span class="badge badge-danger">Cancelado</span>';
+                return '<tr><td><strong>' + GR.Utils.escapeHtml(c.numero) + '</strong></td><td>' + GR.Utils.escapeHtml(c.propriedade) + '</td><td>' + GR.Utils.formatarDataBR(c.data) + '</td><td>' + GR.Utils.formatarMoedaBR(c.valor) + '</td><td>' + statusBadge + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Contratos.excluir(\'' + c.id + '\')">🗑️</button></td></tr>';
+            }).join('');
+
+            div.innerHTML = statsHtml +
+                '<div class="table-responsive"><table><thead><tr><th>Nº</th><th>Propriedade</th><th>Data</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>' +
+                rows + '</tbody></table></div>';
+        },
+
+        salvar: function() {
+            const p = document.getElementById('contrato-propriedade').value;
+            const n = document.getElementById('contrato-numero').value.trim();
+            const d = document.getElementById('contrato-data').value;
+            const v = GR.Utils.parseMoedaBR(document.getElementById('contrato-valor').value);
+            const s = document.getElementById('contrato-status').value;
+            const mutuario = document.getElementById('contrato-mutuario').value.trim();
+            const modalidade = document.getElementById('contrato-modalidade').value.trim();
+            const instituicao = document.getElementById('contrato-instituicao').value.trim();
+            const taxaJuros = parseFloat(document.getElementById('contrato-taxa-juros').value) || 0;
+            const saldoQuitacao = GR.Utils.parseMoedaBR(document.getElementById('contrato-saldo-quitacao').value);
+            const dataSaldo = document.getElementById('contrato-data-saldo').value;
+
+            if (!p || !n || !d || !v) { GR.Toast.error('Campos obrigatórios!'); return; }
+            GR.State.data.contratos.push({
+                id: GR.Utils.gerarId(),
+                propriedade: GR.Utils.escapeHtml(p),
+                numero: GR.Utils.escapeHtml(n),
+                data: d,
+                valor: v || 0,
+                status: s,
+                mutuario: GR.Utils.escapeHtml(mutuario),
+                modalidade: GR.Utils.escapeHtml(modalidade),
+                instituicao: GR.Utils.escapeHtml(instituicao),
+                taxaJuros: taxaJuros,
+                saldoQuitacao: saldoQuitacao || 0,
+                dataSaldo: dataSaldo || null,
+                parcelas: []
+            });
+            GR.State.saveCollection('contratos');
+            GR.Modal.close('modal-contrato');
+            this.render();
+            GR.Toast.success('Contrato salvo!');
+            GR.State.adicionarHistorico('criou contrato', 'Crédito', 'Contrato: ' + n);
+            GR.State.verificarVencimentos();
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir este contrato?')) return;
+            const items = GR.State.data.contratos;
+            const idx = items.findIndex(c => c.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('contratos');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Insumos
+    GR.Modules.Insumos = {
+        abrirModal: function() {
+            document.getElementById('insumo-nome').value = '';
+            document.getElementById('insumo-categoria').value = '';
+            document.getElementById('insumo-quantidade').value = 0;
+            document.getElementById('insumo-unidade').value = 'kg';
+            document.getElementById('insumo-preco').value = '0,00';
+            document.getElementById('insumo-fornecedor').value = '';
+            document.getElementById('insumo-validade').value = '';
+            document.getElementById('insumo-propriedade').value = '';
+            GR.Modal.open('modal-insumo');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-insumos');
+            if (!div) return;
+            const items = GR.State.data.insumos || [];
+            const filtrados = items.filter(item => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return item.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+
+            const totalItens = document.getElementById('total-insumos');
+            if (totalItens) totalItens.textContent = filtrados.length;
+            const valorTotal = filtrados.reduce((acc, i) => acc + (i.quantidade * i.preco), 0);
+            const valorEstoque = document.getElementById('valor-estoque');
+            if (valorEstoque) valorEstoque.textContent = GR.Utils.formatarMoedaBR(valorTotal);
+
+            if (!filtrados.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">🧪</span><div class="message">Nenhum insumo cadastrado</div></div>';
+                return;
+            }
+
+            let rows = filtrados.map(item => {
+                return '<tr><td><strong>' + GR.Utils.escapeHtml(item.nome) + '</strong></td><td><span class="badge badge-info">' + item.categoria + '</span></td><td>' + item.quantidade + ' ' + (item.unidade || '') + '</td><td>' + GR.Utils.formatarMoedaBR(item.preco) + '</td><td>' + GR.Utils.formatarMoedaBR(item.quantidade * item.preco) + '</td><td>' + GR.Utils.escapeHtml(item.fornecedor || '-') + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Insumos.excluir(\'' + item.id + '\')">🗑️</button></td></tr>';
+            }).join('');
+
+            div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Nome</th><th>Categoria</th><th>Quantidade</th><th>Preço Unit.</th><th>Valor Total</th><th>Fornecedor</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+        },
+
+        salvar: function() {
+            const nome = document.getElementById('insumo-nome').value.trim();
+            const categoria = document.getElementById('insumo-categoria').value;
+            const quantidade = parseFloat(document.getElementById('insumo-quantidade').value) || 0;
+            const unidade = document.getElementById('insumo-unidade').value;
+            const preco = GR.Utils.parseMoedaBR(document.getElementById('insumo-preco').value);
+            const fornecedor = document.getElementById('insumo-fornecedor').value.trim();
+            const validade = document.getElementById('insumo-validade').value;
+            const prop = document.getElementById('insumo-propriedade').value;
+            if (!nome) { GR.Toast.error('Nome é obrigatório!'); return; }
+            GR.State.data.insumos.push({
+                id: GR.Utils.gerarId(),
+                nome: GR.Utils.escapeHtml(nome),
+                categoria: categoria,
+                quantidade: quantidade,
+                unidade: unidade,
+                preco: preco || 0,
+                fornecedor: GR.Utils.escapeHtml(fornecedor),
+                validade: validade,
+                propriedade: GR.Utils.escapeHtml(prop) || ''
+            });
+            GR.State.saveCollection('insumos');
+            GR.Modal.close('modal-insumo');
+            this.render();
+            GR.Toast.success('Insumo salvo!');
+            GR.State.adicionarHistorico('criou insumo', 'Insumos', 'Insumo: ' + nome);
+            GR.State.verificarVencimentos();
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir este insumo?')) return;
+            const items = GR.State.data.insumos;
+            const idx = items.findIndex(i => i.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('insumos');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Pecuária
+    GR.Modules.Pecuaria = {
+        abrirModalAnimal: function() {
+            document.getElementById('animal-id').value = '';
+            document.getElementById('animal-nome').value = '';
+            document.getElementById('animal-especie').value = 'Bovino';
+            document.getElementById('animal-raca').value = '';
+            document.getElementById('animal-nascimento').value = '';
+            document.getElementById('animal-sexo').value = 'Macho';
+            document.getElementById('animal-peso').value = 0;
+            document.getElementById('animal-propriedade').value = '';
+            GR.Modal.open('modal-animal');
+        },
+
+        renderAnimais: function() {
+            const div = document.getElementById('lista-animais');
+            if (!div) return;
+            const animais = GR.State.data.animais || [];
+            const filtrados = animais.filter(a => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return a.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+            if (!filtrados.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">🐄</span><div class="message">Nenhum animal cadastrado</div></div>';
+                return;
+            }
+            let rows = filtrados.map(a => {
+                return '<tr><td><strong>' + GR.Utils.escapeHtml(a.identificacao || a.nome) + '</strong></td><td>' + GR.Utils.escapeHtml(a.nome || '-') + '</td><td><span class="badge badge-info">' + a.especie + '</span></td><td>' + GR.Utils.escapeHtml(a.raca || '-') + '</td><td>' + (a.nascimento ? GR.Utils.formatarDataBR(a.nascimento) : '-') + '</td><td>' + a.sexo + '</td><td>' + a.peso + ' kg</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Pecuaria.excluirAnimal(\'' + a.id + '\')">🗑️</button></td></tr>';
+            }).join('');
+            div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Identificação</th><th>Nome</th><th>Espécie</th><th>Raça</th><th>Nascimento</th><th>Sexo</th><th>Peso</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+        },
+
+        salvarAnimal: function() {
+            const id = document.getElementById('animal-id').value.trim();
+            const nome = document.getElementById('animal-nome').value.trim();
+            const especie = document.getElementById('animal-especie').value;
+            const raca = document.getElementById('animal-raca').value.trim();
+            const nascimento = document.getElementById('animal-nascimento').value;
+            const sexo = document.getElementById('animal-sexo').value;
+            const peso = parseFloat(document.getElementById('animal-peso').value) || 0;
+            const prop = document.getElementById('animal-propriedade').value;
+            if (!id && !nome) { GR.Toast.error('Identificação ou Nome é obrigatório!'); return; }
+            GR.State.data.animais.push({
+                id: GR.Utils.gerarId(),
+                identificacao: GR.Utils.escapeHtml(id),
+                nome: GR.Utils.escapeHtml(nome),
+                especie: especie,
+                raca: GR.Utils.escapeHtml(raca),
+                nascimento: nascimento,
+                sexo: sexo,
+                peso: peso,
+                propriedade: GR.Utils.escapeHtml(prop) || ''
+            });
+            GR.State.saveCollection('animais');
+            GR.Modal.close('modal-animal');
+            this.renderAnimais();
+            GR.Toast.success('Animal salvo!');
+            GR.State.adicionarHistorico('criou animal', 'Pecuária', 'Animal: ' + (nome || id));
+        },
+
+        excluirAnimal: function(id) {
+            if (!confirm('Excluir este animal?')) return;
+            const items = GR.State.data.animais;
+            const idx = items.findIndex(a => a.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('animais');
+                this.renderAnimais();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Parceiros
+    GR.Modules.Parceiros = {
+        abrirModal: function() {
+            document.getElementById('parceiro-tipo').value = 'Comodato';
+            document.getElementById('parceiro-nome').value = '';
+            document.getElementById('parceiro-cpf').value = '';
+            document.getElementById('parceiro-ddd').value = '';
+            document.getElementById('parceiro-telefone').value = '';
+            document.getElementById('parceiro-data-inicio').value = '';
+            document.getElementById('parceiro-data-fim').value = '';
+            document.getElementById('parceiro-propriedade').value = '';
+            GR.Modal.open('modal-contrato-parceiro');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-parceiros');
+            if (!div) return;
+            const items = GR.State.data.contratosParceiros || [];
+            const filtrados = items.filter(item => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return item.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+            if (!filtrados.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">👤</span><div class="message">Nenhum parceiro cadastrado</div></div>';
+                return;
+            }
+            let rows = filtrados.map(p => {
+                const tel = p.telefone ? GR.Utils.formatarTelefone(p.telefone.ddd, p.telefone.numero) : '-';
+                return '<tr><td><span class="badge badge-info">' + GR.Utils.escapeHtml(p.tipo) + '</span></td><td>' + GR.Utils.escapeHtml(p.nome) + '</td><td>' + GR.Utils.formatarCPF(p.cpf) + '</td><td>' + tel + '</td><td><small>' + GR.Utils.formatarDataBR(p.dataInicio) + ' a ' + GR.Utils.formatarDataBR(p.dataFim) + '</small></td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Parceiros.excluir(\'' + p.id + '\')">🗑️</button></td></tr>';
+            }).join('');
+            div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Nome
+                '<td><small>' + GR.Utils.formatarDataBR(p.dataInicio) + ' a ' + GR.Utils.formatarDataBR(p.dataFim) + '</small></td>' +
+                '<td><button class="btn btn-danger btn-small" onclick="GR.Modules.Parceiros.excluir(\'' + p.id + '\')">🗑️</button></td>' +
+                '</tr>';
+            }).join('');
+            div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Vigência</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+        },
+
+        salvar: function() {
+            const tipo = document.getElementById('parceiro-tipo').value;
+            const nome = document.getElementById('parceiro-nome').value.trim();
+            const cpf = document.getElementById('parceiro-cpf').value.trim();
+            const ddd = document.getElementById('parceiro-ddd').value.trim();
+            const telefone = document.getElementById('parceiro-telefone').value.trim();
+            const dataInicio = document.getElementById('parceiro-data-inicio').value;
+            const dataFim = document.getElementById('parceiro-data-fim').value;
+            const prop = document.getElementById('parceiro-propriedade').value;
+
+            if (!nome || !cpf) { GR.Toast.error('Nome e CPF são obrigatórios!'); return; }
+            if (!GR.Utils.validarCPF(cpf)) { GR.Toast.error('CPF inválido!'); return; }
+            if (!dataInicio || !dataFim) { GR.Toast.error('Datas obrigatórias!'); return; }
+            if (dataFim < dataInicio) { GR.Toast.error('Data de término deve ser posterior!'); return; }
+
+            GR.State.data.contratosParceiros.push({
+                id: GR.Utils.gerarId(),
+                tipo: tipo,
+                nome: GR.Utils.escapeHtml(nome),
+                cpf: cpf,
+                telefone: (ddd || telefone) ? { ddd: ddd, numero: telefone } : null,
+                dataInicio: dataInicio,
+                dataFim: dataFim,
+                propriedade: GR.Utils.escapeHtml(prop) || ''
+            });
+            GR.State.saveCollection('contratosParceiros');
+            GR.Modal.close('modal-contrato-parceiro');
+            this.render();
+            GR.Toast.success('Parceiro salvo!');
+            GR.State.adicionarHistorico('criou parceiro', 'Parceiros', 'Parceiro: ' + nome);
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir este parceiro?')) return;
+            const items = GR.State.data.contratosParceiros;
+            const idx = items.findIndex(p => p.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('contratosParceiros');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Partes Relacionadas
+    GR.Modules.PartesRelacionadas = {
+        abrirModal: function() {
+            document.getElementById('parte-nome').value = '';
+            document.getElementById('parte-cpf').value = '';
+            document.getElementById('parte-ddd').value = '';
+            document.getElementById('parte-telefone').value = '';
+            GR.Modal.open('modal-parte-relacionada');
+        },
+
+        render: function() {
+            const div = document.getElementById('conf-partes');
+            if (!div) return;
+            const items = GR.State.data.partesRelacionadas || [];
+            if (!items.length) {
+                div.innerHTML = '<small style="color:#999;">Nenhuma parte relacionada</small>';
+                return;
+            }
+            div.innerHTML = items.map(p => {
+                const tel = p.telefone ? GR.Utils.formatarTelefone(p.telefone.ddd, p.telefone.numero) : '-';
+                return '<div class="config-item">' +
+                    '<span>👤 ' + GR.Utils.escapeHtml(p.nome) + ' - CPF: ' + GR.Utils.formatarCPF(p.cpf) + ' | Tel: ' + tel + '</span>' +
+                    '<div><button class="btn btn-danger btn-small" onclick="GR.Modules.PartesRelacionadas.excluir(\'' + p.id + '\')">×</button></div>' +
+                    '</div>';
+            }).join('');
+        },
+
+        salvar: function() {
+            const nome = document.getElementById('parte-nome').value.trim();
+            const cpf = document.getElementById('parte-cpf').value.trim();
+            const ddd = document.getElementById('parte-ddd').value.trim();
+            const telefone = document.getElementById('parte-telefone').value.trim();
+
+            if (!nome || !cpf) { GR.Toast.error('Nome e CPF são obrigatórios!'); return; }
+            if (!GR.Utils.validarCPF(cpf)) { GR.Toast.error('CPF inválido!'); return; }
+
+            GR.State.data.partesRelacionadas.push({
+                id: GR.Utils.gerarId(),
+                nome: GR.Utils.escapeHtml(nome),
+                cpf: cpf,
+                telefone: (ddd || telefone) ? { ddd: ddd, numero: telefone } : null
+            });
+            GR.State.saveCollection('partesRelacionadas');
+            GR.Modal.close('modal-parte-relacionada');
+            this.render();
+            GR.Toast.success('Parte salva!');
+            GR.State.adicionarHistorico('criou parte', 'Partes', 'Parte: ' + nome);
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir esta parte?')) return;
+            const items = GR.State.data.partesRelacionadas;
+            const idx = items.findIndex(p => p.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('partesRelacionadas');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Documentos
+    GR.Modules.Documentos = {
+        abrirModalComTipo: function(tipo) {
+            document.getElementById('documento-tipo').value = tipo;
+            document.getElementById('documento-numero').value = '';
+            document.getElementById('doc-propriedade').value = '';
+            document.getElementById('doc-descricao').value = '';
+            GR.Modal.open('modal-documento');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-documentos');
+            if (!div) return;
+            const items = GR.State.data.documentos || [];
+            const filtrados = items.filter(item => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return item.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+            if (!filtrados.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">📁</span><div class="message">Nenhum documento cadastrado</div></div>';
+                return;
+            }
+            const tipoIcons = {
+                'Escritura': '📜', 'CCIR': '🏷️', 'ITR': '🧾', 'Matricula': '📋',
+                'Contrato': '📄', 'NotaFiscal': '🧾', 'Licenca': '✅', 'Certidao': '📑', 'Outros': '📎'
+            };
+            let rows = filtrados.map(d => {
+                const icon = tipoIcons[d.tipo] || '📄';
+                return '<tr><td>' + icon + ' ' + GR.Utils.escapeHtml(d.tipo) + '</td><td>' + GR.Utils.escapeHtml(d.numero || '-') + '</td><td>' + GR.Utils.escapeHtml(d.propriedade || '-') + '</td><td>' + GR.Utils.escapeHtml(d.descricao || '-') + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Documentos.excluir(\'' + d.id + '\')">🗑️</button></td></tr>';
+            }).join('');
+            div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Número</th><th>Propriedade</th><th>Descrição</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+        },
+
+        salvar: function() {
+            const tipo = document.getElementById('documento-tipo').value;
+            const numero = document.getElementById('documento-numero').value.trim();
+            const prop = document.getElementById('doc-propriedade').value;
+            const descricao = document.getElementById('doc-descricao').value.trim();
+
+            if (!prop) { GR.Toast.error('Propriedade é obrigatória!'); return; }
+
+            GR.State.data.documentos.push({
+                id: GR.Utils.gerarId(),
+                tipo: tipo,
+                numero: GR.Utils.escapeHtml(numero),
+                propriedade: GR.Utils.escapeHtml(prop),
+                descricao: GR.Utils.escapeHtml(descricao)
+            });
+            GR.State.saveCollection('documentos');
+            GR.Modal.close('modal-documento');
+            this.render();
+            GR.Toast.success('Documento salvo!');
+            GR.State.adicionarHistorico('criou documento', 'Documentos', 'Documento: ' + tipo);
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir este documento?')) return;
+            const items = GR.State.data.documentos;
+            const idx = items.findIndex(d => d.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('documentos');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Funcionários
+    GR.Modules.Funcionarios = {
+        abrirModal: function() {
+            document.getElementById('func-nome').value = '';
+            document.getElementById('func-cpf').value = '';
+            document.getElementById('func-ddd').value = '';
+            document.getElementById('func-telefone').value = '';
+            document.getElementById('func-cargo').value = '';
+            document.getElementById('func-salario').value = '0,00';
+            document.getElementById('func-admissao').value = '';
+            document.getElementById('func-status').value = 'Ativo';
+            document.getElementById('func-propriedade').value = '';
+            GR.Modal.open('modal-funcionario');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-funcionarios');
+            if (!div) return;
+            const items = GR.State.data.funcionarios || [];
+            const filtrados = items.filter(item => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return item.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+            if (!filtrados.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">👨‍🌾</span><div class="message">Nenhum funcionário cadastrado</div></div>';
+                return;
+            }
+            let rows = filtrados.map(f => {
+                const tel = f.telefone ? GR.Utils.formatarTelefone(f.telefone.ddd, f.telefone.numero) : '-';
+                const statusBadge = f.status === 'Ativo' ? '<span class="badge badge-success">Ativo</span>' :
+                    f.status === 'Férias' ? '<span class="badge badge-warning">Férias</span>' :
+                    f.status === 'Afastado' ? '<span class="badge badge-danger">Afastado</span>' :
+                    '<span class="badge badge-secondary">Desligado</span>';
+                return '<tr><td><strong>' + GR.Utils.escapeHtml(f.nome) + '</strong></td><td>' + GR.Utils.escapeHtml(f.cargo || '-') + '</td><td>' + tel + '</td><td>' + GR.Utils.formatarMoedaBR(f.salario) + '</td><td>' + (f.admissao ? GR.Utils.formatarDataBR(f.admissao) : '-') + '</td><td>' + statusBadge + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Modules.Funcionarios.excluir(\'' + f.id + '\')">🗑️</button></td></tr>';
+            }).join('');
+            div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Nome</th><th>Cargo</th><th>Telefone</th><th>Salário</th><th>Admissão</th><th>Status</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+        },
+
+        salvar: function() {
+            const nome = document.getElementById('func-nome').value.trim();
+            const cpf = document.getElementById('func-cpf').value.trim();
+            const ddd = document.getElementById('func-ddd').value.trim();
+            const telefone = document.getElementById('func-telefone').value.trim();
+            const cargo = document.getElementById('func-cargo').value.trim();
+            const salario = GR.Utils.parseMoedaBR(document.getElementById('func-salario').value);
+            const admissao = document.getElementById('func-admissao').value;
+            const status = document.getElementById('func-status').value;
+            const prop = document.getElementById('func-propriedade').value;
+
+            if (!nome) { GR.Toast.error('Nome é obrigatório!'); return; }
+            if (cpf && !GR.Utils.validarCPF(cpf)) { GR.Toast.error('CPF inválido!'); return; }
+
+            GR.State.data.funcionarios.push({
+                id: GR.Utils.gerarId(),
+                nome: GR.Utils.escapeHtml(nome),
+                cpf: cpf || '',
+                telefone: (ddd || telefone) ? { ddd: ddd, numero: telefone } : null,
+                cargo: GR.Utils.escapeHtml(cargo),
+                salario: salario || 0,
+                admissao: admissao || '',
+                status: status,
+                propriedade: GR.Utils.escapeHtml(prop) || ''
+            });
+            GR.State.saveCollection('funcionarios');
+            GR.Modal.close('modal-funcionario');
+            this.render();
+            GR.Toast.success('Funcionário salvo!');
+            GR.State.adicionarHistorico('criou funcionário', 'Funcionários', 'Funcionário: ' + nome);
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir este funcionário?')) return;
+            const items = GR.State.data.funcionarios;
+            const idx = items.findIndex(f => f.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('funcionarios');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Contabilidade
+    GR.Modules.Contabilidade = {
+        excluir: function(tipo, id) {
+            if (!confirm('Excluir?')) return;
+            const items = GR.State.data[tipo];
+            const idx = items.findIndex(x => x.id === id);
+            if (idx !== -1) {
+                items.splice(idx, 1);
+                GR.State.saveCollection(tipo);
+                GR.UI._renderContabilidadeDados();
+                GR.Toast.success('Excluído!');
+                GR.State.adicionarHistorico('excluiu ' + tipo, 'Contabilidade', 'Excluiu ' + tipo);
+            }
+        }
+    };
+
+    // Análises
+    GR.Analises = {
+        abrirModal: function() {
+            document.getElementById('analise-tipo').value = 'solo';
+            document.getElementById('analise-propriedade').value = '';
+            document.getElementById('analise-data').value = new Date().toISOString().split('T')[0];
+            document.getElementById('analise-talhao').value = '';
+            document.getElementById('analise-resultados').style.display = 'none';
+            GR.Modal.open('modal-analise');
+        },
+
+        render: function() {
+            const div = document.getElementById('lista-analises');
+            if (!div) return;
+            const analises = GR.State.data.analises || [];
+            const filtradas = analises.filter(a => {
+                if (GR.State.ui.propriedadeAtiva === 'todas') return true;
+                return a.propriedade === GR.State.ui.propriedadeAtiva;
+            });
+            if (!filtradas.length) {
+                div.innerHTML = '<div class="empty-state"><span class="icon">🧪</span><div class="message">Nenhuma análise</div></div>';
+                return;
+            }
+            let rows = filtradas.map(a => {
+                const statusBadge = a.recomendacoes && a.recomendacoes.some(r => r.status !== 'ideal') ?
+                    '<span class="badge badge-warning">⚠️ Correção</span>' :
+                    '<span class="badge badge-success">✅ Equilibrado</span>';
+                return '<tr><td><strong>' + (a.tipo === 'solo' ? '🧪 Solo' : '🌿 Folha') + '</strong></td><td>' + GR.Utils.escapeHtml(a.propriedade) + '</td><td>' + GR.Utils.formatarDataBR(a.data) + '</td><td>' + GR.Utils.escapeHtml(a.talhao || '-') + '</td><td>' + (a.elementos ? Object.keys(a.elementos).length : 0) + ' elementos</td><td>' + statusBadge + '</td><td><button class="btn btn-danger btn-small" onclick="GR.Analises.excluir(\'' + a.id + '\')">🗑️</button></td></tr>';
+            }).join('');
+            div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Propriedade</th><th>Data</th><th>Talhão</th><th>Elementos</th><th>Status</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+        },
+
+        salvar: function() {
+            const tipo = document.getElementById('analise-tipo').value;
+            const propriedade = document.getElementById('analise-propriedade').value;
+            const data = document.getElementById('analise-data').value;
+            const talhao = document.getElementById('analise-talhao').value.trim();
+
+            if (!propriedade) { GR.Toast.error('Propriedade é obrigatória!'); return; }
+            if (!data) { GR.Toast.error('Data é obrigatória!'); return; }
+
+            // Dados simulados para demonstração
+            const elementos = {
+                'pH': 6.2,
+                'P': 15,
+                'K': 120,
+                'Ca': 3.5,
+                'Mg': 1.2
+            };
+            const recomendacoes = [
+                { elemento: 'pH', valor: 6.2, status: 'ideal', recomendacao: 'pH na faixa ideal.' },
+                { elemento: 'P', valor: 15, status: 'baixo', recomendacao: 'Aplicar superfosfato simples (100-200 kg/ha).' }
+            ];
+
+            GR.State.data.analises.push({
+                id: GR.Utils.gerarId(),
+                tipo: tipo,
+                propriedade: GR.Utils.escapeHtml(propriedade),
+                data: data,
+                talhao: GR.Utils.escapeHtml(talhao),
+                elementos: elementos,
+                recomendacoes: recomendacoes,
+                dataCriacao: new Date().toISOString()
+            });
+            GR.State.saveCollection('analises');
+            GR.Modal.close('modal-analise');
+            this.render();
+            GR.Toast.success('Análise salva!');
+            GR.State.adicionarHistorico('criou análise', 'Análises', 'Análise: ' + propriedade);
+        },
+
+        excluir: function(id) {
+            if (!confirm('Excluir esta análise?')) return;
+            const items = GR.State.data.analises;
+            const idx = items.findIndex(a => a.id === id);
+            if (idx !== -1) { items.splice(idx, 1);
+                GR.State.saveCollection('analises');
+                this.render();
+                GR.Toast.success('Excluído!'); }
+        }
+    };
+
+    // Viveiro
+    GR.Modules.Viveiro = {
+        render: function() {
+            const div = document.getElementById('viveiro-content');
+            if (!div) return;
+            const mudas = GR.State.data.viveiroMudas || [];
+            const insumos = GR.State.data.viveiroInsumos || [];
+            const servicos = GR.State.data.viveiroServicos || [];
+            const trabalhadores = GR.State.data.viveiroTrabalhadores || [];
+
+            let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">';
+
+            html += '<div><h4 style="font-size:11px;">🌱 Mudas</h4>';
+            if (!mudas.length) html += '<div style="color:#999;">Nenhuma muda</div>';
+            else {
+                mudas.forEach(m => {
+                    html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--success);font-size:10px;">' +
+                        GR.Utils.escapeHtml(m.especie) + ' - ' + m.quantidade + ' (' + m.status + ')</div>';
+                });
+            }
+            html += '</div>';
+
+            html += '<div><h4 style="font-size:11px;">🧪 Insumos</h4>';
+            if (!insumos.length) html += '<div style="color:#999;">Nenhum insumo</div>';
+            else {
+                insumos.forEach(i => {
+                    html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--warning);font-size:10px;">' +
+                        GR.Utils.escapeHtml(i.nome) + ' - ' + i.quantidade + ' ' + (i.unidade || '') + '</div>';
+                });
+            }
+            html += '</div>';
+
+            html += '<div><h4 style="font-size:11px;">🛠️ Serviços</h4>';
+            if (!servicos.length) html += '<div style="color:#999;">Nenhum serviço</div>';
+            else {
+                servicos.forEach(s => {
+                    html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--info);font-size:10px;">' +
+                        GR.Utils.escapeHtml(s.descricao) + ' - ' + GR.Utils.formatarMoedaBR(s.custo) + '</div>';
+                });
+            }
+            html += '</div>';
+
+            html += '<div><h4 style="font-size:11px;">👤 Trabalhadores</h4>';
+            if (!trabalhadores.length) html += '<div style="color:#999;">Nenhum trabalhador</div>';
+            else {
+                trabalhadores.forEach(t => {
+                    html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--primary);font-size:10px;">' +
+                        GR.Utils.escapeHtml(t.nome) + ' - ' + GR.Utils.escapeHtml(t.funcao || '-') + '</div>';
+                });
+            }
+            html += '</div>';
+
+            html += '</div>';
+            div.innerHTML = html;
+        }
+    };
+
+    // Relatórios
+    GR.Relatorios = {
+        gerarRelatorioFinanceiro: function() {
+            const receitas = GR.State.data.receitas || [];
+            const despesas = GR.State.data.despesas || [];
+            const totalR = receitas.reduce((s, r) => s + r.valor, 0);
+            const totalD = despesas.reduce((s, d) => s + d.valor, 0);
+            const saldo = totalR - totalD;
+            const html = '<div style="padding:6px;"><h4>💰 Resumo Financeiro</h4>' +
+                '<p><strong>Receitas:</strong> ' + GR.Utils.formatarMoedaBR(totalR) + '</p>' +
+                '<p><strong>Despesas:</strong> ' + GR.Utils.formatarMoedaBR(totalD) + '</p>' +
+                '<p><strong>Saldo:</strong> ' + GR.Utils.formatarMoedaBR(saldo) + '</p>' +
+                '</div>';
+            document.getElementById('relatorio-content').innerHTML = html;
+        },
+
+        gerarRelatorioEstoque: function() {
+            const insumos = GR.State.data.insumos || [];
+            let html = '<div style="padding:6px;"><h4>📦 Estoque de Insumos</h4>';
+            if (!insumos.length) {
+                html += '<p>Nenhum insumo cadastrado.</p>';
+            } else {
+                html += '<div class="table-responsive"><table><thead><tr><th>Nome</th><th>Quantidade</th><th>Valor Total</th></tr></thead><tbody>';
+                insumos.forEach(i => {
+                    html += '<tr><td>' + GR.Utils.escapeHtml(i.nome) + '</td><td>' + i.quantidade + ' ' + (i.unidade || '') + '</td><td>' + GR.Utils.formatarMoedaBR(i.quantidade * i.preco) + '</td></tr>';
+                });
+                html += '</tbody></table></div>';
+            }
+            html += '</div>';
+            document.getElementById('relatorio-content').innerHTML = html;
+        },
+
+        gerarRelatorioPecuaria: function() {
+            const animais = GR.State.data.animais || [];
+            let html = '<div style="padding:6px;"><h4>🐄 Resumo da Pecuária</h4>';
+            if (!animais.length) {
+                html += '<p>Nenhum animal cadastrado.</p>';
+            } else {
+                html += '<div class="table-responsive"><table><thead><tr><th>Identificação</th><th>Nome</th><th>Espécie</th><th>Peso</th></tr></thead><tbody>';
+                animais.forEach(a => {
+                    html += '<tr><td>' + GR.Utils.escapeHtml(a.identificacao || '-') + '</td><td>' + GR.Utils.escapeHtml(a.nome || '-') + '</td><td>' + a.especie + '</td><td>' + a.peso + ' kg</td></tr>';
+                });
+                html += '</tbody></table></div>';
+            }
+            html += '</div>';
+            document.getElementById('relatorio-content').innerHTML = html;
+        }
+    };
+
+    // CONFIG
+    GR.Config = {
+        abrirConfig: function(tipo) {
+            GR.State.ui.currentConfigType = tipo;
+            GR.State.ui.configItemEditando = null;
+            const modal = document.getElementById('modal-config');
+            const body = document.getElementById('config-modal-body');
+            if (!modal || !body) return;
+            const titulo = document.getElementById('config-modal-title');
+            const labels = {
+                'propriedades': 'Propriedade',
+                'categoriasInsumos': 'Categoria de Insumo',
+                'modalidadesCredito': 'Modalidade de Crédito',
+                'instituicoesFinanceiras': 'Instituição Financeira',
+                'fornecedores': 'Fornecedor'
+            };
+            titulo.textContent = 'Adicionar ' + (labels[tipo] || 'Item');
+            body.innerHTML = '<div class="form-group"><label>Nome</label><input type="text" id="config-nome" class="form-control" placeholder="Digite o nome..."></div>';
+            GR.Modal.open('modal-config');
+            setTimeout(() => document.getElementById('config-nome').focus(), 100);
+        },
+
+        salvar: function() {
+            const nome = document.getElementById('config-nome').value.trim();
+            if (!nome) { GR.Toast.error('Digite um nome!'); return; }
+            const tipo = GR.State.ui.currentConfigType;
+            const chaveSalvamento = (tipo === 'propriedades') ? 'propriedadesList' : tipo;
+
+            if (!GR.State.data[chaveSalvamento]) {
+                GR.State.data[chaveSalvamento] = [];
+            }
+            const coll = GR.State.data[chaveSalvamento];
+
+            if (coll.some(item => {
+                    const itemNome = (typeof item === 'string') ? item : (item.nome || item);
+                    return itemNome.toLowerCase() === nome.toLowerCase();
+                })) {
+                GR.Toast.warning('Item já existe!');
+                return;
+            }
+
+            coll.push({ id: GR.Utils.gerarId(), nome: nome });
+            GR.State.saveCollection(chaveSalvamento);
+
+            if (tipo === 'propriedades') {
+                GR.UI.atualizarPropTabs();
+                GR.UI.refreshCurrentView();
+            }
+            GR.UI._renderConfiguracoesDados();
+            GR.Modal.close('modal-config');
+            GR.Toast.success('✅ Adicionado!');
+            GR.State.adicionarHistorico('criou ' + tipo, 'Configurações', 'Item: ' + nome);
+        },
+
+        editarItem: function(elementId, id) {
+            const tipoMap = {
+                'conf-propriedades': 'propriedadesList',
+                'conf-categorias': 'categoriasInsumos',
+                'conf-modalidades': 'modalidadesCredito',
+                'conf-instituicoes': 'instituicoesFinanceiras',
+                'conf-fornecedores': 'fornecedores'
+            };
+            const tipo = tipoMap[elementId];
+            if (!tipo) { GR.Toast.error('Tipo não encontrado!'); return; }
+
+            if (!GR.State.data[tipo]) { GR.State.data[tipo] = []; }
+            const coll = GR.State.data[tipo];
+            const item = coll.find(i => (i.id || i.nome || i) === id);
+            if (!item) { GR.Toast.error('Item não encontrado!'); return; }
+
+            GR.State.ui.currentConfigType = tipo;
+            GR.State.ui.configItemEditando = id;
+            const modal = document.getElementById('modal-config');
+            const body = document.getElementById('config-modal-body');
+            if (!modal || !body) return;
+            const titulo = document.getElementById('config-modal-title');
+            const nomeItem = (typeof item === 'string') ? item : (item.nome || item);
+            titulo.textContent = 'Editar ' + nomeItem;
+            body.innerHTML = '<div class="form-group"><label>Nome</label><input type="text" id="config-nome" class="form-control" value="' + GR.Utils.escapeHtml(nomeItem) + '"></div>';
+            GR.Modal.open('modal-config');
+            setTimeout(() => document.getElementById('config-nome').focus(), 100);
+        },
+
+        excluirItem: function(elementId, id) {
+            if (!confirm('Excluir este item?')) return;
+            const tipoMap = {
+                'conf-propriedades': 'propriedadesList',
+                'conf-categorias': 'categoriasInsumos',
+                'conf-modalidades': 'modalidadesCredito',
+                'conf-instituicoes': 'instituicoesFinanceiras',
+                'conf-fornecedores': 'fornecedores'
+            };
+            const tipo = tipoMap[elementId];
+            if (!tipo) return;
+            if (!GR.State.data[tipo]) return;
+            const coll = GR.State.data[tipo];
+            const idx = coll.findIndex(item => {
+                const itemId = (typeof item === 'string') ? item : (item.id || item.nome || item);
+                return itemId === id;
+            });
+            if (idx !== -1) {
+                coll.splice(idx, 1);
+                GR.State.saveCollection(tipo);
+                if (tipo === 'propriedadesList') {
+                    GR.UI.atualizarPropTabs();
+                }
+                GR.UI._renderConfiguracoesDados();
+                GR.UI.refreshCurrentView();
+                GR.Toast.success('Excluído!');
+                GR.State.adicionarHistorico('excluiu ' + tipo, 'Configurações', 'Item ID: ' + id);
+            }
+        }
+    };
+
+    // ================================================================
+    // APP - INICIALIZAÇÃO PRINCIPAL
+    // ================================================================
+    GR.App = {
+        init: async function() {
+            await GR.State.init();
+            
+            // Configura os listeners de eventos dos modais
+            this._setupModalListeners();
+            
+            // Inicializa a UI
+            GR.UI.init();
+            GR.Backup.init();
+
+            // Carrega dados de demonstração se estiver vazio
+            const hasData = Object.keys(GR.State.data).some(k => {
+                return GR.State.data[k] && GR.State.data[k].length > 0;
+            });
+
+            if (!hasData) {
+                this._carregarDadosDemo();
+            }
+
+            GR.Toast.success('✅ Sistema pronto! Dados sincronizados com Firebase.');
+        },
+
+        _setupModalListeners: function() {
+            // Tarefa
+            document.getElementById('btn-salvar-tarefa')?.addEventListener('click', () => {
+                GR.Modules.Tarefas.salvar();
+            });
+
+            // Orçamento
+            document.getElementById('btn-salvar-orcamento')?.addEventListener('click', () => {
+                GR.Modules.Orcamentos.salvar();
+            });
+
+            // Contrato
+            document.getElementById('btn-salvar-contrato')?.addEventListener('click', () => {
+                GR.Modules.Contratos.salvar();
+            });
+
+            // Insumo
+            document.getElementById('btn-salvar-insumo')?.addEventListener('click', () => {
+                GR.Modules.Insumos.salvar();
+            });
+
+            // Animal
+            document.getElementById('btn-salvar-animal')?.addEventListener('click', () => {
+                GR.Modules.Pecuaria.salvarAnimal();
+            });
+
+            // Funcionário
+            document.getElementById('btn-salvar-funcionario')?.addEventListener('click', () => {
+                GR.Modules.Funcionarios.salvar();
+            });
+
+            // Parceiro
+            document.getElementById('btn-salvar-parceiro')?.addEventListener('click', () => {
+                GR.Modules.Parceiros.salvar();
+            });
+
+            // Parte Relacionada
+            document.getElementById('btn-salvar-parte')?.addEventListener('click', () => {
+                GR.Modules.PartesRelacionadas.salvar();
+            });
+
+            // Documento
+            document.getElementById('btn-salvar-documento')?.addEventListener('click', () => {
+                GR.Modules.Documentos.salvar();
+            });
+
+            // Análise
+            document.getElementById('btn-salvar-analise')?.addEventListener('click', () => {
+                GR.Analises.salvar();
+            });
+
+            // Receita
+            document.getElementById('btn-salvar-receita')?.addEventListener('click', () => {
+                const desc = document.getElementById('rec-descricao').value.trim();
+                const data = document.getElementById('rec-data').value;
+                const valor = GR.Utils.parseMoedaBR(document.getElementById('rec-valor').value);
+                const prop = document.getElementById('rec-propriedade').value;
+                if (!desc || !data || !valor) { GR.Toast.error('Campos obrigatórios!'); return; }
+                GR.State.data.receitas.push({
+                    id: GR.Utils.gerarId(),
+                    descricao: GR.Utils.escapeHtml(desc),
+                    data: data,
+                    origem: document.getElementById('rec-origem').value,
+                    valor: valor || 0,
+                    propriedade: GR.Utils.escapeHtml(prop) || ''
+                });
+                GR.State.saveCollection('receitas');
+                GR.Modal.close('modal-receita');
+                GR.UI._renderContabilidadeDados();
+                GR.Toast.success('Receita registrada!');
+                GR.State.adicionarHistorico('criou receita', 'Contabilidade', 'Receita: ' + desc);
+            });
+
+            // Despesa
+            document.getElementById('btn-salvar-despesa')?.addEventListener('click', () => {
+                const desc = document.getElementById('desp-descricao').value.trim();
+                const data = document.getElementById('desp-data').value;
+                const valor = GR.Utils.parseMoedaBR(document.getElementById('desp-valor').value);
+                const prop = document.getElementById('desp-propriedade').value;
+                if (!desc || !data || !valor) { GR.Toast.error('Campos obrigatórios!'); return; }
+                GR.State.data.despesas.push({
+                    id: GR.Utils.gerarId(),
+                    descricao: GR.Utils.escapeHtml(desc),
+                    data: data,
+                    categoria: document.getElementById('desp-categoria').value,
+                    valor: valor || 0,
+                    propriedade: GR.Utils.escapeHtml(prop) || ''
+                });
+                GR.State.saveCollection('despesas');
+                GR.Modal.close('modal-despesa');
+                GR.UI._renderContabilidadeDados();
+                GR.Toast.success('Despesa registrada!');
+                GR.State.adicionarHistorico('criou despesa', 'Contabilidade', 'Despesa: ' + desc);
+            });
+
+            // Configuração - salvar
+            document.getElementById('btn-salvar-config')?.addEventListener('click', () => {
+                GR.Config.salvar();
+            });
+        },
+
+        _carregarDadosDemo: function() {
+            if (!GR.State.data.propriedadesList || !GR.State.data.propriedadesList.length) {
+                GR.State.data.propriedadesList = [
+                    { id: GR.Utils.gerarId(), nome: 'Fazenda Boa Vista' },
+                    { id: GR.Utils.gerarId(), nome: 'Sítio São João' }
+                ];
+                GR.State.saveCollection('propriedadesList');
+            }
+
+            if (!GR.State.data.insumos || !GR.State.data.insumos.length) {
+                GR.State.data.insumos = [
+                    { id: GR.Utils.gerarId(), nome: 'Adubo NPK 10-10-10', categoria: 'Adubo', quantidade: 50, unidade: 'kg', preco: 2.5, fornecedor: 'AgroFértil', validade: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0], propriedade: 'Fazenda Boa Vista' },
+                    { id: GR.Utils.gerarId(), nome: 'Glifosato', categoria: 'Defensivo', quantidade: 20, unidade: 'L', preco: 15.0, fornecedor: 'AgroDefensivos', validade: new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0], propriedade: 'Fazenda Boa Vista' }
+                ];
+                GR.State.saveCollection('insumos');
+            }
+
+            if (!GR.State.data.tarefas || !GR.State.data.tarefas.length) {
+                GR.State.data.tarefas = [
+                    { id: GR.Utils.gerarId(), tipo: 'Plantio de soja', data: new Date().toISOString().split('T')[0], responsavel: 'João Silva', custo: 3500, propriedade: 'Fazenda Boa Vista' }
+                ];
+                GR.State.saveCollection('tarefas');
+            }
+
+            GR.Toast.info('📦 Dados de demonstração carregados!');
+        }
+    };
+
+    // ================================================================
+    // INICIALIZAÇÃO
+    // ================================================================
+    // Aguarda o DOM carregar e inicia o sistema
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializa o Login
+        GR.Login.init();
+
+        // Observa mudanças no estado de autenticação
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuário logado
+                if (!GR.Login.usuarioAtual) {
+                    GR.Login.usuarioAtual = user.email;
+                    GR.Login.nivelAtual = 'usuario';
+                    localStorage.setItem('gr_usuario_logado', user.email);
+                    localStorage.setItem('gr_nivel_logado', 'usuario');
+                    GR.Login._entrarNoSistema();
+                }
+            } else {
+                // Usuário deslogado
+                if (GR.Login.usuarioAtual) {
+                    GR.Login.logout();
+                }
+            }
+        });
+
+        // Inicializa o Service Worker para notificações (se suportado)
+        if ('serviceWorker' in navigator) {
+            // Pode registrar um service worker para notificações push
+        }
+
+        console.log('🚀 Sistema Gestão Rural iniciado com sucesso!');
+        console.log('📊 Firebase conectado e pronto para uso!');
+    });
+
+    // Fallback: se o DOM já estiver carregado
+    if (document.readyState !== 'loading') {
+        document.dispatchEvent(new Event('DOMContentLoaded'));
+    }
+
+    console.log('✅ Sistema completo com Firebase - Pronto para uso!');
+    </script>
+</body>
+</html>
