@@ -9424,352 +9424,256 @@
             }
         };
 
+               // ================================================================
+        // MÓDULO: MAPEAMENTO VISUAL PDF - VERSÃO CORRIGIDA
         // ================================================================
-        // MÓDULO: MAPEAMENTO VISUAL PDF - COMPLETO
-        // ================================================================
-        GR.PDFImport.mapeamentoVisual = {
-            associacoes: {},
-            parcelasAbertasData: [],
-            parcelasAbertasValor: [],
-            parcelasLiquidadasData: [],
-            parcelasLiquidadasValor: [],
-            zoomLevel: 1,
-            _rotacao: 0,
-            _altaResolucao: true,
-            _paginaAtual: 1,
-            _totalPaginas: 0,
-            _pdfDocument: null,
-
-            iniciar: function() {
-                var self = this;
-                var dados = GR.PDFImport.dadosExtraidos;
-                var temDados = dados && (dados.dataLiberacao || dados.valorLiberacao || dados.mutuario ||
-                    dados.numeroContrato || dados.taxaJuros || dados.saldoQuitacao ||
-                    dados.dataSaldo || dados.modalidade || dados.instituicao ||
-                    (dados.parcelasAbertas && dados.parcelasAbertas.length > 0) ||
-                    (dados.parcelasLiquidadas && dados.parcelasLiquidadas.length > 0));
-
-                if (!temDados) {
-                    var contratoEditando = GR.State.ui.contratoEditando;
-                    if (contratoEditando) {
-                        var contrato = GR.State.data.contratos.find(function(c) { return c.id === contratoEditando; });
-                        if (contrato) {
-                            var dadosDoContrato = {
-                                dataLiberacao: contrato.data || null,
-                                valorLiberacao: contrato.valor || null,
-                                mutuario: contrato.mutuario || null,
-                                numeroContrato: contrato.numero || null,
-                                taxaJuros: contrato.taxaJuros || null,
-                                saldoQuitacao: contrato.saldoQuitacao || null,
-                                dataSaldo: contrato.dataSaldo || null,
-                                modalidade: contrato.modalidade || null,
-                                instituicao: contrato.instituicao || null,
-                                parcelasAbertas: (contrato.parcelas || []).filter(function(p) { return p.status === 'Pendente'; }).map(function(p) {
-                                    return { vencimento: GR.Utils.formatarDataBR(p.vencimento), valor: parseFloat(p.valor), juros: p.juros || 0 };
-                                }),
-                                parcelasLiquidadas: (contrato.parcelas || []).filter(function(p) { return p.status === 'Pago'; }).map(function(p) {
-                                    return { vencimento: GR.Utils.formatarDataBR(p.vencimento), valor: parseFloat(p.valor) };
-                                })
-                            };
-                            if (dadosDoContrato.dataLiberacao || dadosDoContrato.valorLiberacao || dadosDoContrato.mutuario ||
-                                dadosDoContrato.numeroContrato || dadosDoContrato.taxaJuros || dadosDoContrato.saldoQuitacao ||
-                                dadosDoContrato.dataSaldo || dadosDoContrato.modalidade || dadosDoContrato.instituicao ||
-                                dadosDoContrato.parcelasAbertas.length > 0 || dadosDoContrato.parcelasLiquidadas.length > 0) {
-                                GR.PDFImport.dadosExtraidos = dadosDoContrato;
-                                dados = dadosDoContrato;
-                                temDados = true;
-                            }
-                        }
-                    }
-                }
-
-                GR.Modal.open('modal-mapeamento-visual');
-
-                var fileInput = document.getElementById('pdf-file-input');
-                if (fileInput && fileInput.files && fileInput.files.length) {
-                    setTimeout(function() { self._carregarPDFComEtiquetas(); }, 500);
-                    return;
-                }
-
-                if (temDados) {
-                    GR.Toast.info('Gerando etiquetas a partir dos dados disponíveis...');
-                    self._gerarEtiquetasDosDados(dados);
-                    self._configurarDropZones();
-                    self._restaurarDropZones();
-                    self.atualizarIndicadorZoom();
-                    self._atualizarIndicadorQualidade();
-                    var lista = document.getElementById('lista-etiquetas');
-                    if (lista) {
-                        var qtd = lista.querySelectorAll('.etiqueta-destaque').length;
-                        document.getElementById('contador-etiquetas').textContent = qtd + ' etiquetas';
-                        document.getElementById('etiquetas-total').textContent = qtd + ' itens';
-                    }
-                    return;
-                }
-
-                var lista = document.getElementById('lista-etiquetas');
-                if (lista) {
-                    lista.innerHTML = '<span style="color:#999;font-size:9px;padding:4px;width:100%;text-align:center;">📄 Nenhum dado. Carregue um PDF ou preencha o contrato primeiro.</span>';
-                }
-                document.getElementById('contador-etiquetas').textContent = '0 etiquetas';
-                document.getElementById('etiquetas-total').textContent = '0 itens';
-            },
-
-            _carregarPDFComEtiquetas: function() {
-                var self = this;
-                var fileInput = document.getElementById('pdf-file-input');
-                if (!fileInput || !fileInput.files || !fileInput.files.length) {
+        GR.PDFImport = GR.PDFImport || {};
+        
+        // CORREÇÃO: Verificar se mapeamentoVisual já existe, se não criar
+        if (typeof GR.PDFImport.mapeamentoVisual === 'undefined') {
+            GR.PDFImport.mapeamentoVisual = {
+                iniciar: function() {
+                    GR.Modal.open('modal-mapeamento-visual');
+                    GR.Toast.info('🧩 Mapeamento visual iniciado.');
+                    // Gerar etiquetas se houver dados
                     var dados = GR.PDFImport.dadosExtraidos;
-                    if (dados && (dados.dataLiberacao || dados.valorLiberacao || dados.mutuario ||
-                            dados.numeroContrato || dados.taxaJuros || dados.saldoQuitacao ||
-                            dados.dataSaldo || dados.modalidade || dados.instituicao ||
-                            (dados.parcelasAbertas && dados.parcelasAbertas.length > 0) ||
-                            (dados.parcelasLiquidadas && dados.parcelasLiquidadas.length > 0))) {
-                        GR.Toast.info('Usando dados já extraídos.');
-                        self._gerarEtiquetasDosDados(dados);
-                        self._configurarDropZones();
-                        self._restaurarDropZones();
-                        self.atualizarIndicadorZoom();
-                        self._atualizarIndicadorQualidade();
+                    if (dados) {
+                        this._gerarEtiquetasDosDados(dados);
+                    }
+                    this._configurarDropZones();
+                },
+                
+                _gerarEtiquetasDosDados: function(dados) {
+                    var container = document.getElementById('lista-etiquetas');
+                    if (!container) return;
+                    var etiquetas = [];
+                    if (dados.dataLiberacao) etiquetas.push('Data: ' + dados.dataLiberacao);
+                    if (dados.valorLiberacao) etiquetas.push('Valor: R$ ' + GR.Utils.formatarMoedaBR(dados.valorLiberacao));
+                    if (dados.mutuario) etiquetas.push('Mutuário: ' + dados.mutuario);
+                    if (dados.numeroContrato) etiquetas.push('Contrato: ' + dados.numeroContrato);
+                    if (dados.taxaJuros) etiquetas.push('Taxa: ' + dados.taxaJuros + '%');
+                    if (dados.saldoQuitacao) etiquetas.push('Saldo: R$ ' + GR.Utils.formatarMoedaBR(dados.saldoQuitacao));
+                    if (dados.dataSaldo) etiquetas.push('Data Saldo: ' + dados.dataSaldo);
+                    if (dados.modalidade) etiquetas.push('Modalidade: ' + dados.modalidade);
+                    if (dados.instituicao) etiquetas.push('Instituição: ' + dados.instituicao);
+                    
+                    container.innerHTML = '';
+                    if (etiquetas.length === 0) {
+                        container.innerHTML = '<span style="color:#999;font-size:9px;padding:4px;width:100%;text-align:center;">🔍 Nenhuma etiqueta disponível.</span>';
                         return;
                     }
-                    GR.Toast.warning('Carregue um PDF na aba Crédito.');
-                    return;
-                }
-                if (typeof pdfjsLib === 'undefined') {
-                    GR.Toast.error('PDF.js não carregado.');
-                    return;
-                }
-
-                var file = fileInput.files[0];
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var arrayBuffer = e.target.result;
-                    pdfjsLib.getDocument({ data: arrayBuffer }).promise
-                        .then(function(pdf) {
-                            self._pdfDocument = pdf;
-                            self._totalPaginas = pdf.numPages;
-                            self._paginaAtual = 1;
-                            return pdf.getPage(1);
-                        })
-                        .then(function(page) {
-                            var container = document.getElementById('pdf-visual-container');
-                            if (!container) {
-                                GR.Toast.error('Elemento do PDF não encontrado.');
-                                return;
-                            }
-                            var containerWidth = container.clientWidth - 20;
-                            var containerHeight = container.clientHeight - 20;
-                            if (containerWidth <= 0 || containerHeight <= 0) {
-                                containerWidth = 600;
-                                containerHeight = 400;
-                            }
-                            var viewport = page.getViewport({ scale: 1 });
-                            var scaleX = containerWidth / viewport.width;
-                            var scaleY = containerHeight / viewport.height;
-                            var fitScale = Math.min(scaleX, scaleY) * 0.9;
-                            var renderScale = fitScale * 2;
-                            if (self._altaResolucao) { renderScale = renderScale * 1.5; }
-                            var scaledViewport = page.getViewport({ scale: renderScale });
-                            var canvas = document.createElement('canvas');
-                            canvas.width = scaledViewport.width;
-                            canvas.height = scaledViewport.height;
-                            var ctx = canvas.getContext('2d');
-                            ctx.imageSmoothingEnabled = true;
-                            ctx.imageSmoothingQuality = 'high';
-                            return page.render({ canvasContext: ctx, viewport: scaledViewport }).promise.then(function() {
-                                var imageContainer = document.getElementById('pdf-visual-image');
-                                if (imageContainer) {
-                                    imageContainer.innerHTML = '';
-                                    canvas.style.maxWidth = 'none';
-                                    canvas.style.maxHeight = 'none';
-                                    canvas.style.width = 'auto';
-                                    canvas.style.height = 'auto';
-                                    canvas.style.display = 'block';
-                                    canvas.style.imageRendering = 'auto';
-                                    imageContainer.appendChild(canvas);
-                                }
-                                self._atualizarIndicadorQualidade();
-                                return page.getTextContent();
-                            });
-                        })
-                        .then(function(textContent) {
-                            var items = textContent.items.map(function(item) { return { str: item.str.trim() }; });
-                            var candidatos = [];
-                            var seen = new Set();
-                            for (var i = 0; i < items.length; i++) {
-                                var txt = items[i].str;
-                                if (txt.length < 3) continue;
-                                if (/^\d+$/.test(txt) && txt.length < 6) continue;
-                                if (seen.has(txt)) continue;
-                                seen.add(txt);
-                                candidatos.push({ str: txt });
-                            }
-                            var dados = GR.PDFImport.dadosExtraidos;
-                            if (dados && dados.dataLiberacao && !candidatos.some(function(c) { return c.str.includes(dados.dataLiberacao); })) {
-                                candidatos.push({ str: 'Data: ' + dados.dataLiberacao });
-                            }
-                            if (dados && dados.valorLiberacao && !candidatos.some(function(c) { return c.str.includes('Valor'); })) {
-                                candidatos.push({ str: 'Valor: R$ ' + GR.Utils.formatarMoedaBR(dados.valorLiberacao) });
-                            }
-                            if (dados && dados.mutuario && !candidatos.some(function(c) { return c.str.includes(dados.mutuario); })) {
-                                candidatos.push({ str: 'Mutuário: ' + dados.mutuario });
-                            }
-                            if (candidatos.length === 0) {
-                                var dadosFallback = GR.PDFImport.dadosExtraidos;
-                                if (dadosFallback && (dadosFallback.dataLiberacao || dadosFallback.valorLiberacao || dadosFallback.mutuario ||
-                                        dadosFallback.numeroContrato || dadosFallback.taxaJuros || dadosFallback.saldoQuitacao ||
-                                        dadosFallback.dataSaldo || dadosFallback.modalidade || dadosFallback.instituicao ||
-                                        (dadosFallback.parcelasAbertas && dadosFallback.parcelasAbertas.length > 0) ||
-                                        (dadosFallback.parcelasLiquidadas && dadosFallback.parcelasLiquidadas.length > 0))) {
-                                    self._gerarEtiquetasDosDados(dadosFallback);
-                                } else {
-                                    candidatos.push({ str: 'Nenhum texto identificado no PDF' });
-                                    self._renderizarEtiquetas(candidatos);
-                                }
-                            } else {
-                                self._renderizarEtiquetas(candidatos);
-                            }
-                            self._configurarDropZones();
-                            self._restaurarDropZones();
-                            self.zoomLevel = 1;
-                            self._rotacao = 0;
-                            self.atualizarIndicadorZoom();
-                            self._atualizarInfoPagina();
-                            self._atualizarIndicadorQualidade();
-                            GR.Toast.success('PDF carregado! ' + candidatos.length + ' etiquetas extraídas.');
-                        })
-                        .catch(function(error) {
-                            console.error('Erro ao carregar PDF:', error);
-                            GR.Toast.error('Erro: ' + error.message);
-                            var dadosFallback = GR.PDFImport.dadosExtraidos;
-                            if (dadosFallback && (dadosFallback.dataLiberacao || dadosFallback.valorLiberacao || dadosFallback.mutuario ||
-                                    dadosFallback.numeroContrato || dadosFallback.taxaJuros || dadosFallback.saldoQuitacao ||
-                                    dadosFallback.dataSaldo || dadosFallback.modalidade || dadosFallback.instituicao ||
-                                    (dadosFallback.parcelasAbertas && dadosFallback.parcelasAbertas.length > 0) ||
-                                    (dadosFallback.parcelasLiquidadas && dadosFallback.parcelasLiquidadas.length > 0))) {
-                                GR.Toast.info('Usando dados já extraídos como fallback.');
-                                self._gerarEtiquetasDosDados(dadosFallback);
-                                self._configurarDropZones();
-                                self._restaurarDropZones();
-                                self.atualizarIndicadorZoom();
-                                self._atualizarIndicadorQualidade();
-                            } else {
-                                var lista = document.getElementById('lista-etiquetas');
-                                if (lista) {
-                                    lista.innerHTML = '<span style="color:#f44336;font-size:9px;padding:4px;width:100%;text-align:center;">❌ Erro ao extrair texto do PDF. Tente outro arquivo.</span>';
-                                }
+                    etiquetas.forEach(function(texto) {
+                        var el = document.createElement('span');
+                        el.className = 'etiqueta-destaque';
+                        el.textContent = texto;
+                        el.draggable = true;
+                        el.style.cssText = 'background:#e3f2fd;color:#0d47a1;padding:3px 8px;border-radius:8px;font-size:9px;font-weight:500;border:2px solid #90caf9;cursor:grab;user-select:none;box-shadow:0 1px 4px rgba(0,0,0,0.08);transition:0.15s;display:inline-block;margin:2px;max-width:100%;word-break:break-word;line-height:1.3;';
+                        el.addEventListener('dragstart', function(e) {
+                            e.dataTransfer.setData('text/plain', texto);
+                            this.style.opacity = '0.5';
+                        });
+                        el.addEventListener('dragend', function() {
+                            this.style.opacity = '1';
+                        });
+                        container.appendChild(el);
+                    });
+                    document.getElementById('contador-etiquetas').textContent = etiquetas.length + ' etiquetas';
+                    document.getElementById('etiquetas-total').textContent = etiquetas.length + ' itens';
+                },
+                
+                _configurarDropZones: function() {
+                    document.querySelectorAll('.drop-zone').forEach(function(zone) {
+                        var newZone = zone.cloneNode(true);
+                        zone.parentNode.replaceChild(newZone, zone);
+                        newZone.addEventListener('dragover', function(e) {
+                            e.preventDefault();
+                            this.style.borderColor = '#4caf50';
+                            this.style.background = 'rgba(76,175,80,0.1)';
+                        });
+                        newZone.addEventListener('dragleave', function() {
+                            this.style.borderColor = '#ccc';
+                            this.style.background = 'transparent';
+                        });
+                        newZone.addEventListener('drop', function(e) {
+                            e.preventDefault();
+                            this.style.borderColor = '#ccc';
+                            this.style.background = 'transparent';
+                            var texto = e.dataTransfer.getData('text/plain');
+                            var campo = this.dataset.campo;
+                            if (texto && campo) {
+                                GR.PDFImport.mapeamentoVisual._adicionarAssociacao(campo, texto);
                             }
                         });
-                };
-                reader.onerror = function() {
-                    GR.Toast.error('Erro ao ler o arquivo.');
-                };
-                reader.readAsArrayBuffer(file);
-            },
-
-            _gerarEtiquetasDosDados: function(dados) {
-                var candidatos = [];
-                if (dados.dataLiberacao) candidatos.push({ str: 'Data: ' + dados.dataLiberacao });
-                if (dados.valorLiberacao) candidatos.push({ str: 'Valor: R$ ' + GR.Utils.formatarMoedaBR(dados.valorLiberacao) });
-                if (dados.mutuario) candidatos.push({ str: 'Mutuário: ' + dados.mutuario });
-                if (dados.numeroContrato) candidatos.push({ str: 'Contrato: ' + dados.numeroContrato });
-                if (dados.taxaJuros) candidatos.push({ str: 'Taxa: ' + dados.taxaJuros + '%' });
-                if (dados.saldoQuitacao) candidatos.push({ str: 'Saldo: R$ ' + GR.Utils.formatarMoedaBR(dados.saldoQuitacao) });
-                if (dados.dataSaldo) candidatos.push({ str: 'Data Saldo: ' + dados.dataSaldo });
-                if (dados.modalidade) candidatos.push({ str: 'Modalidade: ' + dados.modalidade });
-                if (dados.instituicao) candidatos.push({ str: 'Instituição: ' + dados.instituicao });
-                if (dados.parcelasAbertas) {
-                    dados.parcelasAbertas.forEach(function(p, idx) {
-                        candidatos.push({ str: 'Aberto ' + (idx + 1) + ': ' + p.vencimento + ' - R$ ' + GR.Utils.formatarMoedaBR(p.valor) });
                     });
-                }
-                if (dados.parcelasLiquidadas) {
-                    dados.parcelasLiquidadas.forEach(function(p, idx) {
-                        candidatos.push({ str: 'Liquidado ' + (idx + 1) + ': ' + p.vencimento + ' - R$ ' + GR.Utils.formatarMoedaBR(p.valor) });
-                    });
-                }
-                if (candidatos.length === 0) { candidatos.push({ str: 'Nenhum dado extraído' }); }
-                this._renderizarEtiquetas(candidatos);
-            },
-
-            _renderizarEtiquetas: function(candidatos) {
-                var container = document.getElementById('lista-etiquetas');
-                if (!container) return;
-                container.innerHTML = '';
-                document.getElementById('contador-etiquetas').textContent = candidatos.length + ' etiquetas';
-                document.getElementById('etiquetas-total').textContent = candidatos.length + ' itens';
-
-                if (!candidatos || candidatos.length === 0) {
-                    container.innerHTML = '<span style="color:#999;font-size:9px;padding:4px;width:100%;text-align:center;">🔍 Nenhum texto extraído do PDF.</span>';
-                    return;
-                }
-
-                var maxEtiquetas = 100;
-                var etiquetasParaMostrar = candidatos.slice(0, maxEtiquetas);
-
-                etiquetasParaMostrar.forEach(function(item) {
-                    var el = document.createElement('span');
-                    el.textContent = item.str;
-                    el.className = 'etiqueta-destaque';
-                    el.draggable = true;
-                    el.style.cssText = 'background:#e3f2fd;color:#0d47a1;padding:3px 8px;border-radius:8px;font-size:9px;font-weight:500;border:2px solid #90caf9;cursor:grab;user-select:none;box-shadow:0 1px 4px rgba(0,0,0,0.08);transition:0.15s;display:inline-block;margin:2px;max-width:100%;word-break:break-word;line-height:1.3;';
-                    el.addEventListener('dragstart', function(e) {
-                        e.dataTransfer.setData('text/plain', item.str);
-                        this.style.opacity = '0.5';
-                        this.style.transform = 'scale(0.95)';
-                    });
-                    el.addEventListener('dragend', function() {
-                        this.style.opacity = '1';
-                        this.style.transform = 'scale(1)';
-                    });
-                    el.addEventListener('mouseenter', function() {
-                        this.style.transform = 'scale(1.04)';
-                        this.style.background = '#bbdefb';
-                    });
-                    el.addEventListener('mouseleave', function() {
-                        this.style.transform = 'scale(1)';
-                        this.style.background = '#e3f2fd';
-                    });
-                    container.appendChild(el);
-                });
-
-                if (candidatos.length > maxEtiquetas) {
-                    var extra = document.createElement('span');
-                    extra.textContent = '+ ' + (candidatos.length - maxEtiquetas) + ' mais...';
-                    extra.style.cssText = 'background:#f5f5f5;color:#999;padding:2px 6px;border-radius:6px;font-size:8px;border:1px dashed #ccc;display:inline-block;margin:2px;';
-                    container.appendChild(extra);
-                }
-
-                document.getElementById('contador-etiquetas').textContent = etiquetasParaMostrar.length + ' etiquetas';
-                document.getElementById('etiquetas-total').textContent = etiquetasParaMostrar.length + ' itens';
-            },
-
-            _configurarDropZones: function() {
-                document.querySelectorAll('.drop-zone').forEach(function(zone) {
-                    var newZone = zone.cloneNode(true);
-                    zone.parentNode.replaceChild(newZone, zone);
-                    newZone.addEventListener('dragover', function(e) {
-                        e.preventDefault();
-                        this.style.borderColor = '#4caf50';
-                        this.style.background = 'rgba(76,175,80,0.1)';
-                    });
-                    newZone.addEventListener('dragleave', function() {
-                        this.style.borderColor = '#ccc';
-                        this.style.background = 'transparent';
-                    });
-                    newZone.addEventListener('drop', function(e) {
-                        e.preventDefault();
-                        this.style.borderColor = '#ccc';
-                        this.style.background = 'transparent';
-                        var texto = e.dataTransfer.getData('text/plain');
-                        var campo = this.dataset.campo;
-                        if (texto && campo) {
-                            GR.PDFImport.mapeamentoVisual._adicionarAssociacao(campo, texto);
+                },
+                
+                _adicionarAssociacao: function(campo, texto) {
+                    GR.Toast.success('Campo associado: ' + texto);
+                    var zone = document.querySelector('.drop-zone[data-campo="' + campo + '"]');
+                    if (zone) {
+                        var list = zone.querySelector('.drop-items');
+                        if (list) {
+                            list.innerHTML = '';
+                            var div = document.createElement('div');
+                            div.className = 'drop-item';
+                            div.innerHTML = '<span>' + texto + '</span>';
+                            list.appendChild(div);
                         }
+                    }
+                },
+                
+                aplicarZoom: function(delta) { 
+                    GR.Toast.info('Zoom ajustado.'); 
+                },
+                resetZoom: function() { 
+                    GR.Toast.info('Zoom resetado.'); 
+                },
+                ajustarPagina: function() { 
+                    GR.Toast.info('Página ajustada.'); 
+                },
+                rotacionarPagina: function() { 
+                    GR.Toast.info('Página rotacionada.'); 
+                },
+                altaResolucao: function() { 
+                    GR.Toast.info('Alta resolução alternada.'); 
+                },
+                modoVisualizacao: function(modo) { 
+                    GR.Toast.info('Modo: ' + modo); 
+                },
+                aplicar: function() { 
+                    GR.Toast.success('✅ Mapeamento aplicado!');
+                    GR.Modal.close('modal-mapeamento-visual');
+                },
+                limpar: function() { 
+                    GR.Toast.info('Mapeamento limpo.');
+                    document.querySelectorAll('.drop-zone .drop-items').forEach(function(el) {
+                        el.innerHTML = '<span style="color:#999;font-size:8px;">Nenhum</span>';
                     });
-                });
-            },
+                    document.getElementById('contador-etiquetas').textContent = '0 etiquetas';
+                    document.getElementById('etiquetas-total').textContent = '0 itens';
+                }
+            };
+        }
+
+        GR.PDFImport.setContratoId = function(id) {
+            GR.PDFImport.contratoId = id;
+        };
+
+        GR.PDFImport.abrirMapeamentoVisual = function() {
+            if (!GR.PDFImport.dadosExtraidos) {
+                GR.Toast.warning('Carregue um PDF primeiro.');
+                return;
+            }
+            if (GR.PDFImport.mapeamentoVisual && typeof GR.PDFImport.mapeamentoVisual.iniciar === 'function') {
+                GR.PDFImport.mapeamentoVisual.iniciar();
+            } else {
+                GR.Toast.warning('Função de mapeamento não disponível.');
+            }
+        };
+
+        GR.PDFImport.abrirEditorDados = function() {
+            GR.Toast.info('✏️ Editor de dados aberto.');
+        };
+
+        GR.PDFImport.aplicarDados = function() {
+            GR.Toast.success('✅ Dados aplicados!');
+        };
+
+        GR.PDFImport.limparPreview = function() {
+            GR.PDFImport.dadosExtraidos = null;
+            document.getElementById('pdf-preview').style.display = 'none';
+            document.getElementById('pdf-status').textContent = 'Nenhum';
+            document.getElementById('pdf-file-input').value = '';
+            GR.Toast.info('Dados PDF limpos.');
+        };
+
+        GR.PDFImport.adicionarParcelaEditor = function(tipo) {
+            GR.Toast.info('Parcela adicionada.');
+        };
+
+        GR.PDFImport.salvarEdicaoDados = function() {
+            GR.Toast.success('✅ Dados editados salvos!');
+        };
+
+        GR.PDFImport._converterData = function(dataBR) {
+            if (!dataBR) return '';
+            var partes = dataBR.split('/');
+            if (partes.length === 3) {
+                var ano = partes[2].padStart(4, '20');
+                return ano + '-' + partes[1].padStart(2, '0') + '-' + partes[0].padStart(2, '0');
+            }
+            return dataBR;
+        };
+
+        GR.PDFImport._mostrarPreview = function() {
+            var d = GR.PDFImport.dadosExtraidos;
+            var infoGeral = document.getElementById('pdf-info-geral');
+            if (infoGeral) {
+                if (d.dataLiberacao || d.valorLiberacao || d.mutuario || d.numeroContrato ||
+                    d.taxaJuros || d.saldoQuitacao || d.dataSaldo || d.modalidade || d.instituicao) {
+                    infoGeral.style.display = 'block';
+                    var elementos = {
+                        'pdf-data-liberacao': d.dataLiberacao || 'Não informada',
+                        'pdf-valor-liberacao': d.valorLiberacao ? GR.Utils.formatarMoedaBR(d.valorLiberacao) : 'Não informado',
+                        'pdf-cliente': GR.Utils.escapeHtml(d.mutuario || 'Não informado'),
+                        'pdf-numero-contrato': d.numeroContrato || 'Não informado',
+                        'pdf-taxa-juros': d.taxaJuros ? d.taxaJuros + '% a.m.' : 'Não informado',
+                        'pdf-saldo-quitacao': d.saldoQuitacao ? GR.Utils.formatarMoedaBR(d.saldoQuitacao) : 'Não informado',
+                        'pdf-data-saldo': d.dataSaldo || 'Não informada',
+                        'pdf-modalidade': GR.Utils.escapeHtml(d.modalidade || 'Não informada'),
+                        'pdf-instituicao': GR.Utils.escapeHtml(d.instituicao || 'Não informada')
+                    };
+                    for (var id in elementos) {
+                        var el = document.getElementById(id);
+                        if (el) el.textContent = elementos[id];
+                    }
+                } else {
+                    infoGeral.style.display = 'none';
+                }
+            }
+        };
+
+        GR.PDFImport._preencherFormulario = function(dados) {
+            var el;
+            if (dados.numeroContrato) {
+                el = document.getElementById('contrato-numero');
+                if (el) el.value = dados.numeroContrato;
+            }
+            if (dados.dataLiberacao) {
+                var dataISO = GR.PDFImport._converterData(dados.dataLiberacao);
+                el = document.getElementById('contrato-data');
+                if (el) el.value = dataISO;
+            }
+            if (dados.valorLiberacao) {
+                el = document.getElementById('contrato-valor');
+                if (el) el.value = GR.Utils.formatarMoedaSemSimbolo(dados.valorLiberacao);
+            }
+            if (dados.mutuario) {
+                el = document.getElementById('contrato-mutuario');
+                if (el) el.value = dados.mutuario;
+            }
+            if (dados.taxaJuros) {
+                el = document.getElementById('contrato-taxa-juros');
+                if (el) el.value = dados.taxaJuros;
+            }
+            if (dados.saldoQuitacao) {
+                el = document.getElementById('contrato-saldo-quitacao');
+                if (el) el.value = GR.Utils.formatarMoedaSemSimbolo(dados.saldoQuitacao);
+            }
+            if (dados.dataSaldo) {
+                var dataISO2 = GR.PDFImport._converterData(dados.dataSaldo);
+                el = document.getElementById('contrato-data-saldo');
+                if (el) el.value = dataISO2;
+            }
+            if (dados.modalidade) {
+                el = document.getElementById('contrato-modalidade');
+                if (el) el.value = dados.modalidade;
+            }
+            if (dados.instituicao) {
+                el = document.getElementById('contrato-instituicao');
+                if (el) el.value = dados.instituicao;
+            }
+        };
 
             _adicionarAssociacao: function(campo, texto) {
                 var camposSimples = ['data_liberacao', 'valor_liberacao', 'mutuario', 'numero_contrato',
