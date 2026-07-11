@@ -8023,85 +8023,497 @@
         }
     };
 
-    // ================================================================
-    // MÓDULO: MAPEAMENTO VISUAL PDF
-    // ================================================================
-    GR.PDFImport = GR.PDFImport || {};
-    GR.PDFImport.setContratoId = function(id) {
-        GR.PDFImport.contratoId = id;
-    };
+            // ================================================================
+        // MÓDULO: MAPEAMENTO VISUAL PDF - CORRIGIDO
+        // ================================================================
+        GR.PDFImport = GR.PDFImport || {};
+        
+        // Verificar se mapeamentoVisual já existe, se não criar
+        if (!GR.PDFImport.mapeamentoVisual) {
+            GR.PDFImport.mapeamentoVisual = {
+                associacoes: {},
+                parcelasAbertasData: [],
+                parcelasAbertasValor: [],
+                parcelasLiquidadasData: [],
+                parcelasLiquidadasValor: [],
+                zoomLevel: 1,
+                _rotacao: 0,
+                _altaResolucao: true,
+                _paginaAtual: 1,
+                _totalPaginas: 0,
+                _pdfDocument: null,
 
-    GR.PDFImport.abrirMapeamentoVisual = function() {
-        if (!GR.PDFImport.dadosExtraidos) {
-            GR.Toast.warning('Carregue um PDF primeiro.');
-            return;
+                iniciar: function() {
+                    GR.Modal.open('modal-mapeamento-visual');
+                    GR.Toast.info('🧩 Mapeamento visual iniciado. Arraste as etiquetas para os campos.');
+                    var dados = GR.PDFImport.dadosExtraidos;
+                    if (dados) {
+                        this._gerarEtiquetasDosDados(dados);
+                    }
+                    this._configurarDropZones();
+                },
+
+                _gerarEtiquetasDosDados: function(dados) {
+                    var container = document.getElementById('lista-etiquetas');
+                    if (!container) return;
+                    var etiquetas = [];
+                    if (dados.dataLiberacao) etiquetas.push('Data: ' + dados.dataLiberacao);
+                    if (dados.valorLiberacao) etiquetas.push('Valor: R$ ' + GR.Utils.formatarMoedaBR(dados.valorLiberacao));
+                    if (dados.mutuario) etiquetas.push('Mutuário: ' + dados.mutuario);
+                    if (dados.numeroContrato) etiquetas.push('Contrato: ' + dados.numeroContrato);
+                    if (dados.taxaJuros) etiquetas.push('Taxa: ' + dados.taxaJuros + '%');
+                    if (dados.saldoQuitacao) etiquetas.push('Saldo: R$ ' + GR.Utils.formatarMoedaBR(dados.saldoQuitacao));
+                    if (dados.dataSaldo) etiquetas.push('Data Saldo: ' + dados.dataSaldo);
+                    if (dados.modalidade) etiquetas.push('Modalidade: ' + dados.modalidade);
+                    if (dados.instituicao) etiquetas.push('Instituição: ' + dados.instituicao);
+                    if (dados.parcelasAbertas) {
+                        dados.parcelasAbertas.forEach(function(p, idx) {
+                            etiquetas.push('Aberto ' + (idx + 1) + ': ' + p.vencimento + ' - R$ ' + GR.Utils.formatarMoedaBR(p.valor));
+                        });
+                    }
+                    if (dados.parcelasLiquidadas) {
+                        dados.parcelasLiquidadas.forEach(function(p, idx) {
+                            etiquetas.push('Liquidado ' + (idx + 1) + ': ' + p.vencimento + ' - R$ ' + GR.Utils.formatarMoedaBR(p.valor));
+                        });
+                    }
+                    container.innerHTML = '';
+                    if (etiquetas.length === 0) {
+                        container.innerHTML = '<span style="color:#999;font-size:9px;padding:4px;width:100%;text-align:center;">🔍 Nenhuma etiqueta disponível.</span>';
+                        return;
+                    }
+                    etiquetas.forEach(function(texto) {
+                        var el = document.createElement('span');
+                        el.className = 'etiqueta-destaque';
+                        el.textContent = texto;
+                        el.draggable = true;
+                        el.style.cssText = 'background:#e3f2fd;color:#0d47a1;padding:3px 8px;border-radius:8px;font-size:9px;font-weight:500;border:2px solid #90caf9;cursor:grab;user-select:none;box-shadow:0 1px 4px rgba(0,0,0,0.08);transition:0.15s;display:inline-block;margin:2px;max-width:100%;word-break:break-word;line-height:1.3;';
+                        el.addEventListener('dragstart', function(e) {
+                            e.dataTransfer.setData('text/plain', texto);
+                            this.style.opacity = '0.5';
+                        });
+                        el.addEventListener('dragend', function() {
+                            this.style.opacity = '1';
+                        });
+                        container.appendChild(el);
+                    });
+                    document.getElementById('contador-etiquetas').textContent = etiquetas.length + ' etiquetas';
+                    document.getElementById('etiquetas-total').textContent = etiquetas.length + ' itens';
+                },
+
+                _configurarDropZones: function() {
+                    document.querySelectorAll('.drop-zone').forEach(function(zone) {
+                        var newZone = zone.cloneNode(true);
+                        zone.parentNode.replaceChild(newZone, zone);
+                        newZone.addEventListener('dragover', function(e) {
+                            e.preventDefault();
+                            this.style.borderColor = '#4caf50';
+                            this.style.background = 'rgba(76,175,80,0.1)';
+                        });
+                        newZone.addEventListener('dragleave', function() {
+                            this.style.borderColor = '#ccc';
+                            this.style.background = 'transparent';
+                        });
+                        newZone.addEventListener('drop', function(e) {
+                            e.preventDefault();
+                            this.style.borderColor = '#ccc';
+                            this.style.background = 'transparent';
+                            var texto = e.dataTransfer.getData('text/plain');
+                            var campo = this.dataset.campo;
+                            if (texto && campo) {
+                                GR.PDFImport.mapeamentoVisual._adicionarAssociacao(campo, texto);
+                            }
+                        });
+                    });
+                },
+
+                _adicionarAssociacao: function(campo, texto) {
+                    var camposSimples = ['data_liberacao', 'valor_liberacao', 'mutuario', 'numero_contrato',
+                        'taxa_juros', 'saldo_quitacao', 'data_saldo', 'modalidade', 'instituicao'
+                    ];
+                    if (camposSimples.indexOf(campo) !== -1) {
+                        this.associacoes[campo] = texto;
+                        this._atualizarDropZone(campo);
+                        GR.Toast.success('Campo "' + campo + '" associado: ' + texto);
+                        return;
+                    }
+                    if (campo === 'parcela_aberta_data') {
+                        this.parcelasAbertasData.push(texto);
+                        this._atualizarDropZone('parcela_aberta_data');
+                        GR.Toast.success('Data de parcela em aberto: ' + texto);
+                        return;
+                    }
+                    if (campo === 'parcela_aberta_valor') {
+                        this.parcelasAbertasValor.push(texto);
+                        this._atualizarDropZone('parcela_aberta_valor');
+                        GR.Toast.success('Valor de parcela em aberto: ' + texto);
+                        return;
+                    }
+                    if (campo === 'parcela_liquidada_data') {
+                        this.parcelasLiquidadasData.push(texto);
+                        this._atualizarDropZone('parcela_liquidada_data');
+                        GR.Toast.success('Data de parcela liquidada: ' + texto);
+                        return;
+                    }
+                    if (campo === 'parcela_liquidada_valor') {
+                        this.parcelasLiquidadasValor.push(texto);
+                        this._atualizarDropZone('parcela_liquidada_valor');
+                        GR.Toast.success('Valor de parcela liquidada: ' + texto);
+                        return;
+                    }
+                },
+
+                _atualizarDropZone: function(campo) {
+                    var zone = document.querySelector('.drop-zone[data-campo="' + campo + '"]');
+                    if (!zone) return;
+                    var list = zone.querySelector('.drop-items');
+                    if (!list) return;
+                    var items = [];
+                    if (['data_liberacao', 'valor_liberacao', 'mutuario', 'numero_contrato',
+                            'taxa_juros', 'saldo_quitacao', 'data_saldo', 'modalidade', 'instituicao'
+                        ].indexOf(campo) !== -1) {
+                        if (this.associacoes[campo]) items = [this.associacoes[campo]];
+                    } else if (campo === 'parcela_aberta_data') {
+                        items = this.parcelasAbertasData;
+                    } else if (campo === 'parcela_aberta_valor') {
+                        items = this.parcelasAbertasValor;
+                    } else if (campo === 'parcela_liquidada_data') {
+                        items = this.parcelasLiquidadasData;
+                    } else if (campo === 'parcela_liquidada_valor') {
+                        items = this.parcelasLiquidadasValor;
+                    }
+                    list.innerHTML = '';
+                    if (items.length === 0) {
+                        list.innerHTML = '<span style="color:#999;font-size:8px;">Nenhum</span>';
+                        return;
+                    }
+                    items.forEach(function(item, index) {
+                        var div = document.createElement('div');
+                        div.className = 'drop-item';
+                        div.style.cssText = 'display:inline-flex;align-items:center;gap:2px;background:#e8f5e9;color:#2e7d32;padding:1px 4px;border-radius:4px;font-size:8px;margin:1px;';
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = item;
+                        input.style.cssText = 'border:none;background:transparent;font-size:8px;color:inherit;width:auto;min-width:20px;padding:0 2px;outline:none;';
+                        input.size = Math.max(item.length, 4);
+                        input.addEventListener('input', function(e) {
+                            GR.PDFImport.mapeamentoVisual._atualizarItem(campo, index, e.target.value);
+                        });
+                        var remove = document.createElement('span');
+                        remove.textContent = ' ×';
+                        remove.style.cssText = 'cursor:pointer;font-weight:bold;margin-left:2px;color:#c62828;font-size:10px;line-height:1;';
+                        remove.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            GR.PDFImport.mapeamentoVisual._removerAssociacao(campo, item);
+                        });
+                        div.appendChild(input);
+                        div.appendChild(remove);
+                        list.appendChild(div);
+                    });
+                },
+
+                _atualizarItem: function(campo, index, novoValor) {
+                    if (['data_liberacao', 'valor_liberacao', 'mutuario', 'numero_contrato',
+                            'taxa_juros', 'saldo_quitacao', 'data_saldo', 'modalidade', 'instituicao'
+                        ].indexOf(campo) !== -1) {
+                        this.associacoes[campo] = novoValor;
+                    } else if (campo === 'parcela_aberta_data') {
+                        if (index < this.parcelasAbertasData.length) this.parcelasAbertasData[index] = novoValor;
+                    } else if (campo === 'parcela_aberta_valor') {
+                        if (index < this.parcelasAbertasValor.length) this.parcelasAbertasValor[index] = novoValor;
+                    } else if (campo === 'parcela_liquidada_data') {
+                        if (index < this.parcelasLiquidadasData.length) this.parcelasLiquidadasData[index] = novoValor;
+                    } else if (campo === 'parcela_liquidada_valor') {
+                        if (index < this.parcelasLiquidadasValor.length) this.parcelasLiquidadasValor[index] = novoValor;
+                    }
+                },
+
+                _removerAssociacao: function(campo, item) {
+                    if (['data_liberacao', 'valor_liberacao', 'mutuario', 'numero_contrato',
+                            'taxa_juros', 'saldo_quitacao', 'data_saldo', 'modalidade', 'instituicao'
+                        ].indexOf(campo) !== -1) {
+                        delete this.associacoes[campo];
+                    } else if (campo === 'parcela_aberta_data') {
+                        var idx = this.parcelasAbertasData.indexOf(item);
+                        if (idx !== -1) this.parcelasAbertasData.splice(idx, 1);
+                    } else if (campo === 'parcela_aberta_valor') {
+                        var idx2 = this.parcelasAbertasValor.indexOf(item);
+                        if (idx2 !== -1) this.parcelasAbertasValor.splice(idx2, 1);
+                    } else if (campo === 'parcela_liquidada_data') {
+                        var idx3 = this.parcelasLiquidadasData.indexOf(item);
+                        if (idx3 !== -1) this.parcelasLiquidadasData.splice(idx3, 1);
+                    } else if (campo === 'parcela_liquidada_valor') {
+                        var idx4 = this.parcelasLiquidadasValor.indexOf(item);
+                        if (idx4 !== -1) this.parcelasLiquidadasValor.splice(idx4, 1);
+                    }
+                    this._atualizarDropZone(campo);
+                    GR.Toast.success('Item removido.');
+                },
+
+                aplicarZoom: function(delta) {
+                    this.zoomLevel = Math.min(3, Math.max(0.5, this.zoomLevel + delta));
+                    this._aplicarTransformacao();
+                    this.atualizarIndicadorZoom();
+                },
+
+                resetZoom: function() {
+                    this.zoomLevel = 1;
+                    this._rotacao = 0;
+                    this._aplicarTransformacao();
+                    this.atualizarIndicadorZoom();
+                    GR.Toast.info('Zoom resetado');
+                },
+
+                ajustarPagina: function() {
+                    GR.Toast.info('📐 Ajustando página...');
+                },
+
+                rotacionarPagina: function() {
+                    this._rotacao = (this._rotacao || 0) + 90;
+                    if (this._rotacao >= 360) this._rotacao = 0;
+                    this._aplicarTransformacao();
+                    GR.Toast.info('🔄 Rotacionado ' + this._rotacao + '°');
+                },
+
+                altaResolucao: function() {
+                    this._altaResolucao = !this._altaResolucao;
+                    GR.Toast.info(this._altaResolucao ? '🔍 Modo Alta Resolução ativado' : '📄 Modo Normal ativado');
+                },
+
+                modoVisualizacao: function(modo) {
+                    var image = document.getElementById('pdf-visual-image');
+                    if (!image) return;
+                    var canvas = image.querySelector('canvas');
+                    if (!canvas) return;
+                    if (modo === 'texto') {
+                        canvas.style.filter = 'grayscale(1) contrast(2) brightness(0.8)';
+                        canvas.style.mixBlendMode = 'multiply';
+                        GR.Toast.info('📝 Modo texto ativado');
+                    } else {
+                        canvas.style.filter = '';
+                        canvas.style.mixBlendMode = '';
+                        GR.Toast.info('📄 Modo normal');
+                    }
+                },
+
+                _aplicarTransformacao: function() {
+                    var image = document.getElementById('pdf-visual-image');
+                    if (image) {
+                        image.style.transform = 'scale(' + this.zoomLevel + ') rotate(' + (this._rotacao || 0) + 'deg)';
+                        image.style.transformOrigin = '0 0';
+                    }
+                },
+
+                atualizarIndicadorZoom: function() {
+                    var el = document.getElementById('zoom-nivel');
+                    if (el) el.textContent = Math.round(this.zoomLevel * 100) + '%';
+                },
+
+                aplicar: function() {
+                    var resultado = {
+                        dataLiberacao: this.associacoes['data_liberacao'] || null,
+                        valorLiberacao: GR.Utils.parseMoedaBR(this.associacoes['valor_liberacao'] || '0'),
+                        mutuario: this.associacoes['mutuario'] || null,
+                        numeroContrato: this.associacoes['numero_contrato'] || null,
+                        taxaJuros: parseFloat(this.associacoes['taxa_juros'] || '0'),
+                        saldoQuitacao: GR.Utils.parseMoedaBR(this.associacoes['saldo_quitacao'] || '0'),
+                        dataSaldo: this.associacoes['data_saldo'] || null,
+                        modalidade: this.associacoes['modalidade'] || null,
+                        instituicao: this.associacoes['instituicao'] || null,
+                        parcelasAbertas: [],
+                        parcelasLiquidadas: []
+                    };
+                    var maxAbertas = Math.max(this.parcelasAbertasData.length, this.parcelasAbertasValor.length);
+                    for (var i = 0; i < maxAbertas; i++) {
+                        var data = i < this.parcelasAbertasData.length ? this.parcelasAbertasData[i] : '';
+                        var valor = i < this.parcelasAbertasValor.length ? GR.Utils.parseMoedaBR(this.parcelasAbertasValor[i]) : 0;
+                        if (data && valor > 0) {
+                            resultado.parcelasAbertas.push({ numero: i + 1, vencimento: data, valor: valor, juros: 0, status: 'Pendente' });
+                        }
+                    }
+                    var maxLiquidadas = Math.max(this.parcelasLiquidadasData.length, this.parcelasLiquidadasValor.length);
+                    for (var j = 0; j < maxLiquidadas; j++) {
+                        var data2 = j < this.parcelasLiquidadasData.length ? this.parcelasLiquidadasData[j] : '';
+                        var valor2 = j < this.parcelasLiquidadasValor.length ? GR.Utils.parseMoedaBR(this.parcelasLiquidadasValor[j]) : 0;
+                        if (data2 && valor2 > 0) {
+                            resultado.parcelasLiquidadas.push({ numero: j + 1, vencimento: data2, valor: valor2, status: 'Pago' });
+                        }
+                    }
+                    resultado.parcelasAbertas = GR.Utils.ordenarParcelasPorDataDecrescente(resultado.parcelasAbertas);
+                    resultado.parcelasLiquidadas = GR.Utils.ordenarParcelasPorDataDecrescente(resultado.parcelasLiquidadas);
+                    resultado.parcelasAbertas.forEach(function(p, i) { p.numero = i + 1; });
+                    resultado.parcelasLiquidadas.forEach(function(p, i) { p.numero = i + 1; });
+                    GR.PDFImport.dadosExtraidos = Object.assign({}, GR.PDFImport.dadosExtraidos, resultado);
+                    GR.PDFImport._mostrarPreview();
+                    GR.PDFImport._preencherFormulario(resultado);
+                    GR.Modal.close('modal-mapeamento-visual');
+                    GR.Toast.success('✅ ' + resultado.parcelasAbertas.length + ' abertas, ' + resultado.parcelasLiquidadas.length + ' liquidadas.');
+                },
+
+                limpar: function() {
+                    this.associacoes = {};
+                    this.parcelasAbertasData = [];
+                    this.parcelasAbertasValor = [];
+                    this.parcelasLiquidadasData = [];
+                    this.parcelasLiquidadasValor = [];
+                    document.querySelectorAll('.drop-zone .drop-items').forEach(function(el) {
+                        el.innerHTML = '<span style="color:#999;font-size:8px;">Nenhum</span>';
+                    });
+                    document.getElementById('contador-etiquetas').textContent = '0 etiquetas';
+                    document.getElementById('etiquetas-total').textContent = '0 itens';
+                    GR.Toast.info('Mapeamento limpo.');
+                }
+            };
         }
-        GR.PDFImport.mapeamentoVisual.iniciar();
-    };
 
-    GR.PDFImport.mapeamentoVisual = {
-        iniciar: function() {
-            GR.Modal.open('modal-mapeamento-visual');
-            GR.Toast.info('🧩 Mapeamento visual iniciado. Arraste as etiquetas para os campos.');
-        },
+        GR.PDFImport.setContratoId = function(id) {
+            GR.PDFImport.contratoId = id;
+        };
 
-        aplicarZoom: function(delta) {
-            GR.Toast.info('Zoom ajustado.');
-        },
+        GR.PDFImport.abrirMapeamentoVisual = function() {
+            if (!GR.PDFImport.dadosExtraidos) {
+                GR.Toast.warning('Carregue um PDF primeiro.');
+                return;
+            }
+            GR.PDFImport.mapeamentoVisual.iniciar();
+        };
 
-        resetZoom: function() {
-            GR.Toast.info('Zoom resetado.');
-        },
+        GR.PDFImport.abrirEditorDados = function() {
+            GR.Toast.info('✏️ Editor de dados aberto.');
+        };
 
-        ajustarPagina: function() {
-            GR.Toast.info('Página ajustada.');
-        },
+        GR.PDFImport.aplicarDados = function() {
+            GR.Toast.success('✅ Dados aplicados!');
+        };
 
-        rotacionarPagina: function() {
-            GR.Toast.info('Página rotacionada.');
-        },
+        GR.PDFImport.limparPreview = function() {
+            GR.PDFImport.dadosExtraidos = null;
+            document.getElementById('pdf-preview').style.display = 'none';
+            document.getElementById('pdf-status').textContent = 'Nenhum';
+            document.getElementById('pdf-file-input').value = '';
+            GR.Toast.info('Dados PDF limpos.');
+        };
 
-        altaResolucao: function() {
-            GR.Toast.info('Alta resolução alternada.');
-        },
+        GR.PDFImport.adicionarParcelaEditor = function(tipo) {
+            GR.Toast.info('Parcela adicionada.');
+        };
 
-        modoVisualizacao: function(modo) {
-            GR.Toast.info('Modo de visualização: ' + modo);
-        },
+        GR.PDFImport.salvarEdicaoDados = function() {
+            GR.Toast.success('✅ Dados editados salvos!');
+        };
 
-        aplicar: function() {
-            GR.Toast.success('✅ Mapeamento aplicado!');
-            GR.Modal.close('modal-mapeamento-visual');
-        },
+        GR.PDFImport._converterData = function(dataBR) {
+            if (!dataBR) return '';
+            var partes = dataBR.split('/');
+            if (partes.length === 3) {
+                var ano = partes[2].padStart(4, '20');
+                return ano + '-' + partes[1].padStart(2, '0') + '-' + partes[0].padStart(2, '0');
+            }
+            return dataBR;
+        };
 
-        limpar: function() {
-            GR.Toast.info('Mapeamento limpo.');
-        }
-    };
+        GR.PDFImport._mostrarPreview = function() {
+            var d = GR.PDFImport.dadosExtraidos;
+            var infoGeral = document.getElementById('pdf-info-geral');
+            if (infoGeral) {
+                if (d.dataLiberacao || d.valorLiberacao || d.mutuario || d.numeroContrato ||
+                    d.taxaJuros || d.saldoQuitacao || d.dataSaldo || d.modalidade || d.instituicao) {
+                    infoGeral.style.display = 'block';
+                    var elementos = {
+                        'pdf-data-liberacao': d.dataLiberacao || 'Não informada',
+                        'pdf-valor-liberacao': d.valorLiberacao ? GR.Utils.formatarMoedaBR(d.valorLiberacao) : 'Não informado',
+                        'pdf-cliente': GR.Utils.escapeHtml(d.mutuario || 'Não informado'),
+                        'pdf-numero-contrato': d.numeroContrato || 'Não informado',
+                        'pdf-taxa-juros': d.taxaJuros ? d.taxaJuros + '% a.m.' : 'Não informado',
+                        'pdf-saldo-quitacao': d.saldoQuitacao ? GR.Utils.formatarMoedaBR(d.saldoQuitacao) : 'Não informado',
+                        'pdf-data-saldo': d.dataSaldo || 'Não informada',
+                        'pdf-modalidade': GR.Utils.escapeHtml(d.modalidade || 'Não informada'),
+                        'pdf-instituicao': GR.Utils.escapeHtml(d.instituicao || 'Não informada')
+                    };
+                    for (var id in elementos) {
+                        var el = document.getElementById(id);
+                        if (el) el.textContent = elementos[id];
+                    }
+                } else {
+                    infoGeral.style.display = 'none';
+                }
+            }
 
-    GR.PDFImport.abrirEditorDados = function() {
-        GR.Toast.info('✏️ Editor de dados aberto.');
-    };
+            var listA = document.getElementById('pdf-lista-abertas');
+            var countA = document.getElementById('pdf-count-abertas');
+            if (countA) countA.textContent = d.parcelasAbertas ? d.parcelasAbertas.length : 0;
+            if (listA) {
+                if (d.parcelasAbertas && d.parcelasAbertas.length > 0) {
+                    var html = '<div class="table-responsive"><table><thead><tr><th>Nº</th><th>Vencimento</th><th>Valor</th><th>Juros</th></tr></thead><tbody>';
+                    d.parcelasAbertas.forEach(function(p) {
+                        html += '<tr><td>' + p.numero + '</td><td>' + p.vencimento + '</td><td>' + GR.Utils.formatarMoedaBR(p.valor) + '</td><td>' + GR.Utils.formatarMoedaBR(p.juros || 0) + '</td></tr>';
+                    });
+                    html += '</tbody></table></div>';
+                    listA.innerHTML = html;
+                    document.getElementById('pdf-parcelas-abertas').style.display = 'block';
+                } else {
+                    listA.innerHTML = '<div style="text-align:center;color:#999;padding:3px;">Nenhuma parcela em aberto</div>';
+                }
+            }
 
-    GR.PDFImport.aplicarDados = function() {
-        GR.Toast.success('✅ Dados aplicados!');
-    };
+            var listL = document.getElementById('pdf-lista-liquidadas');
+            var countL = document.getElementById('pdf-count-liquidadas');
+            if (countL) countL.textContent = d.parcelasLiquidadas ? d.parcelasLiquidadas.length : 0;
+            if (listL) {
+                if (d.parcelasLiquidadas && d.parcelasLiquidadas.length > 0) {
+                    var html2 = '<div class="table-responsive"><table><thead><tr><th>Nº</th><th>Vencimento</th><th>Valor Pago</th></tr></thead><tbody>';
+                    d.parcelasLiquidadas.forEach(function(p) {
+                        html2 += '<tr><td>' + p.numero + '</td><td>' + p.vencimento + '</td><td>' + GR.Utils.formatarMoedaBR(p.valor) + '</td></tr>';
+                    });
+                    html2 += '</tbody></table></div>';
+                    listL.innerHTML = html2;
+                    document.getElementById('pdf-parcelas-liquidadas').style.display = 'block';
+                } else {
+                    listL.innerHTML = '<div style="text-align:center;color:#999;padding:3px;">Nenhuma parcela liquidada</div>';
+                }
+            }
+        };
 
-    GR.PDFImport.limparPreview = function() {
-        GR.PDFImport.dadosExtraidos = null;
-        document.getElementById('pdf-preview').style.display = 'none';
-        document.getElementById('pdf-status').textContent = 'Nenhum';
-        document.getElementById('pdf-file-input').value = '';
-        GR.Toast.info('Dados PDF limpos.');
-    };
-
-    GR.PDFImport.adicionarParcelaEditor = function(tipo) {
-        GR.Toast.info('Parcela adicionada.');
-    };
-
-    GR.PDFImport.salvarEdicaoDados = function() {
-        GR.Toast.success('✅ Dados editados salvos!');
-    };
+        GR.PDFImport._preencherFormulario = function(dados) {
+            var el;
+            if (dados.numeroContrato) {
+                el = document.getElementById('contrato-numero');
+                if (el) el.value = dados.numeroContrato;
+            }
+            if (dados.dataLiberacao) {
+                var dataISO = GR.PDFImport._converterData(dados.dataLiberacao);
+                el = document.getElementById('contrato-data');
+                if (el) el.value = dataISO;
+            }
+            if (dados.valorLiberacao) {
+                el = document.getElementById('contrato-valor');
+                if (el) el.value = GR.Utils.formatarMoedaSemSimbolo(dados.valorLiberacao);
+            }
+            if (dados.mutuario) {
+                el = document.getElementById('contrato-mutuario');
+                if (el) el.value = dados.mutuario;
+            }
+            if (dados.taxaJuros) {
+                el = document.getElementById('contrato-taxa-juros');
+                if (el) el.value = dados.taxaJuros;
+            }
+            if (dados.saldoQuitacao) {
+                el = document.getElementById('contrato-saldo-quitacao');
+                if (el) el.value = GR.Utils.formatarMoedaSemSimbolo(dados.saldoQuitacao);
+            }
+            if (dados.dataSaldo) {
+                var dataISO2 = GR.PDFImport._converterData(dados.dataSaldo);
+                el = document.getElementById('contrato-data-saldo');
+                if (el) el.value = dataISO2;
+            }
+            if (dados.modalidade) {
+                el = document.getElementById('contrato-modalidade');
+                if (el) el.value = dados.modalidade;
+            }
+            if (dados.instituicao) {
+                el = document.getElementById('contrato-instituicao');
+                if (el) el.value = dados.instituicao;
+            }
+        };
 
     // ================================================================
     // MÓDULO: COMANDOS DE VOZ
