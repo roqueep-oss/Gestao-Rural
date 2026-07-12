@@ -1222,7 +1222,7 @@
 
     </div>
     <!-- ================================================================ -->
-    <!-- MODAIS - PARTE 3/10                                             -->
+    <!-- MODAIS - PARTE 3/14                                             -->
     <!-- ================================================================ -->
 
     <!-- ===== MODAL: TAREFA ===== -->
@@ -1317,14 +1317,6 @@
                     <option>Recusado</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>Upload PDF</label>
-                <div class="file-upload" onclick="document.getElementById('orc-file-input').click()">
-                    <p>📎 Clique para selecionar</p>
-                    <small id="orc-file-name">Nenhum arquivo</small>
-                </div>
-                <input type="file" id="orc-file-input" style="display:none" accept=".pdf">
-            </div>
             <button class="btn btn-success" onclick="GR.Modules.Orcamentos.salvar()">💾 Salvar</button>
         </div>
     </div>
@@ -1365,25 +1357,23 @@
                             <button class="btn btn-danger btn-sm" onclick="GR.PDFImport.limparPreview()">🗑️</button>
                         </div>
                     </div>
-                    <div id="pdf-info-geral" class="import-info" style="display:none;background:#f1f8e9;padding:4px 6px;border-radius:3px;margin:3px 0;font-size:11px;">
-                        <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <div class="col" style="flex:1;min-width:80px;"><strong>📅 Data:</strong> <span id="pdf-data-liberacao"></span></div>
-                            <div class="col" style="flex:1;min-width:80px;"><strong>💰 Valor:</strong> <span id="pdf-valor-liberacao"></span></div>
-                            <div class="col" style="flex:1;min-width:80px;"><strong>👤 Mutuário:</strong> <span id="pdf-cliente"></span></div>
+                    <div id="pdf-info-geral" style="display:none;background:#f1f8e9;padding:4px 6px;border-radius:3px;margin:3px 0;font-size:11px;">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:80px;"><strong>📅 Data:</strong> <span id="pdf-data-liberacao"></span></div>
+                            <div style="flex:1;min-width:80px;"><strong>💰 Valor:</strong> <span id="pdf-valor-liberacao"></span></div>
+                            <div style="flex:1;min-width:80px;"><strong>👤 Mutuário:</strong> <span id="pdf-cliente"></span></div>
                         </div>
-                        <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <div class="col" style="flex:1;min-width:80px;"><strong>📄 Nº Contrato:</strong> <span id="pdf-numero-contrato"></span></div>
-                            <div class="col" style="flex:1;min-width:80px;"><strong>📊 Taxa:</strong> <span id="pdf-taxa-juros"></span></div>
-                            <div class="col" style="flex:1;min-width:80px;"><strong>💵 Saldo:</strong> <span id="pdf-saldo-quitacao"></span></div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:80px;"><strong>📄 Nº Contrato:</strong> <span id="pdf-numero-contrato"></span></div>
+                            <div style="flex:1;min-width:80px;"><strong>📊 Taxa:</strong> <span id="pdf-taxa-juros"></span></div>
+                            <div style="flex:1;min-width:80px;"><strong>💵 Saldo:</strong> <span id="pdf-saldo-quitacao"></span></div>
                         </div>
-                        <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <div class="col" style="flex:1;min-width:80px;"><strong>📅 Data Saldo:</strong> <span id="pdf-data-saldo"></span></div>
-                            <div class="col" style="flex:1;min-width:80px;"><strong>🏷️ Modalidade:</strong> <span id="pdf-modalidade"></span></div>
-                            <div class="col" style="flex:1;min-width:80px;"><strong>🏦 Instituição:</strong> <span id="pdf-instituicao"></span></div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:80px;"><strong>📅 Data Saldo:</strong> <span id="pdf-data-saldo"></span></div>
+                            <div style="flex:1;min-width:80px;"><strong>🏷️ Modalidade:</strong> <span id="pdf-modalidade"></span></div>
+                            <div style="flex:1;min-width:80px;"><strong>🏦 Instituição:</strong> <span id="pdf-instituicao"></span></div>
                         </div>
                     </div>
-                    <div id="pdf-parcelas-abertas"><h4 style="font-size:11px;">📌 Parcelas em aberto (<span id="pdf-count-abertas">0</span>)</h4><div id="pdf-lista-abertas"></div></div>
-                    <div id="pdf-parcelas-liquidadas"><h4 style="font-size:11px;">✅ Parcelas liquidadas (<span id="pdf-count-liquidadas">0</span>)</h4><div id="pdf-lista-liquidadas"></div></div>
                 </div>
             </div>
 
@@ -1686,28 +1676,9 @@
                 <label class="required">Propriedade</label>
                 <select id="func-propriedade" class="form-control"></select>
             </div>
-            <div class="form-group">
-                <label>CTPS</label>
-                <input type="text" id="func-ctps" class="form-control" placeholder="Número da Carteira de Trabalho">
-            </div>
-            <div class="form-group">
-                <label>PIS/PASEP</label>
-                <input type="text" id="func-pis" class="form-control" placeholder="Número do PIS/PASEP">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>INSS (valor fixo ou %)</label>
-                    <input type="number" id="func-inss" class="form-control" step="0.01" value="0" placeholder="0">
-                </div>
-                <div class="form-group">
-                    <label>FGTS (valor fixo ou %)</label>
-                    <input type="number" id="func-fgts" class="form-control" step="0.01" value="0" placeholder="0">
-                </div>
-            </div>
             <button class="btn btn-success" onclick="GR.Modules.Funcionarios.salvar()">💾 Salvar</button>
         </div>
     </div>
-
     <!-- ===== MODAL: PARCEIRO ===== -->
     <div id="modal-contrato-parceiro" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-parceiro-title">
         <div class="modal-content" style="max-width:550px;">
@@ -1882,6 +1853,7 @@
             <button class="btn btn-success" onclick="GR.Modules.Contabilidade.salvarReceita()">💾 Salvar</button>
         </div>
     </div>
+
     <!-- ===== MODAL: DOCUMENTO ===== -->
     <div id="modal-documento" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-documento-title">
         <div class="modal-content">
@@ -1914,14 +1886,6 @@
             <div class="form-group">
                 <label>Descrição</label>
                 <input type="text" id="doc-descricao" class="form-control" placeholder="Descrição do documento">
-            </div>
-            <div class="form-group">
-                <label>Arquivo</label>
-                <div class="file-upload" onclick="document.getElementById('doc-file-input').click()">
-                    <p>📎 Clique para selecionar</p>
-                    <small id="doc-file-name">Nenhum</small>
-                </div>
-                <input type="file" id="doc-file-input" style="display:none">
             </div>
             <button class="btn btn-success" onclick="GR.Modules.Documentos.salvar()">💾 Salvar</button>
         </div>
@@ -2165,7 +2129,6 @@
             <button class="btn btn-success" onclick="GR.Modules.Viveiro.salvarTrabalhador()">💾 Salvar</button>
         </div>
     </div>
-
     <!-- ===== MODAL: VENCIMENTOS ===== -->
     <div id="modal-vencimentos" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-vencimentos-title">
         <div class="modal-content" style="max-width:750px;">
@@ -2660,7 +2623,7 @@
         </div>
     </div>
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 5/10 - UTILS, TOAST, MODAL, SECURITY, STORE, STATE -->
+    <!-- JAVASCRIPT - PARTE 6/14 - UTILS, TOAST, MODAL, SECURITY, STORE, STATE -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -3297,7 +3260,7 @@
         };
     </script>
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 6/10 - LOGIN + UI PRINCIPAL + DASHBOARD      -->
+    <!-- JAVASCRIPT - PARTE 7/14 - LOGIN + UI PRINCIPAL + DASHBOARD      -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -4160,7 +4123,7 @@
         };
     </script>
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 7/10 - MÓDULOS PRINCIPAIS                    -->
+    <!-- JAVASCRIPT - PARTE 8/14 - MÓDULOS PRINCIPAIS                    -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -5035,7 +4998,7 @@
         };
     </script>
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 8/10 - MÓDULOS (Pecuária, Funcionários, Parceiros, Contabilidade) -->
+    <!-- JAVASCRIPT - PARTE 9/14 - MÓDULOS (Pecuária, Funcionários, Parceiros, Contabilidade) -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -5841,7 +5804,7 @@
         };
     </script>
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 9/10 - MÓDULOS (Documentos, Análises, Viveiro) -->
+    <!-- JAVASCRIPT - PARTE 10/14 - MÓDULOS (Documentos, Análises, Viveiro) -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -6607,7 +6570,7 @@
         };
     </script>
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 10/10 - MÓDULOS FINAIS + FECHAMENTO          -->
+    <!-- JAVASCRIPT - PARTE 11/14 - MÓDULOS FINAIS (Relatórios, Configurações, Histórico, Backup, Notificações) -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -6630,7 +6593,6 @@
                     '</div>' +
                     '<p><strong>Total de Receitas:</strong> ' + receitas.length + ' registros</p>' +
                     '<p><strong>Total de Despesas:</strong> ' + despesas.length + ' registros</p>' +
-                    '<button class="btn btn-primary btn-sm" onclick="GR.Relatorios.exportarRelatorio(\'financeiro\')">📄 Exportar PDF</button>' +
                     '</div>';
 
                 document.getElementById('relatorio-content').innerHTML = html;
@@ -6657,7 +6619,7 @@
                     html += '</tbody></table></div>';
                 }
 
-                html += '<button class="btn btn-primary btn-sm" onclick="GR.Relatorios.exportarRelatorio(\'estoque\')">📄 Exportar PDF</button></div>';
+                html += '</div>';
                 document.getElementById('relatorio-content').innerHTML = html;
             },
 
@@ -6680,7 +6642,7 @@
                     html += '</tbody></table></div>';
                 }
 
-                html += '<button class="btn btn-primary btn-sm" onclick="GR.Relatorios.exportarRelatorio(\'pecuaria\')">📄 Exportar PDF</button></div>';
+                html += '</div>';
                 document.getElementById('relatorio-content').innerHTML = html;
             },
 
@@ -6709,7 +6671,7 @@
                     html += '</tbody></table></div>';
                 }
 
-                html += '<button class="btn btn-primary btn-sm" onclick="GR.Relatorios.exportarRelatorio(\'analises\')">📄 Exportar PDF</button></div>';
+                html += '</div>';
                 document.getElementById('relatorio-content').innerHTML = html;
             },
 
@@ -6736,40 +6698,8 @@
                     '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalR - totalD) + '</div><div class="label">📊 Saldo</div></div>' +
                     '</div>';
 
-                html += '<button class="btn btn-primary btn-sm" onclick="GR.Relatorios.exportarRelatorio(\'geral\')">📄 Exportar PDF</button></div>';
+                html += '</div>';
                 document.getElementById('relatorio-content').innerHTML = html;
-            },
-
-            exportarRelatorio: function(tipo) {
-                if (typeof jspdf === 'undefined') {
-                    GR.Toast.error('Biblioteca jsPDF não carregada.');
-                    return;
-                }
-
-                var doc = new jspdf.jsPDF('portrait', 'pt', 'a4');
-                var titulo = 'Relatório - ' + tipo.charAt(0).toUpperCase() + tipo.slice(1);
-
-                doc.setFontSize(16);
-                doc.text(titulo, 40, 40);
-                doc.setFontSize(10);
-                doc.text('Gerado em: ' + new Date().toLocaleString('pt-BR'), 40, 60);
-
-                var y = 80;
-                var content = document.getElementById('relatorio-content');
-                var text = content ? content.textContent || 'Sem dados' : 'Sem dados';
-
-                var lines = doc.splitTextToSize(text, 500);
-                lines.forEach(function(line) {
-                    if (y > 750) {
-                        doc.addPage();
-                        y = 40;
-                    }
-                    doc.text(line, 40, y);
-                    y += 14;
-                });
-
-                doc.save('relatorio_' + tipo + '_' + new Date().toISOString().split('T')[0] + '.pdf');
-                GR.Toast.success('📄 Relatório exportado!');
             }
         };
 
@@ -7326,7 +7256,11 @@
                 }
             }
         };
-
+    </script>
+    <!-- ================================================================ -->
+    <!-- JAVASCRIPT - PARTE 12/14 - MÓDULOS (NF-e, QR Code, Scanner, PDF Import, Voice) -->
+    <!-- ================================================================ -->
+    <script>
         // ================================================================
         // MÓDULO: NF-e (NOTA FISCAL ELETRÔNICA)
         // ================================================================
@@ -7715,6 +7649,605 @@
                 var selec = document.getElementById('nfe-total-selecionados');
                 if (selec) selec.textContent = '0';
                 GR.Toast.info('Dados limpos.');
+            }
+        };
+
+        // ================================================================
+        // MÓDULO: QR CODE - ETIQUETAS (GERADOR)
+        // ================================================================
+        GR.Etiquetas = {
+            gerarEtiqueta: function(id) {
+                var item = GR.State.data.insumos.find(function(i) { return i.id === id; });
+                if (!item) {
+                    GR.Toast.error('Insumo não encontrado!');
+                    return;
+                }
+
+                var qrData = JSON.stringify({
+                    id: item.id,
+                    nome: item.nome,
+                    quantidade: item.quantidade,
+                    unidade: item.unidade || 'un'
+                });
+
+                var container = document.createElement('div');
+                container.id = 'qr-temp';
+                document.body.appendChild(container);
+
+                try {
+                    if (typeof Html5Qrcode === 'undefined') {
+                        GR.Toast.error('Biblioteca QR Code não carregada.');
+                        document.body.removeChild(container);
+                        return;
+                    }
+
+                    var qrCode = new Html5Qrcode('qr-temp');
+                    qrCode.render(qrData, { width: 80, height: 80 }, function(canvas) {
+                        var etiqueta = document.createElement('div');
+                        etiqueta.className = 'etiqueta-qr';
+                        etiqueta.style.cssText = 'border:1px solid #ccc;padding:8px;margin:4px;border-radius:4px;display:inline-block;text-align:center;';
+                        etiqueta.innerHTML = '<div style="font-weight:bold;">' + GR.Utils.escapeHtml(item.nome) + '</div>' +
+                            '<div>' + item.quantidade + ' ' + (item.unidade || 'un') + '</div>';
+                        etiqueta.appendChild(canvas);
+                        etiqueta.innerHTML += '<div style="font-size:8px;color:#999;">ID: ' + item.id.substring(0, 8) + '</div>';
+
+                        var lista = document.getElementById('etiquetas-lista');
+                        if (lista) lista.appendChild(etiqueta);
+
+                        document.body.removeChild(container);
+                        GR.Modal.open('modal-etiquetas');
+                        GR.Toast.success('Etiqueta gerada!');
+                    });
+                } catch (e) {
+                    console.warn('Erro ao gerar QRCode:', e);
+                    GR.Toast.warning('Erro ao gerar QRCode.');
+                    if (document.getElementById('qr-temp')) document.getElementById('qr-temp').remove();
+                }
+            },
+
+            gerarTodas: function() {
+                var items = GR.State.data.insumos;
+                if (!items.length) {
+                    GR.Toast.warning('Nenhum insumo.');
+                    return;
+                }
+
+                var lista = document.getElementById('etiquetas-lista');
+                if (lista) lista.innerHTML = '';
+                var count = 0;
+
+                items.forEach(function(item) {
+                    var qrData = JSON.stringify({
+                        id: item.id,
+                        nome: item.nome,
+                        quantidade: item.quantidade,
+                        unidade: item.unidade || 'un'
+                    });
+
+                    var container = document.createElement('div');
+                    container.id = 'qr-temp-' + item.id;
+                    document.body.appendChild(container);
+
+                    try {
+                        if (typeof Html5Qrcode === 'undefined') {
+                            GR.Toast.error('Biblioteca QR Code não carregada.');
+                            document.body.removeChild(container);
+                            return;
+                        }
+
+                        var qrCode = new Html5Qrcode(container.id);
+                        qrCode.render(qrData, { width: 70, height: 70 }, function(canvas) {
+                            var etiqueta = document.createElement('div');
+                            etiqueta.className = 'etiqueta-qr';
+                            etiqueta.style.cssText = 'border:1px solid #ccc;padding:8px;margin:4px;border-radius:4px;display:inline-block;text-align:center;';
+                            etiqueta.innerHTML = '<div style="font-weight:bold;">' + GR.Utils.escapeHtml(item.nome) + '</div>' +
+                                '<div>' + item.quantidade + ' ' + (item.unidade || 'un') + '</div>';
+                            etiqueta.appendChild(canvas);
+                            etiqueta.innerHTML += '<div style="font-size:8px;color:#999;">' + item.id.substring(0, 8) + '</div>';
+
+                            if (lista) lista.appendChild(etiqueta);
+                            document.body.removeChild(container);
+                            count++;
+
+                            if (count === items.length) {
+                                GR.Modal.open('modal-etiquetas');
+                                GR.Toast.success(count + ' etiquetas geradas!');
+                            }
+                        });
+                    } catch (e) {
+                        document.body.removeChild(container);
+                    }
+                });
+
+                if (!count) {
+                    GR.Toast.warning('Nenhuma etiqueta gerada.');
+                }
+            },
+
+            imprimir: function() {
+                window.print();
+            },
+
+            imprimirSelecionadas: function() {
+                var select = document.getElementById('etiquetas-select');
+                var selected = Array.from(select.selectedOptions).map(function(opt) { return opt.value; });
+                if (!selected.length) {
+                    GR.Toast.warning('Selecione pelo menos um insumo!');
+                    return;
+                }
+
+                var items = GR.State.data.insumos.filter(function(i) { return selected.indexOf(i.id) !== -1; });
+                if (!items.length) {
+                    GR.Toast.warning('Nenhum insumo selecionado!');
+                    return;
+                }
+
+                var porPagina = parseInt(document.getElementById('etiquetas-por-pagina').value) || 12;
+                var tamanho = document.getElementById('etiqueta-tamanho').value;
+                var tamanhos = { pequena: { w: 50, h: 30 }, media: { w: 70, h: 40 }, grande: { w: 90, h: 50 } };
+                var dim = tamanhos[tamanho] || tamanhos.media;
+
+                var win = window.open('', '_blank');
+                win.document.write('<html><head><title>Etiquetas</title>');
+                win.document.write('<style>');
+                win.document.write('body { margin: 0; padding: 10px; font-family: Arial, sans-serif; }');
+                win.document.write('.etiqueta { display: inline-block; width: ' + dim.w + 'mm; height: ' + dim.h + 'mm; margin: 2mm; padding: 2mm; border: 1px solid #000; text-align: center; vertical-align: top; font-size: 9px; box-sizing: border-box; }');
+                win.document.write('.etiqueta .nome { font-weight: bold; font-size: 11px; }');
+                win.document.write('.etiqueta .info { font-size: 9px; }');
+                win.document.write('.etiqueta .codigo { font-size: 7px; color: #666; }');
+                win.document.write('.etiqueta canvas { display: block; margin: 2px auto; max-width: 40px; height: auto; }');
+                win.document.write('</style></head><body>');
+
+                items.forEach(function(item, idx) {
+                    if (idx > 0 && idx % porPagina === 0) {
+                        win.document.write('<div style="page-break-after: always;"></div>');
+                    }
+
+                    win.document.write('<div class="etiqueta">');
+                    win.document.write('<div class="nome">' + GR.Utils.escapeHtml(item.nome) + '</div>');
+                    win.document.write('<div class="info">' + item.quantidade + ' ' + (item.unidade || 'un') + '</div>');
+                    win.document.write('<div id="qr-' + idx + '"></div>');
+                    win.document.write('<div class="codigo">' + item.id.substring(0, 8) + '</div>');
+                    win.document.write('</div>');
+                });
+
+                win.document.write('</body></html>');
+                win.document.close();
+
+                setTimeout(function() {
+                    try {
+                        if (typeof Html5Qrcode !== 'undefined') {
+                            items.forEach(function(item, idx) {
+                                var container = win.document.getElementById('qr-' + idx);
+                                if (container) {
+                                    var qrData = JSON.stringify({
+                                        id: item.id,
+                                        nome: item.nome,
+                                        quantidade: item.quantidade,
+                                        unidade: item.unidade || 'un'
+                                    });
+                                    var qrCode = new Html5Qrcode(container.id);
+                                    qrCode.render(qrData, { width: 40, height: 40 }, function(canvas) {
+                                        container.innerHTML = '';
+                                        container.appendChild(canvas);
+                                    });
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        console.warn('Erro ao gerar QR na impressão:', e);
+                    }
+                }, 500);
+
+                setTimeout(function() {
+                    win.print();
+                }, 1500);
+
+                GR.Modal.close('modal-imprimir-etiquetas');
+            },
+
+            abrirModalImpressao: function() {
+                var select = document.getElementById('etiquetas-select');
+                if (select) {
+                    select.innerHTML = '';
+                    GR.State.data.insumos.forEach(function(i) {
+                        var opt = document.createElement('option');
+                        opt.value = i.id;
+                        opt.textContent = i.nome + ' (' + i.quantidade + ' ' + (i.unidade || 'un') + ')';
+                        select.appendChild(opt);
+                    });
+                }
+                GR.Modal.open('modal-imprimir-etiquetas');
+            }
+        };
+
+        // ================================================================
+        // MÓDULO: QR CODE - LEITOR (BAIXA DE ESTOQUE)
+        // ================================================================
+        GR.QrLeitor = {
+            html5QrCode: null,
+            produtoId: null,
+            aberto: false,
+
+            abrir: function() {
+                var container = document.getElementById('qr-leitor-container');
+                if (!container) return;
+
+                GR.Modal.open('modal-qr-leitor');
+                this.aberto = true;
+                var result = document.getElementById('qr-result');
+                if (result) result.style.display = 'none';
+
+                container.innerHTML = `
+                    <div style="padding:10px;text-align:center;">
+                        <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;">
+                            <button class="btn btn-primary" onclick="GR.QrLeitor._iniciarCamera()">📷 Usar Câmera</button>
+                            <button class="btn btn-secondary" onclick="GR.QrLeitor._modoManual()">⌨️ Digitar ID</button>
+                        </div>
+                        <div id="qr-leitor-camera" style="display:none;"></div>
+                        <div id="qr-leitor-manual" style="display:none;">
+                            <input type="text" id="qr-input-manual" class="form-control" placeholder="Digite o ID do produto" style="max-width:200px;margin:0 auto;">
+                            <button class="btn btn-success btn-sm" onclick="GR.QrLeitor._buscarProdutoPorId()" style="margin-top:6px;">🔍 Buscar</button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            _iniciarCamera: function() {
+                var cameraDiv = document.getElementById('qr-leitor-camera');
+                var manualDiv = document.getElementById('qr-leitor-manual');
+                if (cameraDiv) cameraDiv.style.display = 'block';
+                if (manualDiv) manualDiv.style.display = 'none';
+
+                try {
+                    if (this.html5QrCode) {
+                        this.html5QrCode.stop().catch(function() {});
+                    }
+                    if (typeof Html5Qrcode === 'undefined') {
+                        GR.Toast.error('Biblioteca QR Code não carregada.');
+                        return;
+                    }
+
+                    this.html5QrCode = new Html5Qrcode("qr-leitor-camera");
+                    var config = { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 };
+
+                    this.html5QrCode.start({ facingMode: "environment" }, config,
+                        function(decodedText) { GR.QrLeitor._processarLeitura(decodedText); },
+                        function() {}
+                    );
+                } catch (e) {
+                    GR.Toast.warning('Não foi possível acessar a câmera. Use o modo manual.');
+                    console.warn('QR error:', e);
+                    if (cameraDiv) cameraDiv.style.display = 'none';
+                    if (manualDiv) manualDiv.style.display = 'block';
+                }
+            },
+
+            _modoManual: function() {
+                var cameraDiv = document.getElementById('qr-leitor-camera');
+                var manualDiv = document.getElementById('qr-leitor-manual');
+                if (cameraDiv) cameraDiv.style.display = 'none';
+                if (manualDiv) manualDiv.style.display = 'block';
+                
+                if (this.html5QrCode) {
+                    this.html5QrCode.stop().catch(function() {});
+                }
+                setTimeout(function() { document.getElementById('qr-input-manual').focus(); }, 100);
+            },
+
+            _processarLeitura: function(dados) {
+                try {
+                    var obj = dados;
+                    if (typeof dados === 'string') {
+                        try {
+                            obj = JSON.parse(dados);
+                        } catch (e) {
+                            var match = dados.match(/id[:"]?\s*["]?([a-z0-9]+)["]?/i);
+                            if (match) obj = { id: match[1] };
+                            else obj = { dados: dados };
+                        }
+                    }
+
+                    var id = obj.id || obj.dados;
+                    var insumo = GR.State.data.insumos.find(function(i) { return i.id === id; });
+                    if (!insumo) {
+                        GR.Toast.error('Produto não encontrado!');
+                        return;
+                    }
+
+                    GR.QrLeitor.produtoId = insumo.id;
+                    document.getElementById('qr-produto-nome').textContent = insumo.nome;
+                    document.getElementById('qr-estoque-atual').textContent = insumo.quantidade + ' ' + (insumo.unidade || 'un');
+                    document.getElementById('qr-qtde-baixa').value = 1;
+
+                    var result = document.getElementById('qr-result');
+                    if (result) result.style.display = 'block';
+
+                    GR.Toast.success('Produto: ' + insumo.nome);
+                    if (GR.QrLeitor.html5QrCode) {
+                        GR.QrLeitor.html5QrCode.stop().catch(function() {});
+                    }
+                } catch (e) {
+                    GR.Toast.error('Erro ao processar leitura.');
+                    console.error(e);
+                }
+            },
+
+            _buscarProdutoPorId: function() {
+                var id = document.getElementById('qr-input-manual').value.trim();
+                if (!id) {
+                    GR.Toast.warning('Digite um ID!');
+                    return;
+                }
+
+                var insumo = GR.State.data.insumos.find(function(i) { return i.id === id; });
+                if (!insumo) {
+                    GR.Toast.error('Produto não encontrado!');
+                    return;
+                }
+
+                GR.QrLeitor.produtoId = insumo.id;
+                document.getElementById('qr-produto-nome').textContent = insumo.nome;
+                document.getElementById('qr-estoque-atual').textContent = insumo.quantidade + ' ' + (insumo.unidade || 'un');
+                document.getElementById('qr-qtde-baixa').value = 1;
+
+                var result = document.getElementById('qr-result');
+                if (result) result.style.display = 'block';
+
+                GR.Toast.success('Produto: ' + insumo.nome);
+            },
+
+            darBaixa: function() {
+                if (!this.produtoId) {
+                    GR.Toast.warning('Nenhum produto selecionado.');
+                    return;
+                }
+
+                var insumo = GR.State.data.insumos.find(function(i) { return i.id === this.produtoId; }.bind(this));
+                if (!insumo) {
+                    GR.Toast.error('Produto não encontrado!');
+                    return;
+                }
+
+                var qtde = parseFloat(document.getElementById('qr-qtde-baixa').value);
+                if (isNaN(qtde) || qtde <= 0) {
+                    GR.Toast.error('Quantidade inválida!');
+                    return;
+                }
+                if (qtde > insumo.quantidade) {
+                    GR.Toast.error('Quantidade insuficiente! Estoque: ' + insumo.quantidade);
+                    return;
+                }
+
+                var uid = currentUser.uid;
+                db.collection('users').doc(uid).collection('insumos').doc(this.produtoId).update({
+                    quantidade: insumo.quantidade - qtde
+                }).then(function() {
+                    GR.Toast.success('Baixa realizada: ' + qtde + ' ' + (insumo.unidade || 'un'));
+                    GR.QrLeitor.fechar();
+                    GR.UI.refreshCurrentView();
+                }).catch(function(err) {
+                    GR.Toast.error('Erro ao dar baixa: ' + err.message);
+                });
+            },
+
+            fechar: function() {
+                if (this.html5QrCode) {
+                    this.html5QrCode.stop().catch(function() {});
+                    this.html5QrCode = null;
+                }
+                this.aberto = false;
+                this.produtoId = null;
+                GR.Modal.close('modal-qr-leitor');
+
+                var result = document.getElementById('qr-result');
+                if (result) result.style.display = 'none';
+                var container = document.getElementById('qr-leitor-container');
+                if (container) container.innerHTML = '';
+            }
+        };
+
+        // ================================================================
+        // MÓDULO: SCANNER QR CODE
+        // ================================================================
+        GR.Scanner = {
+            html5QrCode: null,
+            dadosEscaneados: null,
+            aberto: false,
+
+            abrirScanner: function() {
+                var container = document.getElementById('scanner-container');
+                if (!container) return;
+
+                GR.Modal.open('modal-scanner');
+                this.aberto = true;
+                
+                container.innerHTML = `
+                    <div style="padding:10px;text-align:center;">
+                        <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;">
+                            <button class="btn btn-primary" onclick="GR.Scanner._iniciarCamera()">📷 Usar Câmera</button>
+                            <button class="btn btn-secondary" onclick="GR.Scanner._modoManual()">⌨️ Digitar Dados</button>
+                            <button class="btn btn-info" onclick="document.getElementById('scan-file-input').click()">📤 Upload Imagem</button>
+                        </div>
+                        <input type="file" id="scan-file-input" accept="image/*" style="display:none">
+                        <div id="scanner-camera" style="display:none;"></div>
+                        <div id="scanner-manual" style="display:none;">
+                            <textarea id="scan-textarea" class="form-control" rows="4" placeholder="Cole os dados aqui (JSON ou chave: valor)..."></textarea>
+                            <button class="btn btn-success btn-sm" onclick="GR.Scanner._processarManual()" style="margin-top:6px;">✅ Processar</button>
+                        </div>
+                        <div id="scan-result" style="margin-top:6px;display:none;background:#e8f5e9;padding:6px;border-radius:3px;">
+                            <strong>📋 Dados:</strong>
+                            <pre id="scan-data" style="margin-top:3px;background:#fff;padding:3px;border-radius:3px;max-height:80px;overflow:auto;font-size:10px;"></pre>
+                            <button class="btn btn-success" onclick="GR.Scanner.aplicarDados()">✅ Aplicar</button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            _iniciarCamera: function() {
+                var cameraDiv = document.getElementById('scanner-camera');
+                var manualDiv = document.getElementById('scanner-manual');
+                if (cameraDiv) cameraDiv.style.display = 'block';
+                if (manualDiv) manualDiv.style.display = 'none';
+
+                try {
+                    if (this.html5QrCode) {
+                        this.html5QrCode.stop().catch(function() {});
+                    }
+                    if (typeof Html5Qrcode === 'undefined') {
+                        GR.Toast.error('Biblioteca QR Code não carregada.');
+                        return;
+                    }
+
+                    this.html5QrCode = new Html5Qrcode("scanner-camera");
+                    var config = { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 };
+
+                    this.html5QrCode.start({ facingMode: "environment" }, config,
+                        function(decodedText) { GR.Scanner._processarDados(decodedText); },
+                        function() {}
+                    );
+                } catch (e) {
+                    GR.Toast.warning('Não foi possível acessar a câmera. Use o modo manual.');
+                    console.warn('Scanner error:', e);
+                    if (cameraDiv) cameraDiv.style.display = 'none';
+                    if (manualDiv) manualDiv.style.display = 'block';
+                }
+            },
+
+            _modoManual: function() {
+                var cameraDiv = document.getElementById('scanner-camera');
+                var manualDiv = document.getElementById('scanner-manual');
+                if (cameraDiv) cameraDiv.style.display = 'none';
+                if (manualDiv) manualDiv.style.display = 'block';
+                
+                if (this.html5QrCode) {
+                    this.html5QrCode.stop().catch(function() {});
+                }
+                setTimeout(function() { document.getElementById('scan-textarea').focus(); }, 100);
+            },
+
+            _processarManual: function() {
+                var texto = document.getElementById('scan-textarea').value.trim();
+                if (!texto) {
+                    GR.Toast.warning('Digite os dados!');
+                    return;
+                }
+
+                try {
+                    var obj = JSON.parse(texto);
+                    GR.Scanner.dadosEscaneados = obj;
+                } catch (e) {
+                    var matches = texto.match(/([^:\n]+):\s*([^\n]+)/g);
+                    if (matches) {
+                        obj = {};
+                        matches.forEach(function(m) {
+                            var parts = m.split(':').map(function(s) { return s.trim(); });
+                            obj[parts[0]] = parts[1];
+                        });
+                        GR.Scanner.dadosEscaneados = obj;
+                    } else {
+                        GR.Scanner.dadosEscaneados = { dados: texto };
+                    }
+                }
+
+                var resultDiv = document.getElementById('scan-result');
+                if (resultDiv) {
+                    resultDiv.style.display = 'block';
+                    document.getElementById('scan-data').textContent = JSON.stringify(GR.Scanner.dadosEscaneados, null, 2);
+                }
+
+                GR.Toast.success('📷 Dados processados!');
+            },
+
+            _processarDados: function(dados) {
+                try {
+                    var obj = dados;
+                    if (typeof dados === 'string') {
+                        try {
+                            obj = JSON.parse(dados);
+                        } catch (e) {
+                            var matches = dados.match(/([^:\n]+):\s*([^\n]+)/g);
+                            if (matches) {
+                                obj = {};
+                                matches.forEach(function(m) {
+                                    var parts = m.split(':').map(function(s) { return s.trim(); });
+                                    obj[parts[0]] = parts[1];
+                                });
+                            } else {
+                                obj = { dados: dados };
+                            }
+                        }
+                    }
+
+                    GR.Scanner.dadosEscaneados = obj;
+                    var resultDiv = document.getElementById('scan-result');
+                    if (resultDiv) {
+                        resultDiv.style.display = 'block';
+                        document.getElementById('scan-data').textContent = JSON.stringify(obj, null, 2);
+                    }
+
+                    GR.Toast.success('📷 Dados escaneados!');
+                    if (GR.Scanner.html5QrCode) {
+                        GR.Scanner.html5QrCode.stop().catch(function() {});
+                    }
+                } catch (e) {
+                    GR.Toast.error('Erro ao processar dados.');
+                    console.error(e);
+                }
+            },
+
+            uploadImagem: function() {
+                document.getElementById('scan-file-input').click();
+            },
+
+            aplicarDados: function() {
+                if (!this.dadosEscaneados) {
+                    GR.Toast.warning('Nenhum dado escaneado.');
+                    return;
+                }
+
+                var d = this.dadosEscaneados;
+                var map = {
+                    'numero': 'contrato-numero',
+                    'valor': 'contrato-valor',
+                    'data': 'contrato-data',
+                    'mutuario': 'contrato-mutuario',
+                    'instituicao': 'contrato-instituicao',
+                    'modalidade': 'contrato-modalidade',
+                    'taxaJuros': 'contrato-taxa-juros',
+                    'saldoQuitacao': 'contrato-saldo-quitacao'
+                };
+
+                for (var chave in map) {
+                    if (d[chave]) {
+                        var el = document.getElementById(map[chave]);
+                        if (el) {
+                            if (chave === 'valor' || chave === 'saldoQuitacao') {
+                                el.value = GR.Utils.formatarMoedaSemSimbolo(parseFloat(d[chave]));
+                            } else {
+                                el.value = d[chave];
+                            }
+                        }
+                    }
+                }
+
+                GR.Toast.success('✅ Dados aplicados!');
+                this.fecharScanner();
+            },
+
+            fecharScanner: function() {
+                if (this.html5QrCode) {
+                    this.html5QrCode.stop().catch(function() {});
+                    this.html5QrCode = null;
+                }
+                this.aberto = false;
+                this.dadosEscaneados = null;
+                GR.Modal.close('modal-scanner');
+
+                var resultDiv = document.getElementById('scan-result');
+                if (resultDiv) resultDiv.style.display = 'none';
+                var container = document.getElementById('scanner-container');
+                if (container) container.innerHTML = '';
             }
         };
 
@@ -8243,2353 +8776,13 @@
                 GR.Toast.warning('Comando não reconhecido. Diga "ajuda" para ver os comandos disponíveis.');
             }
         };
-
-        // ================================================================
-        // UI - FUNÇÕES DE RENDERIZAÇÃO ADICIONAIS (já incluídas)
-        // ================================================================
-        // As funções _renderAcoes, _renderOrcamentos, _renderCredito, _renderInsumos,
-        // _renderPecuaria, _renderFuncionarios, _renderParceiros, _renderContabilidade,
-        // _renderDocumentos, _renderAnalises, _renderViveiro, _renderRelatorios,
-        // _renderConfiguracoes, _renderHistorico, _renderConfiguracoesDados
-        // já foram incluídas na PARTE 4
-
-        // ================================================================
-        // INICIALIZAÇÃO FINAL
-        // ================================================================
-        (function initFinal() {
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    iniciarSistema();
-                });
-            } else {
-                iniciarSistema();
-            }
-
-            function iniciarSistema() {
-                console.log('🚀 Inicializando Gestão Rural - Firebase');
-                console.log('📁 Projeto:', firebaseConfig.projectId);
-
-                GR.Login.init();
-
-                var savedTheme = localStorage.getItem('gr_theme') || 'claro';
-                document.documentElement.setAttribute('data-theme', savedTheme);
-
-                var savedFont = parseFloat(localStorage.getItem('gr_font_size')) || 14;
-                document.documentElement.style.setProperty('--font-size-base', savedFont + 'px');
-
-                auth.onAuthStateChanged(function(user) {
-                    if (user) {
-                        console.log('👤 Usuário autenticado:', user.email);
-                    }
-                });
-
-                console.log('✅ Sistema Gestão Rural - Firebase - Versão Completa!');
-                console.log('🌾 Pronto para uso no GitHub Pages!');
-            }
-        })();
-
-        // ================================================================
-        // EXPORTAÇÃO DE FUNÇÕES PARA USO GLOBAL
-        // ================================================================
-        window.GR = GR;
-        window.db = db;
-        window.auth = auth;
-        window.currentUser = currentUser;
-
-        window.abrirModalTarefa = function() { GR.Modules.Tarefas.abrirModal(); };
-        window.abrirModalOrcamento = function() { GR.Modal.open('modal-orcamento'); };
-        window.abrirModalContrato = function() { GR.Modal.open('modal-contrato'); };
-        window.abrirModalInsumo = function() { GR.Modules.Insumos.abrirModal(); };
-        window.abrirModalAnimal = function() { GR.Modules.Pecuaria.abrirModalAnimal(); };
-        window.abrirModalFuncionario = function() { GR.Modules.Funcionarios.abrirModal(); };
-        window.abrirModalParte = function() { GR.Modules.PartesRelacionadas.abrirModal(); };
-        window.abrirModalDocumento = function() { GR.Modules.Documentos.abrirModal(); };
-        window.abrirModalAnalise = function() { GR.Analises.abrirModal(); };
-        window.abrirModalViveiroMuda = function() { GR.Modal.open('modal-viveiro-muda'); };
-        window.abrirModalViveiroInsumo = function() { GR.Modal.open('modal-viveiro-insumo'); };
-        window.abrirModalViveiroServico = function() { GR.Modal.open('modal-viveiro-servico'); };
-        window.abrirModalViveiroTrabalhador = function() { GR.Modal.open('modal-viveiro-trabalhador'); };
-        window.abrirModalNfe = function() { GR.NFE.abrirModal(); };
-        window.abrirVencimentos = function() { GR.Vencimentos.verParcelas(GR.Vencimentos.idContratoAtivo); };
-        window.abrirMapeamentoVisual = function() { GR.PDFImport.abrirMapeamentoVisual(); };
-        window.gerarEtiquetasInsumos = function() { GR.Etiquetas.gerarTodas(); };
-
-        window.logout = function() { GR.Login.logout(); };
-        window.navegar = function(section) { GR.UI.navegar(section); };
-        window.ajudaVoz = function() { GR.Voice.iniciar(); };
-
-        window.openBackupModal = function() { GR.Backup.openBackupModal(); };
-        window.exportarBackup = function() { GR.Backup.exportar(); };
-        window.zerarBancoDados = function() { GR.Config.zerarBancoDados(); };
-
-        console.log('✅ Funções exportadas para o escopo global');
-        console.log('🎯 Sistema pronto para uso no GitHub Pages!');
-
     </script>
     <!-- ================================================================ -->
-    <!-- FIM DO ARQUIVO                                                  -->
-    <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 11/13 - MÓDULOS (Pecuária, Funcionários, Parceiros, Contabilidade) -->
+    <!-- JAVASCRIPT - PARTE 13/14 - UI RENDERIZAÇÕES + DASHBOARD CONFIG + EXPORT/IMPORT CSV -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
-        // MÓDULO: PECUÁRIA
-        // ================================================================
-        GR.Modules.Pecuaria = {
-            renderAnimais: function() {
-                var div = document.getElementById('lista-animais');
-                if (!div) return;
-                var animais = GR.State.data.animais || [];
-                var filtrados = animais.filter(function(a) {
-                    if (GR.State.ui.propriedadeAtiva === 'todas') return true;
-                    return a.propriedade === GR.State.ui.propriedadeAtiva;
-                });
-
-                if (!filtrados.length) {
-                    div.innerHTML = '<div class="empty-state"><span class="icon">🐄</span><div class="message">Nenhum animal cadastrado</div></div>';
-                    return;
-                }
-
-                var unidadePeso = 'kg';
-                var rows = filtrados.map(function(a) {
-                    var idade = a.nascimento ? Math.floor((new Date() - new Date(a.nascimento)) / 31536000000) : '-';
-                    return '<tr>' +
-                        '<td><strong>' + GR.Utils.escapeHtml(a.identificacao || a.nome) + '</strong></td>' +
-                        '<td>' + GR.Utils.escapeHtml(a.nome || '-') + '</td>' +
-                        '<td><span class="badge badge-info">' + GR.Utils.escapeHtml(a.especie) + '</span></td>' +
-                        '<td>' + GR.Utils.escapeHtml(a.raca || '-') + '</td>' +
-                        '<td>' + (a.nascimento ? GR.Utils.formatarDataBR(a.nascimento) : '-') + (idade !== '-' ? ' (' + idade + ' anos)' : '') + '</td>' +
-                        '<td>' + (a.sexo || '-') + '</td>' +
-                        '<td>' + (a.peso || 0) + ' ' + unidadePeso + '</td>' +
-                        '<td>' +
-                        '<button class="btn btn-primary btn-sm" onclick="GR.Modules.Pecuaria.abrirModalAnimal(\'' + a.id + '\')">✏️</button>' +
-                        '<button class="btn btn-info btn-sm" onclick="GR.Modules.Pecuaria.verHistoricoAnimal(\'' + a.id + '\')">📋</button>' +
-                        '<button class="btn btn-danger btn-sm" onclick="GR.Modules.Pecuaria.excluirAnimal(\'' + a.id + '\')">🗑️</button>' +
-                        '</td>' +
-                        '</tr>';
-                }).join('');
-
-                div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Identificação</th><th>Nome</th><th>Espécie</th><th>Raça</th><th>Nascimento</th><th>Sexo</th><th>Peso</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-            },
-
-            abrirModalAnimal: function(editId) {
-                GR.State.ui.animalEditando = editId || null;
-                document.getElementById('modal-animal-title').textContent = editId ? '✏️ Editar Animal' : '🐄 Novo Animal';
-
-                document.getElementById('animal-id').value = '';
-                document.getElementById('animal-nome').value = '';
-                document.getElementById('animal-especie').value = 'Bovino';
-                document.getElementById('animal-raca').value = '';
-                document.getElementById('animal-nascimento').value = '';
-                document.getElementById('animal-sexo').value = 'Macho';
-                document.getElementById('animal-peso').value = 0;
-                document.getElementById('animal-obs').value = '';
-                GR.UI._atualizarSelectsPropriedade();
-
-                if (editId) {
-                    var item = GR.State.data.animais.find(function(a) { return a.id === editId; });
-                    if (item) {
-                        document.getElementById('animal-id').value = item.identificacao || '';
-                        document.getElementById('animal-nome').value = item.nome || '';
-                        document.getElementById('animal-especie').value = item.especie || 'Bovino';
-                        document.getElementById('animal-raca').value = item.raca || '';
-                        document.getElementById('animal-nascimento').value = item.nascimento || '';
-                        document.getElementById('animal-sexo').value = item.sexo || 'Macho';
-                        document.getElementById('animal-peso').value = item.peso || 0;
-                        document.getElementById('animal-propriedade').value = item.propriedade || '';
-                        document.getElementById('animal-obs').value = item.obs || '';
-                    }
-                }
-
-                GR.Modal.open('modal-animal');
-            },
-
-            salvarAnimal: function() {
-                var id = document.getElementById('animal-id').value.trim();
-                var nome = document.getElementById('animal-nome').value.trim();
-                var especie = document.getElementById('animal-especie').value;
-                var raca = document.getElementById('animal-raca').value.trim();
-                var nascimento = document.getElementById('animal-nascimento').value;
-                var sexo = document.getElementById('animal-sexo').value;
-                var peso = parseFloat(document.getElementById('animal-peso').value) || 0;
-                var propriedade = document.getElementById('animal-propriedade').value;
-                var obs = document.getElementById('animal-obs').value.trim();
-
-                if (!id && !nome) {
-                    GR.Toast.error('Identificação ou Nome é obrigatório!');
-                    return;
-                }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    identificacao: GR.Utils.escapeHtml(id),
-                    nome: GR.Utils.escapeHtml(nome || id),
-                    especie: especie,
-                    raca: GR.Utils.escapeHtml(raca),
-                    nascimento: nascimento,
-                    sexo: sexo,
-                    peso: peso,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    obs: GR.Utils.escapeHtml(obs),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                if (GR.State.ui.animalEditando) {
-                    db.collection('users').doc(uid).collection('animais').doc(GR.State.ui.animalEditando).update(dados)
-                        .then(function() {
-                            GR.Modal.close('modal-animal');
-                            GR.Toast.success('Animal atualizado!');
-                            GR.State.adicionarHistorico('editou animal', 'Pecuária', 'Animal: ' + (nome || id));
-                            GR.UI.refreshCurrentView();
-                        })
-                        .catch(function(err) {
-                            GR.Toast.error('Erro ao atualizar: ' + err.message);
-                        });
-                } else {
-                    db.collection('users').doc(uid).collection('animais').add(dados)
-                        .then(function() {
-                            GR.Modal.close('modal-animal');
-                            GR.Toast.success('Animal salvo!');
-                            GR.State.adicionarHistorico('criou animal', 'Pecuária', 'Animal: ' + (nome || id));
-                            GR.UI.refreshCurrentView();
-                        })
-                        .catch(function(err) {
-                            GR.Toast.error('Erro ao salvar: ' + err.message);
-                        });
-                }
-            },
-
-            excluirAnimal: function(id) {
-                if (!confirm('Excluir este animal?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('animais').doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Animal excluído!');
-                        GR.State.adicionarHistorico('excluiu animal', 'Pecuária', 'Animal ID: ' + id);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            },
-
-            verHistoricoAnimal: function(id) {
-                var animal = GR.State.data.animais.find(function(a) { return a.id === id; });
-                if (!animal) {
-                    GR.Toast.error('Animal não encontrado!');
-                    return;
-                }
-
-                var modal = document.createElement('div');
-                modal.className = 'modal active';
-                modal.style.display = 'flex';
-                modal.innerHTML = '<div class="modal-content" style="max-width:500px;">' +
-                    '<div class="modal-header"><h2 class="modal-title">📋 Histórico</h2><button class="close-btn" onclick="this.closest(\'.modal\').remove()">×</button></div>' +
-                    '<h4 style="font-size:13px;">🐄 ' + GR.Utils.escapeHtml(animal.identificacao || animal.nome) + '</h4>' +
-                    '<p style="font-size:10px;color:var(--text-light);">Espécie: ' + animal.especie + ' | Raça: ' + (animal.raca || '-') + ' | Sexo: ' + animal.sexo + '</p>' +
-                    '<div id="historico-animal-content"></div>' +
-                    '<div style="margin-top:8px;display:flex;gap:3px;">' +
-                    '<button class="btn btn-info btn-sm" onclick="GR.Modules.Pecuaria.abrirModalPesagem(\'' + id + '\')">⚖️ Nova Pesagem</button>' +
-                    '<button class="btn btn-warning btn-sm" onclick="GR.Modules.Pecuaria.abrirModalVacina(\'' + id + '\')">💉 Nova Vacina</button>' +
-                    '</div></div>';
-                document.body.appendChild(modal);
-
-                var pesagens = GR.State.data.pesagens ? GR.State.data.pesagens.filter(function(p) { return p.animalId === id; }) : [];
-                var vacinas = GR.State.data.vacinas ? GR.State.data.vacinas.filter(function(v) { return v.animalId === id; }) : [];
-
-                var html = '';
-                if (pesagens.length) {
-                    html += '<h5 style="font-size:11px;margin-top:4px;">⚖️ Pesagens</h5><div class="table-responsive"><table><thead><tr><th>Data</th><th>Peso</th><th>Obs</th></tr></thead><tbody>';
-                    pesagens.forEach(function(p) {
-                        html += '<tr><td>' + GR.Utils.formatarDataBR(p.data) + '</td><td>' + p.peso + ' kg</td><td>' + GR.Utils.escapeHtml(p.obs || '-') + '</td></tr>';
-                    });
-                    html += '</tbody></table></div>';
-                }
-
-                if (vacinas.length) {
-                    html += '<h5 style="font-size:11px;margin-top:4px;">💉 Vacinas</h5><div class="table-responsive"><table><thead><tr><th>Vacina</th><th>Data</th><th>Próxima</th><th>Lote</th></tr></thead><tbody>';
-                    vacinas.forEach(function(v) {
-                        html += '<tr><td>' + GR.Utils.escapeHtml(v.vacina) + '</td><td>' + GR.Utils.formatarDataBR(v.data) + '</td><td>' + (v.proxima ? GR.Utils.formatarDataBR(v.proxima) : '-') + '</td><td>' + GR.Utils.escapeHtml(v.lote || '-') + '</td></tr>';
-                    });
-                    html += '</tbody></table></div>';
-                }
-
-                if (!pesagens.length && !vacinas.length) {
-                    html += '<div style="color:#999;padding:4px;">Nenhum histórico registrado.</div>';
-                }
-
-                document.getElementById('historico-animal-content').innerHTML = html;
-            },
-
-            abrirModalPesagem: function(animalId) {
-                document.getElementById('pesagem-data').value = new Date().toISOString().split('T')[0];
-                document.getElementById('pesagem-peso').value = 0;
-                document.getElementById('pesagem-obs').value = '';
-
-                var select = document.getElementById('pesagem-animal');
-                if (select) {
-                    select.innerHTML = '';
-                    GR.State.data.animais.forEach(function(a) {
-                        var opt = document.createElement('option');
-                        opt.value = a.id;
-                        opt.textContent = a.identificacao || a.nome || 'Sem ID';
-                        select.appendChild(opt);
-                    });
-                    if (animalId) select.value = animalId;
-                }
-
-                GR.Modal.open('modal-pesagem');
-            },
-
-            salvarPesagem: function() {
-                var animalId = document.getElementById('pesagem-animal').value;
-                var data = document.getElementById('pesagem-data').value;
-                var peso = parseFloat(document.getElementById('pesagem-peso').value) || 0;
-                var obs = document.getElementById('pesagem-obs').value.trim();
-
-                if (!animalId) { GR.Toast.error('Selecione um animal!'); return; }
-                if (!data) { GR.Toast.error('Data é obrigatória!'); return; }
-                if (peso <= 0) { GR.Toast.error('Peso deve ser maior que zero!'); return; }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    animalId: animalId,
-                    data: data,
-                    peso: peso,
-                    obs: GR.Utils.escapeHtml(obs),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('pesagens').add(dados)
-                    .then(function() {
-                        db.collection('users').doc(uid).collection('animais').doc(animalId).update({ peso: peso });
-                        GR.Modal.close('modal-pesagem');
-                        GR.Toast.success('Pesagem registrada!');
-                        GR.State.adicionarHistorico('criou pesagem', 'Pecuária', 'Pesagem animal ID: ' + animalId);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            abrirModalVacina: function(animalId) {
-                document.getElementById('vacina-nome').value = '';
-                document.getElementById('vacina-data').value = new Date().toISOString().split('T')[0];
-                document.getElementById('vacina-proxima').value = '';
-                document.getElementById('vacina-lote').value = '';
-
-                var select = document.getElementById('vacina-animal');
-                if (select) {
-                    select.innerHTML = '';
-                    GR.State.data.animais.forEach(function(a) {
-                        var opt = document.createElement('option');
-                        opt.value = a.id;
-                        opt.textContent = a.identificacao || a.nome || 'Sem ID';
-                        select.appendChild(opt);
-                    });
-                    if (animalId) select.value = animalId;
-                }
-
-                GR.Modal.open('modal-vacina');
-            },
-
-            salvarVacina: function() {
-                var animalId = document.getElementById('vacina-animal').value;
-                var vacina = document.getElementById('vacina-nome').value.trim();
-                var data = document.getElementById('vacina-data').value;
-                var proxima = document.getElementById('vacina-proxima').value;
-                var lote = document.getElementById('vacina-lote').value.trim();
-
-                if (!animalId) { GR.Toast.error('Selecione um animal!'); return; }
-                if (!vacina) { GR.Toast.error('Nome da vacina é obrigatório!'); return; }
-                if (!data) { GR.Toast.error('Data é obrigatória!'); return; }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    animalId: animalId,
-                    vacina: GR.Utils.escapeHtml(vacina),
-                    data: data,
-                    proxima: proxima || '',
-                    lote: GR.Utils.escapeHtml(lote),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('vacinas').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-vacina');
-                        GR.Toast.success('Vacinação registrada!');
-                        GR.State.adicionarHistorico('criou vacina', 'Pecuária', 'Vacina ' + vacina + ' para animal ID: ' + animalId);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: FUNCIONÁRIOS
-        // ================================================================
-        GR.Modules.Funcionarios = {
-            render: function() {
-                var div = document.getElementById('lista-funcionarios');
-                if (!div) return;
-                var items = GR.State.data.funcionarios || [];
-                var filtrados = items.filter(function(item) {
-                    if (GR.State.ui.propriedadeAtiva === 'todas') return true;
-                    return item.propriedade === GR.State.ui.propriedadeAtiva;
-                });
-
-                if (!filtrados.length) {
-                    div.innerHTML = '<div class="empty-state"><span class="icon">👨‍🌾</span><div class="message">Nenhum funcionário cadastrado</div></div>';
-                    return;
-                }
-
-                var rows = filtrados.map(function(f) {
-                    var tel = f.telefone ? GR.Utils.formatarTelefone(f.telefone.ddd, f.telefone.numero) : '-';
-                    var statusBadge = f.status === 'Ativo' ? '<span class="badge badge-success">Ativo</span>' :
-                        f.status === 'Férias' ? '<span class="badge badge-warning">Férias</span>' :
-                        f.status === 'Afastado' ? '<span class="badge badge-danger">Afastado</span>' :
-                        '<span class="badge badge-secondary">Desligado</span>';
-
-                    return '<tr>' +
-                        '<td><strong>' + GR.Utils.escapeHtml(f.nome) + '</strong></td>' +
-                        '<td>' + GR.Utils.escapeHtml(f.cargo || '-') + '</td>' +
-                        '<td>' + tel + '</td>' +
-                        '<td>' + GR.Utils.formatarMoedaBR(f.salario) + '</td>' +
-                        '<td>' + (f.admissao ? GR.Utils.formatarDataBR(f.admissao) : '-') + '</td>' +
-                        '<td>' + statusBadge + '</td>' +
-                        '<td>' +
-                        '<button class="btn btn-primary btn-sm" onclick="GR.Modules.Funcionarios.editar(\'' + f.id + '\')">✏️</button>' +
-                        '<button class="btn btn-danger btn-sm" onclick="GR.Modules.Funcionarios.excluir(\'' + f.id + '\')">🗑️</button>' +
-                        '</td>' +
-                        '</tr>';
-                }).join('');
-
-                div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Nome</th><th>Cargo</th><th>Telefone</th><th>Salário</th><th>Admissão</th><th>Status</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-            },
-
-            abrirModal: function(editId) {
-                GR.State.ui.funcionarioEditando = editId || null;
-                document.getElementById('modal-funcionario-title').textContent = editId ? '✏️ Editar Funcionário' : '👨‍🌾 Novo Funcionário';
-
-                document.getElementById('func-nome').value = '';
-                document.getElementById('func-cpf').value = '';
-                document.getElementById('func-ddd').value = '';
-                document.getElementById('func-telefone').value = '';
-                document.getElementById('func-cargo').value = '';
-                document.getElementById('func-salario').value = '0,00';
-                document.getElementById('func-admissao').value = '';
-                document.getElementById('func-status').value = 'Ativo';
-                document.getElementById('func-ctps').value = '';
-                document.getElementById('func-pis').value = '';
-                document.getElementById('func-inss').value = 0;
-                document.getElementById('func-fgts').value = 0;
-                GR.UI._atualizarSelectsPropriedade();
-
-                if (editId) {
-                    var item = GR.State.data.funcionarios.find(function(f) { return f.id === editId; });
-                    if (item) {
-                        document.getElementById('func-nome').value = item.nome || '';
-                        document.getElementById('func-cpf').value = item.cpf || '';
-                        document.getElementById('func-ddd').value = item.telefone?.ddd || '';
-                        document.getElementById('func-telefone').value = item.telefone?.numero || '';
-                        document.getElementById('func-cargo').value = item.cargo || '';
-                        document.getElementById('func-salario').value = GR.Utils.formatarMoedaSemSimbolo(item.salario || 0);
-                        document.getElementById('func-admissao').value = item.admissao || '';
-                        document.getElementById('func-status').value = item.status || 'Ativo';
-                        document.getElementById('func-propriedade').value = item.propriedade || '';
-                        document.getElementById('func-ctps').value = item.ctps || '';
-                        document.getElementById('func-pis').value = item.pis || '';
-                        document.getElementById('func-inss').value = item.inss || 0;
-                        document.getElementById('func-fgts').value = item.fgts || 0;
-                    }
-                }
-
-                GR.Modal.open('modal-funcionario');
-            },
-
-            salvar: function() {
-                var nome = document.getElementById('func-nome').value.trim();
-                var cpf = document.getElementById('func-cpf').value.trim();
-                var ddd = document.getElementById('func-ddd').value.trim();
-                var telefone = document.getElementById('func-telefone').value.trim();
-                var cargo = document.getElementById('func-cargo').value.trim();
-                var salario = GR.Utils.parseMoedaBR(document.getElementById('func-salario').value);
-                var admissao = document.getElementById('func-admissao').value;
-                var status = document.getElementById('func-status').value;
-                var propriedade = document.getElementById('func-propriedade').value;
-                var ctps = document.getElementById('func-ctps').value.trim();
-                var pis = document.getElementById('func-pis').value.trim();
-                var inss = parseFloat(document.getElementById('func-inss').value) || 0;
-                var fgts = parseFloat(document.getElementById('func-fgts').value) || 0;
-
-                if (!nome) {
-                    GR.Toast.error('Nome é obrigatório!');
-                    return;
-                }
-                if (cpf && !GR.Utils.validarCPF(cpf)) {
-                    GR.Toast.error('CPF inválido!');
-                    return;
-                }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    nome: GR.Utils.escapeHtml(nome),
-                    cpf: cpf || '',
-                    telefone: (ddd || telefone) ? { ddd: ddd, numero: telefone } : null,
-                    cargo: GR.Utils.escapeHtml(cargo),
-                    salario: salario || 0,
-                    admissao: admissao || '',
-                    status: status,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    ctps: GR.Utils.escapeHtml(ctps),
-                    pis: GR.Utils.escapeHtml(pis),
-                    inss: inss,
-                    fgts: fgts,
-                    dataCriacao: GR.Utils.now()
-                };
-
-                if (GR.State.ui.funcionarioEditando) {
-                    db.collection('users').doc(uid).collection('funcionarios').doc(GR.State.ui.funcionarioEditando).update(dados)
-                        .then(function() {
-                            GR.Modal.close('modal-funcionario');
-                            GR.Toast.success('Funcionário atualizado!');
-                            GR.State.adicionarHistorico('editou funcionário', 'Funcionários', 'Funcionário: ' + nome);
-                            GR.UI.refreshCurrentView();
-                        })
-                        .catch(function(err) {
-                            GR.Toast.error('Erro ao atualizar: ' + err.message);
-                        });
-                } else {
-                    db.collection('users').doc(uid).collection('funcionarios').add(dados)
-                        .then(function() {
-                            GR.Modal.close('modal-funcionario');
-                            GR.Toast.success('Funcionário salvo!');
-                            GR.State.adicionarHistorico('criou funcionário', 'Funcionários', 'Funcionário: ' + nome);
-                            GR.UI.refreshCurrentView();
-                        })
-                        .catch(function(err) {
-                            GR.Toast.error('Erro ao salvar: ' + err.message);
-                        });
-                }
-            },
-
-            editar: function(id) {
-                this.abrirModal(id);
-            },
-
-            excluir: function(id) {
-                if (!confirm('Excluir este funcionário?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('funcionarios').doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Funcionário excluído!');
-                        GR.State.adicionarHistorico('excluiu funcionário', 'Funcionários', 'Funcionário ID: ' + id);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            }
-        };
-    </script>
-    <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 12/13 - MÓDULOS (Parceiros, Contabilidade, Documentos, Análises, Viveiro) -->
-    <!-- ================================================================ -->
-    <script>
-        // ================================================================
-        // MÓDULO: PARCEIROS
-        // ================================================================
-        GR.Modules.Parceiros = {
-            render: function() {
-                var div = document.getElementById('lista-parceiros');
-                if (!div) return;
-                var items = GR.State.data.contratosParceiros || [];
-                var filtrados = items.filter(function(item) {
-                    if (GR.State.ui.propriedadeAtiva === 'todas') return true;
-                    return item.propriedade === GR.State.ui.propriedadeAtiva;
-                });
-
-                if (!filtrados.length) {
-                    div.innerHTML = '<div class="empty-state"><span class="icon">👤</span><div class="message">Nenhum parceiro cadastrado</div></div>';
-                    return;
-                }
-
-                var rows = filtrados.map(function(p) {
-                    var tel = p.telefone ? GR.Utils.formatarTelefone(p.telefone.ddd, p.telefone.numero) : '-';
-                    return '<tr>' +
-                        '<td><span class="badge badge-info">' + GR.Utils.escapeHtml(p.tipo) + '</span></td>' +
-                        '<td>' + GR.Utils.escapeHtml(p.nome) + '</td>' +
-                        '<td>' + GR.Utils.formatarCPF(p.cpf) + '</td>' +
-                        '<td>' + tel + '</td>' +
-                        '<td><small>' + GR.Utils.formatarDataBR(p.dataInicio) + ' a ' + GR.Utils.formatarDataBR(p.dataFim) + '</small></td>' +
-                        '<td>' + GR.Utils.escapeHtml(p.propriedade || '-') + '</td>' +
-                        '<td><button class="btn btn-danger btn-sm" onclick="GR.Modules.Parceiros.excluir(\'' + p.id + '\')">🗑️</button></td>' +
-                        '</tr>';
-                }).join('');
-
-                div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Vigência</th><th>Propriedade</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-            },
-
-            abrirModal: function() {
-                GR.State.ui.parceiroEditando = null;
-                document.getElementById('modal-parceiro-title').textContent = '👥 Novo Parceiro';
-
-                document.getElementById('parceiro-nome').value = '';
-                document.getElementById('parceiro-cpf').value = '';
-                document.getElementById('parceiro-rg-cnh').value = '';
-                document.getElementById('parceiro-ddd').value = '';
-                document.getElementById('parceiro-telefone').value = '';
-                document.getElementById('parceiro-data-inicio').value = '';
-                document.getElementById('parceiro-data-fim').value = '';
-                document.getElementById('parceiro-obs').value = '';
-                document.getElementById('parceiro-tipo').value = 'Comodato';
-                document.getElementById('parceiro-doc-name').textContent = 'Nenhum arquivo';
-                GR.UI._atualizarSelectsPropriedade();
-
-                var selectParte = document.getElementById('parceiro-parte-relacionada');
-                if (selectParte) {
-                    selectParte.innerHTML = '<option value="">Nenhuma</option>';
-                    GR.State.data.partesRelacionadas.forEach(function(p) {
-                        var opt = document.createElement('option');
-                        opt.value = p.id;
-                        opt.textContent = p.nome + ' (' + GR.Utils.formatarCPF(p.cpf) + ')';
-                        selectParte.appendChild(opt);
-                    });
-                }
-
-                GR.Modal.open('modal-contrato-parceiro');
-            },
-
-            selecionarParteRelacionada: function() {
-                var id = document.getElementById('parceiro-parte-relacionada').value;
-                if (!id) return;
-                var parte = GR.State.data.partesRelacionadas.find(function(p) { return p.id === id; });
-                if (parte) {
-                    document.getElementById('parceiro-nome').value = parte.nome;
-                    document.getElementById('parceiro-cpf').value = GR.Utils.formatarCPF(parte.cpf);
-                    if (parte.telefone) {
-                        document.getElementById('parceiro-ddd').value = parte.telefone.ddd || '';
-                        document.getElementById('parceiro-telefone').value = parte.telefone.numero || '';
-                    }
-                }
-            },
-
-            salvar: function() {
-                var tipo = document.getElementById('parceiro-tipo').value;
-                var nome = document.getElementById('parceiro-nome').value.trim();
-                var cpf = document.getElementById('parceiro-cpf').value.trim();
-                var rgCnh = document.getElementById('parceiro-rg-cnh').value.trim();
-                var ddd = document.getElementById('parceiro-ddd').value.trim();
-                var tel = document.getElementById('parceiro-telefone').value.trim();
-                var dataInicio = document.getElementById('parceiro-data-inicio').value;
-                var dataFim = document.getElementById('parceiro-data-fim').value;
-                var propriedade = document.getElementById('parceiro-propriedade').value;
-                var obs = document.getElementById('parceiro-obs').value.trim();
-
-                if (!nome || !cpf) { GR.Toast.error('Nome e CPF são obrigatórios!'); return; }
-                if (!GR.Utils.validarCPF(cpf)) { GR.Toast.error('CPF inválido!'); return; }
-                if (!dataInicio || !dataFim) { GR.Toast.error('Datas obrigatórias!'); return; }
-                if (dataFim < dataInicio) { GR.Toast.error('Data de término deve ser posterior!'); return; }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    tipo: tipo,
-                    nome: GR.Utils.escapeHtml(nome),
-                    cpf: cpf,
-                    rgCnh: GR.Utils.escapeHtml(rgCnh),
-                    telefone: (ddd || tel) ? { ddd: ddd, numero: tel } : null,
-                    dataInicio: dataInicio,
-                    dataFim: dataFim,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    obs: GR.Utils.escapeHtml(obs),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('contratosParceiros').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-contrato-parceiro');
-                        GR.Toast.success('Parceiro salvo!');
-                        GR.State.adicionarHistorico('criou parceiro', 'Parceiros', 'Parceiro: ' + nome);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            excluir: function(id) {
-                if (!confirm('Excluir este parceiro?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('contratosParceiros').doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Parceiro excluído!');
-                        GR.State.adicionarHistorico('excluiu parceiro', 'Parceiros', 'Parceiro ID: ' + id);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            }
-        };
-
-        // ================================================================
-        // PARTES RELACIONADAS
-        // ================================================================
-        GR.Modules.PartesRelacionadas = {
-            render: function() {
-                var div = document.getElementById('conf-partes');
-                if (!div) return;
-                var items = GR.State.data.partesRelacionadas || [];
-                if (!items.length) {
-                    div.innerHTML = '<small style="color:#999;">Nenhuma parte relacionada</small>';
-                    return;
-                }
-
-                div.innerHTML = items.map(function(p) {
-                    var tel = p.telefone ? GR.Utils.formatarTelefone(p.telefone.ddd, p.telefone.numero) : '-';
-                    return '<div class="config-item">' +
-                        '<span>👤 ' + GR.Utils.escapeHtml(p.nome) + ' - CPF: ' + GR.Utils.formatarCPF(p.cpf) + ' | Tel: ' + tel + '</span>' +
-                        '<div><button class="btn btn-danger btn-sm" onclick="GR.Modules.PartesRelacionadas.excluir(\'' + p.id + '\')">×</button></div>' +
-                        '</div>';
-                }).join('');
-            },
-
-            abrirModal: function() {
-                GR.State.ui.parteEditando = null;
-                document.getElementById('modal-parte-title').textContent = '👤 Nova Parte Relacionada';
-                document.getElementById('parte-nome').value = '';
-                document.getElementById('parte-cpf').value = '';
-                document.getElementById('parte-ddd').value = '';
-                document.getElementById('parte-telefone').value = '';
-                GR.Modal.open('modal-parte-relacionada');
-            },
-
-            salvar: function() {
-                var nome = document.getElementById('parte-nome').value.trim();
-                var cpf = document.getElementById('parte-cpf').value.trim();
-                var ddd = document.getElementById('parte-ddd').value.trim();
-                var telefone = document.getElementById('parte-telefone').value.trim();
-
-                if (!nome || !cpf) { GR.Toast.error('Nome e CPF são obrigatórios!'); return; }
-                if (!GR.Utils.validarCPF(cpf)) { GR.Toast.error('CPF inválido!'); return; }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    nome: GR.Utils.escapeHtml(nome),
-                    cpf: cpf,
-                    telefone: (ddd || telefone) ? { ddd: ddd, numero: telefone } : null,
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('partesRelacionadas').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-parte-relacionada');
-                        GR.Toast.success('Parte salva!');
-                        GR.State.adicionarHistorico('criou parte', 'Partes', 'Parte: ' + nome);
-                        GR.UI.atualizarDatalists();
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            excluir: function(id) {
-                if (!confirm('Excluir esta parte?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('partesRelacionadas').doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Parte excluída!');
-                        GR.State.adicionarHistorico('excluiu parte', 'Partes', 'Parte ID: ' + id);
-                        GR.UI.atualizarDatalists();
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: CONTABILIDADE
-        // ================================================================
-        GR.Modules.Contabilidade = {
-            render: function() {
-                var div = document.getElementById('lista-contabilidade');
-                if (!div) return;
-
-                var receitas = GR.State.data.receitas || [];
-                var despesas = GR.State.data.despesas || [];
-                var filtro = GR.State.ui.propriedadeAtiva;
-
-                var recFiltradas = receitas.filter(function(item) {
-                    return filtro === 'todas' || item.propriedade === filtro;
-                });
-                var despFiltradas = despesas.filter(function(item) {
-                    return filtro === 'todas' || item.propriedade === filtro;
-                });
-
-                var totalReceitas = recFiltradas.reduce(function(s, r) { return s + (r.valor || 0); }, 0);
-                var totalDespesas = despFiltradas.reduce(function(s, d) { return s + (d.valor || 0); }, 0);
-
-                var html = '<div class="stats-grid">' +
-                    '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalReceitas) + '</div><div class="label">Receitas</div></div>' +
-                    '<div class="stats-card danger"><div class="number">' + GR.Utils.formatarMoedaBR(totalDespesas) + '</div><div class="label">Despesas</div></div>' +
-                    '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalReceitas - totalDespesas) + '</div><div class="label">Saldo</div></div>' +
-                    '</div>';
-
-                html += '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Descrição</th><th>Data</th><th>Valor</th><th>Ações</th></tr></thead><tbody>';
-
-                recFiltradas.forEach(function(r) {
-                    html += '<tr><td><span class="badge badge-success">Receita</span></td><td>' + GR.Utils.escapeHtml(r.descricao) + '</td><td>' + GR.Utils.formatarDataBR(r.data) + '</td><td>' + GR.Utils.formatarMoedaBR(r.valor) + '</td><td><button class="btn btn-danger btn-sm" onclick="GR.Modules.Contabilidade.excluir(\'receitas\',\'' + r.id + '\')">🗑️</button></td></tr>';
-                });
-
-                despFiltradas.forEach(function(d) {
-                    html += '<tr><td><span class="badge badge-danger">Despesa</span></td><td>' + GR.Utils.escapeHtml(d.descricao) + '</td><td>' + GR.Utils.formatarDataBR(d.data) + '</td><td>' + GR.Utils.formatarMoedaBR(d.valor) + '</td><td><button class="btn btn-danger btn-sm" onclick="GR.Modules.Contabilidade.excluir(\'despesas\',\'' + d.id + '\')">🗑️</button></td></tr>';
-                });
-
-                html += '</tbody></table></div>';
-                div.innerHTML = html;
-            },
-
-            salvarDespesa: function() {
-                var descricao = document.getElementById('desp-descricao').value.trim();
-                var data = document.getElementById('desp-data').value;
-                var valor = GR.Utils.parseMoedaBR(document.getElementById('desp-valor').value);
-                var categoria = document.getElementById('desp-categoria').value;
-                var propriedade = document.getElementById('desp-propriedade').value;
-
-                if (!descricao || !data || !valor) {
-                    GR.Toast.error('Campos obrigatórios!');
-                    return;
-                }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    descricao: GR.Utils.escapeHtml(descricao),
-                    data: data,
-                    valor: valor || 0,
-                    categoria: categoria,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('despesas').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-despesa');
-                        GR.Toast.success('Despesa registrada!');
-                        GR.State.adicionarHistorico('criou despesa', 'Contabilidade', 'Despesa: ' + descricao);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            salvarReceita: function() {
-                var descricao = document.getElementById('rec-descricao').value.trim();
-                var data = document.getElementById('rec-data').value;
-                var valor = GR.Utils.parseMoedaBR(document.getElementById('rec-valor').value);
-                var origem = document.getElementById('rec-origem').value;
-                var propriedade = document.getElementById('rec-propriedade').value;
-
-                if (!descricao || !data || !valor) {
-                    GR.Toast.error('Campos obrigatórios!');
-                    return;
-                }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    descricao: GR.Utils.escapeHtml(descricao),
-                    data: data,
-                    valor: valor || 0,
-                    origem: origem,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('receitas').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-receita');
-                        GR.Toast.success('Receita registrada!');
-                        GR.State.adicionarHistorico('criou receita', 'Contabilidade', 'Receita: ' + descricao);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            excluir: function(tipo, id) {
-                if (!confirm('Excluir este item?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection(tipo).doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Excluído!');
-                        GR.State.adicionarHistorico('excluiu ' + tipo, 'Contabilidade', 'Excluiu ' + tipo + ' ID: ' + id);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: DOCUMENTOS
-        // ================================================================
-        GR.Modules.Documentos = {
-            render: function() {
-                var div = document.getElementById('lista-documentos');
-                if (!div) return;
-                var items = GR.State.data.documentos || [];
-                var filtrados = items.filter(function(item) {
-                    if (GR.State.ui.propriedadeAtiva === 'todas') return true;
-                    return item.propriedade === GR.State.ui.propriedadeAtiva;
-                });
-
-                if (!filtrados.length) {
-                    div.innerHTML = '<div class="empty-state"><span class="icon">📁</span><div class="message">Nenhum documento cadastrado</div></div>';
-                    return;
-                }
-
-                var tipoIcons = {
-                    'Escritura': '📜', 'CCIR': '🏷️', 'ITR': '🧾', 'Matricula': '📋',
-                    'Contrato': '📄', 'NotaFiscal': '🧾', 'Licenca': '✅', 'Certidao': '📑', 'Outros': '📎'
-                };
-
-                var rows = filtrados.map(function(d) {
-                    var icon = tipoIcons[d.tipo] || '📄';
-                    var hasFile = d.arquivoId ? '<button class="btn btn-info btn-sm" onclick="GR.UI._abrirArquivo(\'' + d.arquivoId + '\')">📄</button>' : '-';
-                    return '<tr>' +
-                        '<td>' + icon + ' ' + GR.Utils.escapeHtml(d.tipo) + '</td>' +
-                        '<td>' + GR.Utils.escapeHtml(d.numero || '-') + '</td>' +
-                        '<td>' + GR.Utils.escapeHtml(d.propriedade || '-') + '</td>' +
-                        '<td>' + GR.Utils.escapeHtml(d.descricao || '-') + '</td>' +
-                        '<td>' + hasFile + '</td>' +
-                        '<td><button class="btn btn-danger btn-sm" onclick="GR.Modules.Documentos.excluir(\'' + d.id + '\')">🗑️</button></td>' +
-                        '</tr>';
-                }).join('');
-
-                div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Número</th><th>Propriedade</th><th>Descrição</th><th>Arquivo</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-            },
-
-            abrirModal: function() {
-                GR.State.ui.documentoEditando = null;
-                document.getElementById('modal-documento-title').textContent = '📁 Novo Documento';
-                document.getElementById('documento-tipo').value = 'Outros';
-                document.getElementById('documento-numero').value = '';
-                document.getElementById('doc-propriedade').value = '';
-                document.getElementById('doc-descricao').value = '';
-                document.getElementById('doc-file-name').textContent = 'Nenhum arquivo';
-                GR.UI._atualizarSelectsPropriedade();
-                GR.Modal.open('modal-documento');
-            },
-
-            salvar: function() {
-                var tipo = document.getElementById('documento-tipo').value;
-                var numero = document.getElementById('documento-numero').value.trim();
-                var propriedade = document.getElementById('doc-propriedade').value;
-                var descricao = document.getElementById('doc-descricao').value.trim();
-
-                if (!propriedade) {
-                    GR.Toast.error('Propriedade é obrigatória!');
-                    return;
-                }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    tipo: tipo,
-                    numero: GR.Utils.escapeHtml(numero),
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    descricao: GR.Utils.escapeHtml(descricao),
-                    arquivoId: GR.State.ui.docArquivoSelecionadoId || null,
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('documentos').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-documento');
-                        GR.Toast.success('Documento salvo!');
-                        GR.State.adicionarHistorico('criou documento', 'Documentos', 'Documento: ' + tipo);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            excluir: function(id) {
-                if (!confirm('Excluir este documento?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('documentos').doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Documento excluído!');
-                        GR.State.adicionarHistorico('excluiu documento', 'Documentos', 'Documento ID: ' + id);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: ANÁLISES QUÍMICAS
-        // ================================================================
-        GR.Analises = {
-            render: function() {
-                var div = document.getElementById('lista-analises');
-                if (!div) return;
-                var analises = GR.State.data.analises || [];
-                var filtradas = analises.filter(function(a) {
-                    if (GR.State.ui.propriedadeAtiva === 'todas') return true;
-                    return a.propriedade === GR.State.ui.propriedadeAtiva;
-                });
-
-                if (!filtradas.length) {
-                    div.innerHTML = '<div class="empty-state"><span class="icon">🧪</span><div class="message">Nenhuma análise cadastrada</div></div>';
-                    return;
-                }
-
-                var rows = filtradas.map(function(a) {
-                    var statusBadge = a.status === 'Equilibrado' ?
-                        '<span class="badge badge-success">✅ Equilibrado</span>' :
-                        '<span class="badge badge-warning">⚠️ Correção</span>';
-
-                    return '<tr>' +
-                        '<td><span class="badge badge-info">' + (a.tipo === 'solo' ? '🧪 Solo' : '🌿 Folha') + '</span></td>' +
-                        '<td>' + GR.Utils.escapeHtml(a.propriedade) + '</td>' +
-                        '<td>' + GR.Utils.escapeHtml(a.talhao || '-') + '</td>' +
-                        '<td>' + (a.cultura || '-') + '</td>' +
-                        '<td>' + GR.Utils.formatarDataBR(a.data) + '</td>' +
-                        '<td>' + (a.elementos ? Object.keys(a.elementos).length : 0) + ' elementos</td>' +
-                        '<td>' + statusBadge + '</td>' +
-                        '<td>' +
-                        '<button class="btn btn-primary btn-sm" onclick="GR.Analises.verReceituario(\'' + a.id + '\')">📋</button>' +
-                        '<button class="btn btn-danger btn-sm" onclick="GR.Analises.excluir(\'' + a.id + '\')">🗑️</button>' +
-                        '</td>' +
-                        '</tr>';
-                }).join('');
-
-                div.innerHTML = '<div class="table-responsive"><table><thead><tr><th>Tipo</th><th>Propriedade</th><th>Talhão</th><th>Cultura</th><th>Data</th><th>Elementos</th><th>Status</th><th>Ações</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-            },
-
-            abrirModal: function(editId) {
-                GR.State.ui.analiseEditando = editId || null;
-                document.getElementById('modal-analise-title').textContent = editId ? '✏️ Editar Análise' : '🧪 Nova Análise';
-
-                document.getElementById('analise-tipo').value = 'solo';
-                document.getElementById('analise-propriedade').value = '';
-                document.getElementById('analise-data').value = new Date().toISOString().split('T')[0];
-                document.getElementById('analise-talhao').value = '';
-                document.getElementById('analise-cultura').value = '';
-                document.getElementById('analise-resultados').style.display = 'none';
-                GR.UI._atualizarSelectsPropriedade();
-
-                if (editId) {
-                    var item = GR.State.data.analises.find(function(a) { return a.id === editId; });
-                    if (item) {
-                        document.getElementById('analise-tipo').value = item.tipo || 'solo';
-                        document.getElementById('analise-propriedade').value = item.propriedade || '';
-                        document.getElementById('analise-data').value = item.data || '';
-                        document.getElementById('analise-talhao').value = item.talhao || '';
-                        document.getElementById('analise-cultura').value = item.cultura || '';
-                    }
-                }
-
-                GR.Modal.open('modal-analise');
-            },
-
-            processarPDF: function(file) {
-                if (file.size > 10 * 1024 * 1024) {
-                    GR.Toast.error('Arquivo muito grande (máx 10MB).');
-                    return;
-                }
-
-                var progressBar = document.getElementById('analise-progress-bar');
-                var progress = document.getElementById('analise-progress');
-                if (progressBar) progressBar.style.display = 'block';
-                if (progress) progress.style.width = '10%';
-
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var arrayBuffer = e.target.result;
-                    if (typeof pdfjsLib === 'undefined') {
-                        GR.Toast.error('PDF.js não carregado.');
-                        if (progressBar) progressBar.style.display = 'none';
-                        return;
-                    }
-
-                    try {
-                        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-                    } catch (err) {}
-
-                    pdfjsLib.getDocument({ data: arrayBuffer }).promise
-                        .then(function(pdf) {
-                            var textoCompleto = '';
-                            var totalPages = pdf.numPages;
-                            var promises = [];
-
-                            for (var i = 1; i <= totalPages; i++) {
-                                promises.push(pdf.getPage(i).then(function(page) {
-                                    if (progress) progress.style.width = ((i / totalPages) * 50 + 10) + '%';
-                                    return page.getTextContent().then(function(textContent) {
-                                        if (textContent && textContent.items) {
-                                            textoCompleto += textContent.items.map(function(item) { return item.str || ''; }).join(' ') + '\n';
-                                        }
-                                    });
-                                }));
-                            }
-
-                            return Promise.all(promises).then(function() { return textoCompleto; });
-                        })
-                        .then(function(texto) {
-                            if (progress) progress.style.width = '70%';
-                            var tipo = document.getElementById('analise-tipo').value;
-                            var dados = GR.Analises._extrairDados(texto, tipo);
-                            GR.Analises._mostrarResultados(dados);
-                            document.getElementById('analise-resultados').style.display = 'block';
-                            if (progress) progress.style.width = '100%';
-                            setTimeout(function() { if (progressBar) progressBar.style.display = 'none'; }, 500);
-                            GR.Toast.success('Análise processada! ' + Object.keys(dados.elementos).length + ' elementos extraídos.');
-                        })
-                        .catch(function(err) {
-                            console.error('Erro ao processar PDF:', err);
-                            GR.Toast.error('Erro ao processar: ' + err.message);
-                            if (progressBar) progressBar.style.display = 'none';
-                        });
-                };
-                reader.readAsArrayBuffer(file);
-            },
-
-            _extrairDados: function(texto, tipo) {
-                var dados = {
-                    tipo: tipo,
-                    elementos: {},
-                    recomendacoes: [],
-                    status: 'Equilibrado'
-                };
-
-                var elementos = {
-                    'pH': { label: 'pH', ideal: [5.5, 6.5], unidade: '' },
-                    'P': { label: 'Fósforo (P)', ideal: [10, 30], unidade: 'mg/dm³' },
-                    'K': { label: 'Potássio (K)', ideal: [80, 150], unidade: 'mg/dm³' },
-                    'Ca': { label: 'Cálcio (Ca)', ideal: [2, 4], unidade: 'cmolc/dm³' },
-                    'Mg': { label: 'Magnésio (Mg)', ideal: [0.8, 1.5], unidade: 'cmolc/dm³' },
-                    'Al': { label: 'Alumínio (Al)', ideal: [0, 0.3], unidade: 'cmolc/dm³' },
-                    'H+Al': { label: 'Acidez (H+Al)', ideal: [0, 2], unidade: 'cmolc/dm³' },
-                    'SB': { label: 'Soma de Bases', ideal: [3, 6], unidade: 'cmolc/dm³' },
-                    'CTC': { label: 'CTC Total', ideal: [5, 10], unidade: 'cmolc/dm³' },
-                    'V%': { label: 'Saturação por Bases', ideal: [50, 80], unidade: '%' },
-                    'MO': { label: 'Matéria Orgânica', ideal: [2, 4], unidade: '%' },
-                    'N': { label: 'Nitrogênio (N)', ideal: [20, 40], unidade: 'mg/dm³' },
-                    'Zn': { label: 'Zinco (Zn)', ideal: [1, 3], unidade: 'mg/dm³' },
-                    'Cu': { label: 'Cobre (Cu)', ideal: [0.5, 1.5], unidade: 'mg/dm³' },
-                    'Mn': { label: 'Manganês (Mn)', ideal: [10, 30], unidade: 'mg/dm³' },
-                    'Fe': { label: 'Ferro (Fe)', ideal: [20, 50], unidade: 'mg/dm³' },
-                    'B': { label: 'Boro (B)', ideal: [0.5, 1.5], unidade: 'mg/dm³' },
-                    'S': { label: 'Enxofre (S)', ideal: [10, 20], unidade: 'mg/dm³' }
-                };
-
-                for (var key in elementos) {
-                    var elem = elementos[key];
-                    var patterns = [
-                        new RegExp(key + '\\s*[:.]?\\s*([0-9]+[,.]?[0-9]*)', 'i'),
-                        new RegExp(elem.label + '\\s*[:.]?\\s*([0-9]+[,.]?[0-9]*)', 'i'),
-                        new RegExp('([0-9]+[,.]?[0-9]*)\\s*' + key, 'i')
-                    ];
-
-                    for (var pi = 0; pi < patterns.length; pi++) {
-                        var match = texto.match(patterns[pi]);
-                        if (match) {
-                            var valor = parseFloat(match[1].replace(',', '.'));
-                            if (!isNaN(valor)) {
-                                dados.elementos[key] = valor;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                var recs = tipo === 'solo' ? GR.Analises._recomendacoesSolo : GR.Analises._recomendacoesFolha;
-                var precisaCorrecao = false;
-
-                for (var ek in dados.elementos) {
-                    var ev = dados.elementos[ek];
-                    var ee = elementos[ek];
-                    if (!ee) continue;
-
-                    var min = ee.ideal[0];
-                    var max = ee.ideal[1];
-                    var status = '';
-                    var recomendacao = '';
-
-                    if (ev < min) {
-                        status = 'baixo';
-                        recomendacao = recs[ek] ? recs[ek].baixo : 'Necessidade de correção para ' + ee.label;
-                        precisaCorrecao = true;
-                    } else if (ev > max) {
-                        status = 'alto';
-                        recomendacao = recs[ek] ? recs[ek].alto : ee.label + ' elevado - monitorar';
-                    } else {
-                        status = 'ideal';
-                        recomendacao = recs[ek] ? recs[ek].ideal : ee.label + ' na faixa ideal';
-                    }
-
-                    dados.recomendacoes.push({
-                        elemento: ee.label,
-                        valor: ev,
-                        status: status,
-                        recomendacao: recomendacao
-                    });
-                }
-
-                dados.status = precisaCorrecao ? 'Correção Necessária' : 'Equilibrado';
-                return dados;
-            },
-
-            _recomendacoesSolo: {
-                'pH': { baixo: 'Calagem - aplicar calcário dolomítico para elevar o pH', ideal: 'pH dentro da faixa ideal para a cultura', alto: 'pH elevado - verificar necessidade de gesso agrícola' },
-                'P': { baixo: 'Adubação fosfatada - aplicar superfosfato simples (100-200 kg/ha)', ideal: 'Fósforo na faixa ideal', alto: 'Fósforo elevado - reduzir ou suspender aplicações' },
-                'K': { baixo: 'Adubação potássica - aplicar cloreto de potássio (80-120 kg/ha)', ideal: 'Potássio na faixa ideal', alto: 'Potássio elevado - evitar aplicações' },
-                'Ca': { baixo: 'Aplicar calcário ou gesso agrícola para elevar cálcio', ideal: 'Cálcio na faixa ideal', alto: 'Cálcio elevado - verificar equilíbrio com magnésio' },
-                'Mg': { baixo: 'Aplicar calcário dolomítico para elevar magnésio', ideal: 'Magnésio na faixa ideal', alto: 'Magnésio elevado - verificar equilíbrio com cálcio' },
-                'Al': { baixo: 'Alumínio baixo - condição favorável', ideal: 'Alumínio na faixa ideal', alto: 'Alumínio tóxico - aplicar calcário para neutralização' },
-                'H+Al': { baixo: 'Acidez baixa - condição favorável', ideal: 'Acidez na faixa ideal', alto: 'Acidez elevada - aplicar calcário para correção' },
-                'SB': { baixo: 'Soma de bases baixa - necessidade de adubação', ideal: 'Soma de bases na faixa ideal', alto: 'Soma de bases elevada - monitorar' },
-                'CTC': { baixo: 'CTC baixa - solo com baixa capacidade de retenção', ideal: 'CTC na faixa ideal', alto: 'CTC elevada - bom potencial de fertilidade' },
-                'V%': { baixo: 'Saturação por bases baixa - necessidade de calagem', ideal: 'Saturação por bases na faixa ideal', alto: 'Saturação por bases elevada - monitorar' },
-                'MO': { baixo: 'Matéria orgânica baixa - necessidade de adubação orgânica', ideal: 'Matéria orgânica na faixa ideal', alto: 'Matéria orgânica elevada - condição favorável' },
-                'N': { baixo: 'Adubação nitrogenada - aplicar ureia (50-100 kg/ha)', ideal: 'Nitrogênio na faixa ideal', alto: 'Nitrogênio elevado - reduzir aplicações' },
-                'Zn': { baixo: 'Aplicar sulfato de zinco (2-5 kg/ha) via solo ou foliar', ideal: 'Zinco na faixa ideal', alto: 'Zinco elevado - evitar aplicações' },
-                'Cu': { baixo: 'Aplicar sulfato de cobre (1-3 kg/ha) via solo ou foliar', ideal: 'Cobre na faixa ideal', alto: 'Cobre elevado - evitar aplicações' },
-                'Mn': { baixo: 'Aplicar sulfato de manganês (2-4 kg/ha) via solo ou foliar', ideal: 'Manganês na faixa ideal', alto: 'Manganês elevado - evitar aplicações' },
-                'Fe': { baixo: 'Aplicar quelato de ferro (1-2 kg/ha) via foliar', ideal: 'Ferro na faixa ideal', alto: 'Ferro elevado - monitorar' },
-                'B': { baixo: 'Aplicar ácido bórico (1-2 kg/ha) via solo ou foliar', ideal: 'Boro na faixa ideal', alto: 'Boro elevado - evitar aplicações (toxidez)' },
-                'S': { baixo: 'Aplicar gesso agrícola ou sulfato de amônio', ideal: 'Enxofre na faixa ideal', alto: 'Enxofre elevado - monitorar' }
-            },
-
-            _recomendacoesFolha: {
-                'N': { baixo: 'Adubação nitrogenada foliar - ureia 0,5% a 1%', ideal: 'Nitrogênio na faixa ideal', alto: 'Nitrogênio elevado - reduzir aplicações' },
-                'P': { baixo: 'Adubação fosfatada foliar - fosfito ou MAP', ideal: 'Fósforo na faixa ideal', alto: 'Fósforo elevado - monitorar' },
-                'K': { baixo: 'Adubação potássica foliar - nitrato de potássio 1%', ideal: 'Potássio na faixa ideal', alto: 'Potássio elevado - monitorar' },
-                'Ca': { baixo: 'Aplicar cálcio foliar - nitrato de cálcio 0,5%', ideal: 'Cálcio na faixa ideal', alto: 'Cálcio elevado - monitorar' },
-                'Mg': { baixo: 'Aplicar magnésio foliar - sulfato de magnésio 1%', ideal: 'Magnésio na faixa ideal', alto: 'Magnésio elevado - monitorar' },
-                'S': { baixo: 'Aplicar enxofre foliar - sulfato de amônio', ideal: 'Enxofre na faixa ideal', alto: 'Enxofre elevado - monitorar' },
-                'B': { baixo: 'Aplicar boro foliar - ácido bórico 0,1%', ideal: 'Boro na faixa ideal', alto: 'Boro elevado - evitar aplicações (toxidez)' },
-                'Cu': { baixo: 'Aplicar cobre foliar - sulfato de cobre 0,2%', ideal: 'Cobre na faixa ideal', alto: 'Cobre elevado - evitar aplicações' },
-                'Fe': { baixo: 'Aplicar ferro foliar - quelato de ferro 0,1%', ideal: 'Ferro na faixa ideal', alto: 'Ferro elevado - monitorar' },
-                'Mn': { baixo: 'Aplicar manganês foliar - sulfato de manganês 0,2%', ideal: 'Manganês na faixa ideal', alto: 'Manganês elevado - evitar aplicações' },
-                'Zn': { baixo: 'Aplicar zinco foliar - sulfato de zinco 0,2%', ideal: 'Zinco na faixa ideal', alto: 'Zinco elevado - evitar aplicações' }
-            },
-
-            _mostrarResultados: function(dados) {
-                var div = document.getElementById('analise-dados');
-                var recDiv = document.getElementById('analise-recomendacoes');
-                if (!div) return;
-
-                var html = '';
-                for (var key in dados.elementos) {
-                    var elem = dados.recomendacoes.find(function(r) { return r.elemento === key; });
-                    if (!elem) continue;
-                    var classe = elem.status === 'ideal' ? 'ideal' : elem.status === 'baixo' ? 'baixo' : 'alto';
-                    var cor = elem.status === 'ideal' ? '#2e7d32' : elem.status === 'baixo' ? '#c62828' : '#e65100';
-
-                    html += '<div style="background:var(--surface);padding:3px 6px;border-radius:4px;border:1px solid var(--border);text-align:center;">' +
-                        '<div style="font-weight:600;font-size:9px;">' + elem.elemento + '</div>' +
-                        '<div style="font-size:14px;font-weight:700;color:' + cor + ';">' + elem.valor + '</div>' +
-                        '<div style="font-size:8px;color:var(--text-light);">' + (elem.status === 'ideal' ? '✅ Ideal' : elem.status === 'baixo' ? '⬇️ Baixo' : '⬆️ Alto') + '</div>' +
-                        '</div>';
-                }
-                div.innerHTML = html;
-
-                var recHtml = '';
-                var recomendacoes = dados.recomendacoes.filter(function(r) { return r.status !== 'ideal'; });
-                if (recomendacoes.length) {
-                    recHtml = '<h5 style="font-size:11px;color:var(--warning);margin-top:6px;">📝 Recomendações</h5>';
-                    recomendacoes.forEach(function(r) {
-                        recHtml += '<div class="receituario-item" style="background:#e8f5e9;border-left:3px solid var(--primary);padding:3px 6px;margin:2px 0;border-radius:3px;font-size:11px;">' +
-                            '<strong>' + r.elemento + ':</strong> ' + r.recomendacao +
-                            '</div>';
-                    });
-                } else {
-                    recHtml = '<div style="background:#e8f5e9;padding:6px;border-radius:4px;margin-top:4px;">✅ Todos os elementos estão na faixa ideal.</div>';
-                }
-                recDiv.innerHTML = recHtml;
-            },
-
-            salvar: function() {
-                var tipo = document.getElementById('analise-tipo').value;
-                var propriedade = document.getElementById('analise-propriedade').value;
-                var data = document.getElementById('analise-data').value;
-                var talhao = document.getElementById('analise-talhao').value.trim();
-                var cultura = document.getElementById('analise-cultura').value.trim();
-
-                if (!propriedade || !data) {
-                    GR.Toast.error('Propriedade e data são obrigatórios!');
-                    return;
-                }
-
-                var divDados = document.getElementById('analise-dados');
-                var elementos = {};
-                var recomendacoes = [];
-
-                if (divDados && divDados.children.length > 0) {
-                    var children = divDados.children;
-                    for (var i = 0; i < children.length; i++) {
-                        var child = children[i];
-                        var label = child.querySelector('div:first-child')?.textContent || '';
-                        var valor = parseFloat(child.querySelector('div:nth-child(2)')?.textContent || '0');
-                        if (label && !isNaN(valor)) {
-                            elementos[label] = valor;
-                        }
-                    }
-                }
-
-                var recDiv = document.getElementById('analise-recomendacoes');
-                if (recDiv) {
-                    var recItems = recDiv.querySelectorAll('.receituario-item');
-                    recItems.forEach(function(item) {
-                        var text = item.textContent || '';
-                        var parts = text.split(':');
-                        if (parts.length === 2) {
-                            recomendacoes.push({
-                                elemento: parts[0].trim(),
-                                recomendacao: parts[1].trim()
-                            });
-                        }
-                    });
-                }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    tipo: tipo,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    data: data,
-                    talhao: GR.Utils.escapeHtml(talhao),
-                    cultura: GR.Utils.escapeHtml(cultura),
-                    elementos: elementos,
-                    recomendacoes: recomendacoes,
-                    status: recomendacoes.length > 0 ? 'Correção Necessária' : 'Equilibrado',
-                    dataCriacao: GR.Utils.now()
-                };
-
-                if (GR.State.ui.analiseEditando) {
-                    db.collection('users').doc(uid).collection('analises').doc(GR.State.ui.analiseEditando).update(dados)
-                        .then(function() {
-                            GR.Modal.close('modal-analise');
-                            GR.Toast.success('Análise atualizada!');
-                            GR.State.adicionarHistorico('editou análise', 'Análises', 'Análise: ' + propriedade);
-                            GR.UI.refreshCurrentView();
-                        })
-                        .catch(function(err) {
-                            GR.Toast.error('Erro ao atualizar: ' + err.message);
-                        });
-                } else {
-                    db.collection('users').doc(uid).collection('analises').add(dados)
-                        .then(function() {
-                            GR.Modal.close('modal-analise');
-                            GR.Toast.success('Análise salva!');
-                            GR.State.adicionarHistorico('criou análise', 'Análises', 'Análise: ' + propriedade);
-                            GR.UI.refreshCurrentView();
-                        })
-                        .catch(function(err) {
-                            GR.Toast.error('Erro ao salvar: ' + err.message);
-                        });
-                }
-            },
-
-            verReceituario: function(id) {
-                var analise = GR.State.data.analises.find(function(a) { return a.id === id; });
-                if (!analise) {
-                    GR.Toast.error('Análise não encontrada!');
-                    return;
-                }
-
-                var div = document.getElementById('receituario-content');
-                if (!div) return;
-
-                var html = '<div style="margin-bottom:8px;">' +
-                    '<h3 style="font-size:15px;">📋 Receituário - ' + (analise.tipo === 'solo' ? 'Solo' : 'Folha') + '</h3>' +
-                    '<p><strong>Propriedade:</strong> ' + GR.Utils.escapeHtml(analise.propriedade) + '</p>' +
-                    '<p><strong>Data:</strong> ' + GR.Utils.formatarDataBR(analise.data) + '</p>' +
-                    (analise.talhao ? '<p><strong>Talhão:</strong> ' + GR.Utils.escapeHtml(analise.talhao) + '</p>' : '') +
-                    (analise.cultura ? '<p><strong>Cultura:</strong> ' + GR.Utils.escapeHtml(analise.cultura) + '</p>' : '') +
-                    '</div>';
-
-                if (analise.elementos && Object.keys(analise.elementos).length > 0) {
-                    html += '<h4 style="font-size:12px;">🔬 Resultados</h4>' +
-                        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:3px;margin-bottom:8px;">';
-
-                    for (var key in analise.elementos) {
-                        var valor = analise.elementos[key];
-                        var rec = analise.recomendacoes ? analise.recomendacoes.find(function(r) { return r.elemento === key; }) : null;
-                        var cor = rec && rec.status === 'baixo' ? '#c62828' : rec && rec.status === 'alto' ? '#e65100' : '#2e7d32';
-
-                        html += '<div style="background:var(--surface);padding:3px 6px;border-radius:4px;border:1px solid var(--border);text-align:center;">' +
-                            '<div style="font-weight:600;font-size:9px;">' + key + '</div>' +
-                            '<div style="font-size:14px;font-weight:700;color:' + cor + ';">' + valor + '</div>' +
-                            '</div>';
-                    }
-                    html += '</div>';
-                }
-
-                if (analise.recomendacoes && analise.recomendacoes.length > 0) {
-                    var recs = analise.recomendacoes.filter(function(r) { return r.status && r.status !== 'ideal'; });
-                    if (recs.length > 0) {
-                        html += '<h4 style="font-size:12px;color:var(--warning);">📝 Recomendações</h4>';
-                        recs.forEach(function(r) {
-                            html += '<div class="receituario-item" style="background:#e8f5e9;border-left:3px solid var(--primary);padding:3px 6px;margin:2px 0;border-radius:3px;font-size:11px;">' +
-                                '<strong>' + r.elemento + ':</strong> ' + r.recomendacao +
-                                '</div>';
-                        });
-                    } else {
-                        html += '<div style="background:#e8f5e9;padding:6px;border-radius:4px;margin-top:4px;">✅ Todos os elementos estão na faixa ideal.</div>';
-                    }
-                }
-
-                div.innerHTML = html;
-                GR.Modal.open('modal-receituario');
-            },
-
-            imprimirReceituario: function() {
-                window.print();
-            },
-
-            excluir: function(id) {
-                if (!confirm('Excluir esta análise?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('analises').doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Análise excluída!');
-                        GR.State.adicionarHistorico('excluiu análise', 'Análises', 'Análise ID: ' + id);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: VIVEIRO - CORRIGIDO COMPLETO
-        // ================================================================
-        GR.Modules.Viveiro = {
-            render: function() {
-                var div = document.getElementById('viveiro-content');
-                if (!div) return;
-
-                var mudas = GR.State.data.viveiroMudas || [];
-                var insumos = GR.State.data.viveiroInsumos || [];
-                var servicos = GR.State.data.viveiroServicos || [];
-                var trabalhadores = GR.State.data.viveiroTrabalhadores || [];
-
-                // CORREÇÃO: Verificar se os elementos existem antes de definir textContent
-                var totalMudas = document.getElementById('total-mudas');
-                if (totalMudas) totalMudas.textContent = mudas.length;
-                
-                var totalInsumos = document.getElementById('total-insumos-viveiro');
-                if (totalInsumos) totalInsumos.textContent = insumos.length;
-                
-                var totalServicos = document.getElementById('total-servicos-viveiro');
-                if (totalServicos) totalServicos.textContent = servicos.length;
-
-                var html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">';
-
-                // Mudas
-                html += '<div><h4 style="font-size:11px;">🌱 Mudas (' + mudas.length + ')</h4>';
-                if (!mudas.length) html += '<div style="color:#999;">Nenhuma muda</div>';
-                else {
-                    mudas.forEach(function(m) {
-                        var statusBadge = m.status === 'Pronta' ? '<span class="badge badge-success">Pronta</span>' :
-                            m.status === 'Produção' ? '<span class="badge badge-warning">Produção</span>' :
-                            '<span class="badge badge-info">' + m.status + '</span>';
-                        html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--success);font-size:10px;">' +
-                            GR.Utils.escapeHtml(m.especie) + ' - ' + m.quantidade + ' ' + statusBadge +
-                            '</div>';
-                    });
-                }
-                html += '</div>';
-
-                // Insumos
-                html += '<div><h4 style="font-size:11px;">🧪 Insumos (' + insumos.length + ')</h4>';
-                if (!insumos.length) html += '<div style="color:#999;">Nenhum insumo</div>';
-                else {
-                    insumos.forEach(function(i) {
-                        html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--warning);font-size:10px;">' +
-                            GR.Utils.escapeHtml(i.nome) + ' - ' + i.quantidade + ' ' + (i.unidade || '') +
-                            '</div>';
-                    });
-                }
-                html += '</div>';
-
-                // Serviços
-                html += '<div><h4 style="font-size:11px;">🛠️ Serviços (' + servicos.length + ')</h4>';
-                if (!servicos.length) html += '<div style="color:#999;">Nenhum serviço</div>';
-                else {
-                    servicos.forEach(function(s) {
-                        html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--info);font-size:10px;">' +
-                            GR.Utils.escapeHtml(s.descricao) + ' - ' + GR.Utils.formatarMoedaBR(s.custo) +
-                            '</div>';
-                    });
-                }
-                html += '</div>';
-
-                // Trabalhadores
-                html += '<div><h4 style="font-size:11px;">👤 Trabalhadores (' + trabalhadores.length + ')</h4>';
-                if (!trabalhadores.length) html += '<div style="color:#999;">Nenhum trabalhador</div>';
-                else {
-                    trabalhadores.forEach(function(t) {
-                        html += '<div style="background:var(--surface);padding:3px;border-radius:3px;margin:2px 0;border-left:2px solid var(--primary);font-size:10px;">' +
-                            GR.Utils.escapeHtml(t.nome) + ' - ' + GR.Utils.escapeHtml(t.funcao || '-') +
-                            '</div>';
-                    });
-                }
-                html += '</div>';
-
-                html += '</div>';
-                div.innerHTML = html;
-            },
-
-            salvarMuda: function() {
-                var especie = document.getElementById('viveiro-muda-especie').value.trim();
-                var variedade = document.getElementById('viveiro-muda-variedade').value.trim();
-                var quantidade = parseInt(document.getElementById('viveiro-muda-qtd').value) || 0;
-                var dataProducao = document.getElementById('viveiro-muda-data-producao').value;
-                var status = document.getElementById('viveiro-muda-status').value;
-                var propriedade = document.getElementById('viveiro-muda-propriedade').value;
-                var obs = document.getElementById('viveiro-muda-obs').value.trim();
-
-                if (!especie || !variedade) { GR.Toast.error('Espécie e variedade são obrigatórios!'); return; }
-                if (quantidade <= 0) { GR.Toast.error('Quantidade deve ser maior que zero!'); return; }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    especie: GR.Utils.escapeHtml(especie),
-                    variedade: GR.Utils.escapeHtml(variedade),
-                    quantidade: quantidade,
-                    dataProducao: dataProducao,
-                    status: status,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    obs: GR.Utils.escapeHtml(obs),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('viveiroMudas').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-viveiro-muda');
-                        GR.Toast.success('Muda registrada!');
-                        GR.State.adicionarHistorico('criou muda', 'Viveiro', 'Muda: ' + especie + ' ' + variedade);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            salvarInsumo: function() {
-                var nome = document.getElementById('viveiro-insumo-nome').value.trim();
-                var tipo = document.getElementById('viveiro-insumo-tipo').value;
-                var quantidade = parseFloat(document.getElementById('viveiro-insumo-qtd').value) || 0;
-                var unidade = document.getElementById('viveiro-insumo-unidade').value;
-                var preco = GR.Utils.parseMoedaBR(document.getElementById('viveiro-insumo-preco').value);
-                var fornecedor = document.getElementById('viveiro-insumo-fornecedor').value.trim();
-                var validade = document.getElementById('viveiro-insumo-validade').value;
-                var propriedade = document.getElementById('viveiro-insumo-propriedade').value;
-
-                if (!nome) { GR.Toast.error('Nome é obrigatório!'); return; }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    nome: GR.Utils.escapeHtml(nome),
-                    tipo: tipo,
-                    quantidade: quantidade,
-                    unidade: unidade,
-                    preco: preco || 0,
-                    fornecedor: GR.Utils.escapeHtml(fornecedor),
-                    validade: validade,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('viveiroInsumos').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-viveiro-insumo');
-                        GR.Toast.success('Insumo salvo!');
-                        GR.State.adicionarHistorico('criou insumo viveiro', 'Viveiro', 'Insumo: ' + nome);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            salvarServico: function() {
-                var descricao = document.getElementById('viveiro-servico-desc').value.trim();
-                var data = document.getElementById('viveiro-servico-data').value;
-                var responsavel = document.getElementById('viveiro-servico-responsavel').value.trim();
-                var custo = GR.Utils.parseMoedaBR(document.getElementById('viveiro-servico-custo').value);
-                var propriedade = document.getElementById('viveiro-servico-propriedade').value;
-                var obs = document.getElementById('viveiro-servico-obs').value.trim();
-
-                if (!descricao || !data || !responsavel) {
-                    GR.Toast.error('Campos obrigatórios!');
-                    return;
-                }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    descricao: GR.Utils.escapeHtml(descricao),
-                    data: data,
-                    responsavel: GR.Utils.escapeHtml(responsavel),
-                    custo: custo || 0,
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    obs: GR.Utils.escapeHtml(obs),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('viveiroServicos').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-viveiro-servico');
-                        GR.Toast.success('Serviço salvo!');
-                        GR.State.adicionarHistorico('criou serviço viveiro', 'Viveiro', 'Serviço: ' + descricao);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            salvarTrabalhador: function() {
-                var nome = document.getElementById('viveiro-trabalhador-nome').value.trim();
-                var cpf = document.getElementById('viveiro-trabalhador-cpf').value.trim();
-                var funcao = document.getElementById('viveiro-trabalhador-funcao').value.trim();
-                var ddd = document.getElementById('viveiro-trabalhador-ddd').value.trim();
-                var tel = document.getElementById('viveiro-trabalhador-tel').value.trim();
-                var admissao = document.getElementById('viveiro-trabalhador-admissao').value;
-                var propriedade = document.getElementById('viveiro-trabalhador-propriedade').value;
-
-                if (!nome) { GR.Toast.error('Nome é obrigatório!'); return; }
-                if (cpf && !GR.Utils.validarCPF(cpf)) { GR.Toast.error('CPF inválido!'); return; }
-
-                var uid = currentUser.uid;
-                var dados = {
-                    nome: GR.Utils.escapeHtml(nome),
-                    cpf: cpf || '',
-                    funcao: GR.Utils.escapeHtml(funcao),
-                    telefone: (ddd || tel) ? { ddd: ddd, numero: tel } : null,
-                    admissao: admissao || '',
-                    propriedade: GR.Utils.escapeHtml(propriedade),
-                    dataCriacao: GR.Utils.now()
-                };
-
-                db.collection('users').doc(uid).collection('viveiroTrabalhadores').add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-viveiro-trabalhador');
-                        GR.Toast.success('Trabalhador salvo!');
-                        GR.State.adicionarHistorico('criou trabalhador viveiro', 'Viveiro', 'Trabalhador: ' + nome);
-                        GR.UI.refreshCurrentView();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            }
-        };
-    </script>
-    <!-- ================================================================ -->
-    <!-- JAVASCRIPT - PARTE 13/13 - MÓDULOS FINAIS + FECHAMENTO          -->
-    <!-- ================================================================ -->
-    <script>
-        // ================================================================
-        // MÓDULO: RELATÓRIOS
-        // ================================================================
-        GR.Relatorios = {
-            gerarRelatorioFinanceiro: function() {
-                var receitas = GR.State.data.receitas || [];
-                var despesas = GR.State.data.despesas || [];
-                var totalR = receitas.reduce(function(s, r) { return s + (r.valor || 0); }, 0);
-                var totalD = despesas.reduce(function(s, d) { return s + (d.valor || 0); }, 0);
-                var saldo = totalR - totalD;
-
-                var html = '<div style="padding:6px;">' +
-                    '<h4>💰 Resumo Financeiro</h4>' +
-                    '<div class="stats-grid" style="margin-bottom:8px;">' +
-                    '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalR) + '</div><div class="label">Receitas</div></div>' +
-                    '<div class="stats-card danger"><div class="number">' + GR.Utils.formatarMoedaBR(totalD) + '</div><div class="label">Despesas</div></div>' +
-                    '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(saldo) + '</div><div class="label">Saldo</div></div>' +
-                    '</div>' +
-                    '<p><strong>Total de Receitas:</strong> ' + receitas.length + ' registros</p>' +
-                    '<p><strong>Total de Despesas:</strong> ' + despesas.length + ' registros</p>' +
-                    '</div>';
-
-                document.getElementById('relatorio-content').innerHTML = html;
-            },
-
-            gerarRelatorioEstoque: function() {
-                var insumos = GR.State.data.insumos || [];
-                var totalValor = insumos.reduce(function(s, i) { return s + ((i.quantidade || 0) * (i.preco || 0)); }, 0);
-
-                var html = '<div style="padding:6px;">' +
-                    '<h4>📦 Relatório de Estoque</h4>' +
-                    '<div class="stats-grid" style="margin-bottom:8px;">' +
-                    '<div class="stats-card"><div class="number">' + insumos.length + '</div><div class="label">Total de Insumos</div></div>' +
-                    '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalValor) + '</div><div class="label">Valor Total</div></div>' +
-                    '</div>';
-
-                if (!insumos.length) {
-                    html += '<p>Nenhum insumo cadastrado.</p>';
-                } else {
-                    html += '<div class="table-responsive"><table><thead><tr><th>Nome</th><th>Quantidade</th><th>Valor Total</th></tr></thead><tbody>';
-                    insumos.forEach(function(i) {
-                        html += '<tr><td>' + GR.Utils.escapeHtml(i.nome) + '</td><td>' + (i.quantidade || 0) + ' ' + (i.unidade || '') + '</td><td>' + GR.Utils.formatarMoedaBR((i.quantidade || 0) * (i.preco || 0)) + '</td></tr>';
-                    });
-                    html += '</tbody></table></div>';
-                }
-
-                html += '</div>';
-                document.getElementById('relatorio-content').innerHTML = html;
-            },
-
-            gerarRelatorioPecuaria: function() {
-                var animais = GR.State.data.animais || [];
-
-                var html = '<div style="padding:6px;">' +
-                    '<h4>🐄 Relatório de Pecuária</h4>' +
-                    '<div class="stats-grid" style="margin-bottom:8px;">' +
-                    '<div class="stats-card"><div class="number">' + animais.length + '</div><div class="label">Total de Animais</div></div>' +
-                    '</div>';
-
-                if (!animais.length) {
-                    html += '<p>Nenhum animal cadastrado.</p>';
-                } else {
-                    html += '<div class="table-responsive"><table><thead><tr><th>Identificação</th><th>Nome</th><th>Espécie</th><th>Peso</th></tr></thead><tbody>';
-                    animais.forEach(function(a) {
-                        html += '<tr><td>' + GR.Utils.escapeHtml(a.identificacao || '-') + '</td><td>' + GR.Utils.escapeHtml(a.nome || '-') + '</td><td>' + a.especie + '</td><td>' + (a.peso || 0) + ' kg</td></tr>';
-                    });
-                    html += '</tbody></table></div>';
-                }
-
-                html += '</div>';
-                document.getElementById('relatorio-content').innerHTML = html;
-            },
-
-            gerarRelatorioAnalises: function() {
-                var analises = GR.State.data.analises || [];
-                var equilibrado = analises.filter(function(a) { return a.status === 'Equilibrado'; }).length;
-
-                var html = '<div style="padding:6px;">' +
-                    '<h4>🧪 Relatório de Análises</h4>' +
-                    '<div class="stats-grid" style="margin-bottom:8px;">' +
-                    '<div class="stats-card"><div class="number">' + analises.length + '</div><div class="label">Total de Análises</div></div>' +
-                    '<div class="stats-card success"><div class="number">' + equilibrado + '</div><div class="label">✅ Equilibrado</div></div>' +
-                    '<div class="stats-card warning"><div class="number">' + (analises.length - equilibrado) + '</div><div class="label">⚠️ Corrigir</div></div>' +
-                    '</div>';
-
-                if (!analises.length) {
-                    html += '<p>Nenhuma análise cadastrada.</p>';
-                } else {
-                    html += '<div class="table-responsive"><table><thead><tr><th>Propriedade</th><th>Data</th><th>Tipo</th><th>Status</th></tr></thead><tbody>';
-                    analises.forEach(function(a) {
-                        var statusBadge = a.status === 'Equilibrado' ?
-                            '<span class="badge badge-success">✅ Equilibrado</span>' :
-                            '<span class="badge badge-warning">⚠️ Correção</span>';
-                        html += '<tr><td>' + GR.Utils.escapeHtml(a.propriedade) + '</td><td>' + GR.Utils.formatarDataBR(a.data) + '</td><td>' + (a.tipo === 'solo' ? '🧪 Solo' : '🌿 Folha') + '</td><td>' + statusBadge + '</td></tr>';
-                    });
-                    html += '</tbody></table></div>';
-                }
-
-                html += '</div>';
-                document.getElementById('relatorio-content').innerHTML = html;
-            },
-
-            gerarRelatorioGeral: function() {
-                var html = '<div style="padding:6px;">' +
-                    '<h4>📋 Relatório Geral</h4>' +
-                    '<div class="stats-grid" style="margin-bottom:8px;">' +
-                    '<div class="stats-card"><div class="number">' + (GR.State.data.tarefas || []).length + '</div><div class="label">📋 Ações</div></div>' +
-                    '<div class="stats-card"><div class="number">' + (GR.State.data.contratos || []).length + '</div><div class="label">💳 Contratos</div></div>' +
-                    '<div class="stats-card"><div class="number">' + (GR.State.data.insumos || []).length + '</div><div class="label">🧪 Insumos</div></div>' +
-                    '<div class="stats-card"><div class="number">' + (GR.State.data.animais || []).length + '</div><div class="label">🐄 Animais</div></div>' +
-                    '<div class="stats-card"><div class="number">' + (GR.State.data.funcionarios || []).length + '</div><div class="label">👨‍🌾 Funcionários</div></div>' +
-                    '<div class="stats-card"><div class="number">' + (GR.State.data.documentos || []).length + '</div><div class="label">📁 Documentos</div></div>' +
-                    '</div>';
-
-                var receitas = GR.State.data.receitas || [];
-                var despesas = GR.State.data.despesas || [];
-                var totalR = receitas.reduce(function(s, r) { return s + (r.valor || 0); }, 0);
-                var totalD = despesas.reduce(function(s, d) { return s + (d.valor || 0); }, 0);
-
-                html += '<div class="stats-grid">' +
-                    '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalR) + '</div><div class="label">💰 Receitas</div></div>' +
-                    '<div class="stats-card danger"><div class="number">' + GR.Utils.formatarMoedaBR(totalD) + '</div><div class="label">💸 Despesas</div></div>' +
-                    '<div class="stats-card"><div class="number">' + GR.Utils.formatarMoedaBR(totalR - totalD) + '</div><div class="label">📊 Saldo</div></div>' +
-                    '</div>';
-
-                html += '</div>';
-                document.getElementById('relatorio-content').innerHTML = html;
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: CONFIGURAÇÕES
-        // ================================================================
-        GR.Config = {
-            _tipoAtual: null,
-            _editandoId: null,
-
-            abrirConfig: function(tipo) {
-                this._tipoAtual = tipo;
-                this._editandoId = null;
-                var modal = document.getElementById('modal-config');
-                var body = document.getElementById('config-modal-body');
-                if (!modal || !body) return;
-
-                var titulo = document.getElementById('config-modal-title');
-                var labels = {
-                    'propriedades': 'Propriedade',
-                    'categorias': 'Categoria de Insumo',
-                    'modalidadesCredito': 'Modalidade de Crédito',
-                    'instituicoes': 'Instituição Financeira',
-                    'fornecedores': 'Fornecedor',
-                    'nomesInsumos': 'Nome de Insumo',
-                    'tiposParceiro': 'Tipo de Parceiro'
-                };
-                titulo.textContent = 'Adicionar ' + (labels[tipo] || 'Item');
-                body.innerHTML = '<div class="form-group"><label>Nome</label><input type="text" id="config-nome" class="form-control" placeholder="Digite o nome..."></div>';
-                GR.Modal.open('modal-config');
-                setTimeout(function() { document.getElementById('config-nome').focus(); }, 100);
-            },
-
-            salvar: function() {
-                var nome = document.getElementById('config-nome').value.trim();
-                if (!nome) { GR.Toast.error('Digite um nome!'); return; }
-
-                var tipo = this._tipoAtual;
-                var uid = currentUser.uid;
-
-                var colecaoMap = {
-                    'propriedades': 'propriedades',
-                    'categorias': 'categorias',
-                    'modalidadesCredito': 'modalidadesCredito',
-                    'instituicoes': 'instituicoes',
-                    'fornecedores': 'fornecedores',
-                    'nomesInsumos': 'nomesInsumos',
-                    'tiposParceiro': 'tiposParceiro'
-                };
-
-                var colecao = colecaoMap[tipo];
-                if (!colecao) {
-                    GR.Toast.error('Tipo inválido!');
-                    return;
-                }
-
-                var dados = { nome: nome, dataCriacao: GR.Utils.now() };
-
-                db.collection('users').doc(uid).collection(colecao).add(dados)
-                    .then(function() {
-                        GR.Modal.close('modal-config');
-                        GR.Toast.success('✅ Adicionado!');
-                        GR.State.adicionarHistorico('criou ' + tipo, 'Configurações', 'Item: ' + nome);
-                        GR.UI.refreshCurrentView();
-                        GR.UI.atualizarDatalists();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao salvar: ' + err.message);
-                    });
-            },
-
-            excluirItem: function(elementId, id) {
-                if (!confirm('Excluir este item?')) return;
-
-                var tipoMap = {
-                    'conf-propriedades': 'propriedades',
-                    'conf-categorias': 'categorias',
-                    'conf-modalidades': 'modalidadesCredito',
-                    'conf-instituicoes': 'instituicoes',
-                    'conf-fornecedores': 'fornecedores',
-                    'conf-nomes-insumos': 'nomesInsumos',
-                    'conf-tipos-parceiro': 'tiposParceiro'
-                };
-
-                var tipo = tipoMap[elementId];
-                if (!tipo) return;
-
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection(tipo).doc(id).delete()
-                    .then(function() {
-                        GR.Toast.success('Excluído!');
-                        GR.State.adicionarHistorico('excluiu ' + tipo, 'Configurações', 'Item ID: ' + id);
-                        GR.UI.refreshCurrentView();
-                        GR.UI.atualizarDatalists();
-                    })
-                    .catch(function(err) {
-                        GR.Toast.error('Erro ao excluir: ' + err.message);
-                    });
-            },
-
-            zerarBancoDados: function() {
-                if (GR.Login.nivelAtual !== 'master') {
-                    GR.Toast.error('❌ Apenas o usuário MASTER pode zerar o banco de dados!');
-                    return;
-                }
-
-                var senha = prompt('🔐 Digite a senha MASTER para confirmar a exclusão de TODOS os dados:');
-                if (!senha) return;
-
-                var self = this;
-                GR.Security.hashPassword(senha).then(function(senhaHash) {
-                    var masterUser = GR.Login.usuarios.find(function(u) { return u.usuario === 'master'; });
-                    if (masterUser && masterUser.senha === senhaHash) {
-                        self._executarZeramento();
-                    } else {
-                        GR.Toast.error('❌ Senha incorreta!');
-                    }
-                }).catch(function() {
-                    var masterUser = GR.Login.usuarios.find(function(u) { return u.usuario === 'master'; });
-                    if (masterUser && masterUser.senha === senha) {
-                        self._executarZeramento();
-                    } else {
-                        GR.Toast.error('❌ Senha incorreta!');
-                    }
-                });
-            },
-
-            _executarZeramento: function() {
-                if (!confirm('⚠️ ATENÇÃO! Isso irá EXCLUIR TODOS os seus dados permanentemente! Continuar?')) return;
-                if (!confirm('🔄 ÚLTIMA CHANCE! Tem certeza que deseja excluir TODOS os dados?')) return;
-
-                var uid = currentUser.uid;
-                var colecoes = [
-                    'propriedades', 'tarefas', 'orcamentos', 'contratos', 'insumos',
-                    'animais', 'funcionarios', 'partesRelacionadas', 'receitas', 'despesas',
-                    'documentos', 'analises', 'viveiroMudas', 'viveiroInsumos',
-                    'viveiroServicos', 'viveiroTrabalhadores', 'notificacoes', 'historico',
-                    'fornecedores', 'categorias', 'instituicoes', 'contratosParceiros'
-                ];
-
-                GR.Toast.info('🔄 Excluindo dados...');
-
-                var promises = colecoes.map(function(c) {
-                    return db.collection('users').doc(uid).collection(c).get().then(function(snap) {
-                        var batch = db.batch();
-                        snap.forEach(function(doc) {
-                            batch.delete(doc.ref);
-                        });
-                        return batch.commit();
-                    }).catch(function(err) {
-                        console.warn('Erro ao excluir ' + c + ':', err);
-                    });
-                });
-
-                promises.push(
-                    db.collection('users').doc(uid).collection('config').doc('dashboard').delete().catch(function() {}),
-                    db.collection('users').doc(uid).collection('config').doc('sistema').delete().catch(function() {})
-                );
-
-                Promise.all(promises).then(function() {
-                    Object.keys(GR.State.data).forEach(function(k) {
-                        localStorage.removeItem('gr_' + k);
-                    });
-                    localStorage.removeItem('gr_backup_automatico');
-                    localStorage.removeItem('gr_backup_ultimo');
-                    localStorage.removeItem('gr_theme');
-                    localStorage.removeItem('gr_font_size');
-
-                    for (var key in GR.State.data) {
-                        if (key !== 'dashboardConfig' && key !== 'sistemaConfig') {
-                            GR.State.data[key] = [];
-                        }
-                    }
-
-                    GR.Toast.success('✅ Todos os dados foram excluídos!');
-
-                    setTimeout(function() {
-                        location.reload();
-                    }, 2000);
-                }).catch(function(err) {
-                    GR.Toast.error('❌ Erro ao excluir dados: ' + err.message);
-                });
-            },
-
-            editarUsuario: function(usuario) {
-                var user = GR.Login.usuarios.find(function(u) { return u.usuario === usuario; });
-                if (!user) { GR.Toast.error('Usuário não encontrado!'); return; }
-
-                document.getElementById('usuario-edit-nome').value = user.usuario;
-                document.getElementById('usuario-edit-senha').value = '';
-                document.getElementById('usuario-edit-confirm').value = '';
-                document.getElementById('usuario-edit-nivel').value = user.nivel || 'usuario';
-                document.getElementById('modal-usuario-title').textContent = 'Editar Usuário: ' + user.usuario;
-                GR.Modal.open('modal-usuario');
-            },
-
-            salvarUsuario: function() {
-                var nome = document.getElementById('usuario-edit-nome').value.trim();
-                var senha = document.getElementById('usuario-edit-senha').value;
-                var confirm = document.getElementById('usuario-edit-confirm').value;
-                var nivel = document.getElementById('usuario-edit-nivel').value;
-
-                if (!nome) { GR.Toast.error('Usuário inválido!'); return; }
-
-                var usuarios = GR.Login.usuarios;
-                var idx = usuarios.findIndex(function(u) { return u.usuario === nome; });
-                if (idx === -1) { GR.Toast.error('Usuário não encontrado!'); return; }
-
-                if (senha) {
-                    if (senha.length < 6) { GR.Toast.error('A nova senha deve ter no mínimo 6 caracteres!'); return; }
-                    if (senha !== confirm) { GR.Toast.error('As senhas não coincidem!'); return; }
-
-                    GR.Security.hashPassword(senha).then(function(senhaHash) {
-                        usuarios[idx].senha = senhaHash;
-                        usuarios[idx].nivel = nivel;
-                        GR.Login.saveUsuarios();
-                        GR.Modal.close('modal-usuario');
-                        GR.UI.refreshCurrentView();
-                        GR.Toast.success('Usuário atualizado!');
-                        GR.State.adicionarHistorico('editou usuário', 'Configurações', 'Usuário: ' + nome);
-                    });
-                } else {
-                    usuarios[idx].nivel = nivel;
-                    GR.Login.saveUsuarios();
-                    GR.Modal.close('modal-usuario');
-                    GR.UI.refreshCurrentView();
-                    GR.Toast.success('Usuário atualizado!');
-                    GR.State.adicionarHistorico('editou usuário', 'Configurações', 'Usuário: ' + nome);
-                }
-            },
-
-            excluirUsuarioEdit: function() {
-                var nome = document.getElementById('usuario-edit-nome').value.trim();
-                if (nome === 'master') { GR.Toast.warning('Não é possível excluir o usuário master.'); return; }
-                if (!confirm('Excluir usuário ' + nome + '?')) return;
-                this.excluirUsuario(nome);
-                GR.Modal.close('modal-usuario');
-            },
-
-            excluirUsuario: function(usuario) {
-                if (usuario === 'master') { GR.Toast.warning('Não é possível excluir o usuário master.'); return; }
-                if (!confirm('Excluir usuário ' + usuario + '?')) return;
-
-                var usuarios = GR.Login.usuarios;
-                var idx = usuarios.findIndex(function(u) { return u.usuario === usuario; });
-                if (idx !== -1) {
-                    usuarios.splice(idx, 1);
-                    GR.Login.saveUsuarios();
-                    GR.UI.refreshCurrentView();
-                    GR.Toast.success('Usuário excluído!');
-                    GR.State.adicionarHistorico('excluiu usuário', 'Configurações', 'Usuário: ' + usuario);
-                }
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: HISTÓRICO
-        // ================================================================
-        GR.Historico = {
-            render: function() {
-                var div = document.getElementById('lista-historico');
-                if (!div) return;
-
-                var historico = GR.State.data.historico || [];
-                if (!historico.length) {
-                    div.innerHTML = '<div class="empty-state"><span class="icon">📜</span><div class="message">Nenhuma atividade registrada</div></div>';
-                    return;
-                }
-
-                var html = '<div class="table-responsive"><table><thead><tr><th>Data/Hora</th><th>Usuário</th><th>Ação</th><th>Detalhes</th></tr></thead><tbody>';
-                historico.slice(0, 100).forEach(function(h) {
-                    html += '<tr>' +
-                        '<td>' + GR.Utils.formatarDataHora(h.data) + '</td>' +
-                        '<td>' + GR.Utils.escapeHtml(h.usuario) + '</td>' +
-                        '<td>' + GR.Utils.escapeHtml(h.acao) + '</td>' +
-                        '<td>' + GR.Utils.escapeHtml(h.detalhes) + '</td>' +
-                        '</tr>';
-                });
-                html += '</tbody></table></div>';
-
-                if (historico.length > 100) {
-                    html += '<div style="margin-top:4px;font-size:10px;color:var(--text-light);">Exibindo as últimas 100 atividades de ' + historico.length + ' registradas.</div>';
-                }
-
-                div.innerHTML = html;
-            },
-
-            limpar: function() {
-                if (!confirm('Limpar todo o histórico de atividades?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('historico').get().then(function(snap) {
-                    var batch = db.batch();
-                    snap.forEach(function(doc) {
-                        batch.delete(doc.ref);
-                    });
-                    return batch.commit();
-                }).then(function() {
-                    GR.State.data.historico = [];
-                    GR.Toast.success('Histórico limpo!');
-                    GR.UI.refreshCurrentView();
-                }).catch(function(err) {
-                    GR.Toast.error('Erro ao limpar histórico: ' + err.message);
-                });
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: BACKUP
-        // ================================================================
-        GR.Backup = {
-            _intervalo: null,
-            _ultimoBackup: null,
-
-            init: function() {
-                var self = this;
-                this._ultimoBackup = localStorage.getItem('gr_backup_ultimo') || null;
-
-                var hasData = Object.keys(GR.State.data).some(function(k) {
-                    return GR.State.data[k] && GR.State.data[k].length > 0;
-                });
-
-                if (!hasData) {
-                    var restaurado = this.restaurarAutomatico();
-                    if (restaurado) {
-                        GR.Toast.warning('⚠️ Dados restaurados do backup automático!');
-                    }
-                }
-
-                this._intervalo = setInterval(function() {
-                    self._salvarBackup();
-                    self._atualizarBanner();
-                }, 6 * 60 * 60 * 1000);
-
-                window.addEventListener('beforeunload', function() {
-                    self._salvarBackup();
-                });
-
-                this._atualizarBanner();
-                this._setupRestore();
-            },
-
-            openBackupModal: function() {
-                GR.Modal.open('modal-backup');
-            },
-
-            _salvarBackup: function() {
-                try {
-                    var bk = {};
-                    Object.keys(GR.State.data).forEach(function(k) {
-                        bk[k] = GR.State.data[k];
-                    });
-                    var dataStr = JSON.stringify(bk);
-                    localStorage.setItem('gr_backup_automatico', dataStr);
-                    this._ultimoBackup = new Date().toISOString();
-                    localStorage.setItem('gr_backup_ultimo', this._ultimoBackup);
-                } catch (e) {
-                    console.warn('Erro ao fazer backup:', e);
-                }
-            },
-
-            restaurarAutomatico: function() {
-                try {
-                    var data = localStorage.getItem('gr_backup_automatico');
-                    if (!data) return false;
-                    var bk = JSON.parse(data);
-                    Object.keys(bk).forEach(function(k) {
-                        if (GR.State.data.hasOwnProperty(k)) {
-                            GR.State.data[k] = bk[k];
-                        }
-                    });
-                    this._ultimoBackup = localStorage.getItem('gr_backup_ultimo') || null;
-                    return true;
-                } catch (e) {
-                    console.warn('Erro ao restaurar backup:', e);
-                    return false;
-                }
-            },
-
-            exportar: function() {
-                var bk = {};
-                Object.keys(GR.State.data).forEach(function(k) {
-                    bk[k] = GR.State.data[k];
-                });
-                var blob = new Blob([JSON.stringify(bk)], { type: 'application/json' });
-                var a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'backup_' + new Date().toISOString().split('T')[0] + '.json';
-                a.click();
-                GR.Modal.close('modal-backup');
-                GR.Toast.success('Backup exportado!');
-                GR.State.adicionarHistorico('exportou backup', 'Sistema', 'Backup exportado');
-            },
-
-            fazerBackupManual: function() {
-                this._salvarBackup();
-                GR.Toast.success('✅ Backup manual realizado!');
-                this._atualizarBanner();
-            },
-
-            baixarBackup: function() {
-                var bk = {};
-                Object.keys(GR.State.data).forEach(function(k) {
-                    bk[k] = GR.State.data[k];
-                });
-                var blob = new Blob([JSON.stringify(bk)], { type: 'application/json' });
-                var a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'backup_manual_' + new Date().toISOString().split('T')[0] + '.json';
-                a.click();
-                GR.Toast.success('⬇️ Backup baixado!');
-            },
-
-            _atualizarBanner: function() {
-                var banner = document.getElementById('backup-banner');
-                var timeEl = document.getElementById('backup-last-time');
-                if (!banner || !timeEl) return;
-
-                if (this._ultimoBackup) {
-                    var data = new Date(this._ultimoBackup);
-                    timeEl.textContent = data.toLocaleString('pt-BR');
-                    banner.style.display = 'flex';
-                } else {
-                    banner.style.display = 'flex';
-                    timeEl.textContent = 'Nunca';
-                }
-            },
-
-            _setupRestore: function() {
-                var input = document.getElementById('backup-file');
-                if (input) {
-                    input.addEventListener('change', function(e) {
-                        var file = e.target.files[0];
-                        if (!file) return;
-
-                        var reader = new FileReader();
-                        reader.onload = function(ev) {
-                            try {
-                                var data = JSON.parse(ev.target.result);
-                                Object.keys(data).forEach(function(k) {
-                                    if (GR.State.data.hasOwnProperty(k)) {
-                                        GR.State.data[k] = data[k];
-                                    }
-                                });
-                                GR.Toast.success('✅ Restaurado! Recarregando...');
-                                e.target.value = '';
-                                setTimeout(function() { location.reload(); }, 1500);
-                            } catch (err) {
-                                GR.Toast.error('❌ Arquivo inválido!');
-                                e.target.value = '';
-                            }
-                        };
-                        reader.readAsText(file);
-                    });
-                }
-            }
-        };
-
-        // ================================================================
-        // MÓDULO: NOTIFICAÇÕES
-        // ================================================================
-        GR.Notificacoes = {
-            abrirModal: function() {
-                this.render();
-                GR.Modal.open('modal-notificacoes');
-            },
-
-            render: function() {
-                var div = document.getElementById('lista-notificacoes');
-                if (!div) return;
-
-                var notificacoes = GR.State.data.notificacoes || [];
-                if (!notificacoes.length) {
-                    div.innerHTML = '<div class="empty-state"><span class="icon">🔔</span><div class="message">Nenhuma notificação</div></div>';
-                    return;
-                }
-
-                var html = '';
-                notificacoes.forEach(function(n) {
-                    var classe = n.lida ? 'historico-item' : 'historico-item style="border-left-color:var(--primary);background:#e8f5e9;"';
-                    var tipoIcon = n.tipo === 'sucesso' ? '✅' : n.tipo === 'alerta' ? '⚠️' : n.tipo === 'erro' ? '❌' : '🔔';
-
-                    html += '<div class="' + classe + '">' +
-                        '<div><span class="acao">' + tipoIcon + ' ' + GR.Utils.escapeHtml(n.titulo) + '</span></div>' +
-                        '<div class="detalhes">' + GR.Utils.escapeHtml(n.mensagem) + '</div>' +
-                        '<div class="data-hora">' + GR.Utils.formatarDataHora(n.data) + '</div>' +
-                        (n.link ? '<div><a href="#" onclick="GR.Notificacoes.irParaLink(\'' + n.link + '\')">🔗 Ver mais</a></div>' : '') +
-                        (!n.lida ? '<button class="btn btn-sm btn-success" onclick="GR.Notificacoes.marcarLida(\'' + n.id + '\')" style="margin-top:2px;">✅ Marcar lida</button>' : '') +
-                        '</div>';
-                });
-
-                div.innerHTML = html;
-            },
-
-            marcarLida: function(id) {
-                var notif = GR.State.data.notificacoes.find(function(n) { return n.id === id; });
-                if (notif) {
-                    notif.lida = true;
-                    var uid = currentUser.uid;
-                    db.collection('users').doc(uid).collection('notificacoes').doc(id).update({ lida: true })
-                        .catch(function() {});
-                    GR.State._carregarNotificacoesBadge();
-                    this.render();
-                }
-            },
-
-            marcarTodasLidas: function() {
-                var uid = currentUser.uid;
-                var notificacoes = GR.State.data.notificacoes || [];
-                var promises = notificacoes.map(function(n) {
-                    n.lida = true;
-                    return db.collection('users').doc(uid).collection('notificacoes').doc(n.id).update({ lida: true })
-                        .catch(function() {});
-                });
-
-                Promise.all(promises).then(function() {
-                    GR.State._carregarNotificacoesBadge();
-                    GR.Notificacoes.render();
-                    GR.Toast.success('Todas as notificações marcadas como lidas!');
-                });
-            },
-
-            limparTodas: function() {
-                if (!confirm('Limpar todas as notificações?')) return;
-                var uid = currentUser.uid;
-                db.collection('users').doc(uid).collection('notificacoes').get().then(function(snap) {
-                    var batch = db.batch();
-                    snap.forEach(function(doc) {
-                        batch.delete(doc.ref);
-                    });
-                    return batch.commit();
-                }).then(function() {
-                    GR.State.data.notificacoes = [];
-                    GR.State._carregarNotificacoesBadge();
-                    GR.Notificacoes.render();
-                    GR.Toast.success('Notificações limpas!');
-                }).catch(function(err) {
-                    GR.Toast.error('Erro ao limpar: ' + err.message);
-                });
-            },
-
-            irParaLink: function(link) {
-                GR.Modal.close('modal-notificacoes');
-                if (link) {
-                    var parts = link.split(':');
-                    if (parts.length === 2) {
-                        GR.UI.navegar(parts[0]);
-                        setTimeout(function() {
-                            if (parts[1]) {
-                                var el = document.getElementById(parts[1]);
-                                if (el) el.scrollIntoView({ behavior: 'smooth' });
-                            }
-                        }, 500);
-                    }
-                }
-            }
-        };
-
-        // ================================================================
-        // UI - FUNÇÕES DE RENDERIZAÇÃO ADICIONAIS
+        // UI - FUNÇÕES DE RENDERIZAÇÃO
         // ================================================================
         GR.UI._renderAcoes = function(container) {
             container.innerHTML = `
@@ -11147,7 +9340,11 @@
                 GR.UI.refreshCurrentView();
             }
         };
-
+    </script>
+    <!-- ================================================================ -->
+    <!-- JAVASCRIPT - PARTE 14/14 - INICIALIZAÇÃO FINAL + FECHAMENTO     -->
+    <!-- ================================================================ -->
+    <script>
         // ================================================================
         // INICIALIZAÇÃO FINAL
         // ================================================================
@@ -11215,6 +9412,11 @@
                     });
                 }
 
+                // Inicializar backup
+                if (typeof GR.Backup !== 'undefined' && GR.Backup.init) {
+                    GR.Backup.init();
+                }
+
                 console.log('✅ Sistema Gestão Rural - Firebase - Versão Completa!');
                 console.log('🌾 Pronto para uso no GitHub Pages!');
             }
@@ -11264,9 +9466,5 @@
     <!-- ================================================================ -->
     <!-- FIM DO ARQUIVO                                                  -->
     <!-- ================================================================ -->
-</body>
-</html>    
-
-<!-- ================================================================ -->
 </body>
 </html>
