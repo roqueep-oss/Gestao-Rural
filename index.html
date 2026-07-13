@@ -7253,5 +7253,1045 @@
     <!-- ================================================================ -->
     <!-- FIM DO HTML -->
     <!-- ================================================================ -->
-    </body>
+// ================================================================
+// BLOCO DE CORREÇÕES - GESTÃO RURAL V2.2
+// COLE ESTE BLOCO ANTES DO FECHAMENTO DO ARQUIVO (antes da última </script>)
+// ================================================================
+
+// ================================================================
+// CORREÇÃO 1: GR.Modal.open - CORRIGIDO
+// ================================================================
+(function() {
+    if (GR.Modal && typeof GR.Modal.open === 'function') {
+        var openOriginal = GR.Modal.open;
+        GR.Modal.open = function(modalId) {
+            // Tentar encontrar o modal pelo ID exato
+            var modal = document.getElementById(modalId);
+            if (!modal) {
+                // Fallback: tentar com prefixo 'modal-'
+                modal = document.getElementById('modal-' + modalId);
+                if (!modal) {
+                    console.warn('⚠️ Modal não encontrado:', modalId);
+                    return;
+                }
+            }
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            if (!GR.Modal._openModals) GR.Modal._openModals = [];
+            GR.Modal._openModals.push(modalId);
+            setTimeout(function() {
+                var input = modal.querySelector('input, textarea, select');
+                if (input) input.focus();
+            }, 100);
+        };
+        console.log('✅ GR.Modal.open corrigido!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 2: GR.UI._atualizarDashboard - ADICIONADO
+// ================================================================
+(function() {
+    if (GR.UI) {
+        GR.UI._atualizarDashboard = function() {
+            console.log('📊 Atualizando dashboard...');
+            
+            var dashTarefas = document.getElementById('dashTarefas');
+            if (dashTarefas) dashTarefas.textContent = (GR.State.data.tarefas || []).length;
+            
+            var dashContratos = document.getElementById('dashContratos');
+            if (dashContratos) dashContratos.textContent = (GR.State.data.contratos || []).length;
+            
+            var dashInsumos = document.getElementById('dashInsumos');
+            if (dashInsumos) dashInsumos.textContent = (GR.State.data.insumos || []).length;
+            
+            var dashAnimais = document.getElementById('dashAnimais');
+            if (dashAnimais) dashAnimais.textContent = (GR.State.data.animais || []).length;
+            
+            var dashFuncionarios = document.getElementById('dashFuncionarios');
+            if (dashFuncionarios) dashFuncionarios.textContent = (GR.State.data.funcionarios || []).length;
+
+            var receitas = GR.State.data.receitas || [];
+            var despesas = GR.State.data.despesas || [];
+            var totalR = receitas.reduce(function(s, r) { return s + (r.valor || 0); }, 0);
+            var totalD = despesas.reduce(function(s, d) { return s + (d.valor || 0); }, 0);
+            
+            var dashSaldo = document.getElementById('dashSaldo');
+            if (dashSaldo) dashSaldo.textContent = GR.Utils.formatarMoedaBR(totalR - totalD);
+            
+            console.log('✅ Dashboard atualizado!');
+        };
+        console.log('✅ GR.UI._atualizarDashboard adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 3: GR.UI._renderizarModulo - ADICIONADO
+// ================================================================
+(function() {
+    if (GR.UI) {
+        GR.UI._renderizarModulo = function(moduleName) {
+            console.log('📦 Renderizando módulo:', moduleName);
+            var container = document.getElementById('sectionContainer');
+            if (!container) {
+                container = document.getElementById('view-content');
+            }
+            if (!container) return;
+            
+            var moduleMap = {
+                'dashboard': GR.UI._renderDashboard,
+                'acoes': GR.UI._renderAcoes,
+                'orcamentos': GR.UI._renderOrcamentos,
+                'credito': GR.UI._renderCredito,
+                'insumos': GR.UI._renderInsumos,
+                'pecuaria': GR.UI._renderPecuaria,
+                'funcionarios': GR.UI._renderFuncionarios,
+                'parceiros': GR.UI._renderParceiros,
+                'contabilidade': GR.UI._renderContabilidade,
+                'documentos': GR.UI._renderDocumentos,
+                'analises': GR.UI._renderAnalises,
+                'viveiro': GR.UI._renderViveiro,
+                'relatorios': GR.UI._renderRelatorios,
+                'configuracoes': GR.UI._renderConfiguracoes,
+                'historico': GR.UI._renderHistorico,
+                'notificacoes': GR.UI._renderNotificacoes,
+                'nfe': GR.UI._renderNFe
+            };
+            
+            var renderFn = moduleMap[moduleName];
+            if (renderFn && typeof renderFn === 'function') {
+                renderFn(container);
+            } else {
+                container.innerHTML = '<div class="card"><div class="empty-state"><span class="icon">🚧</span><div class="message">Módulo em desenvolvimento: ' + moduleName + '</div></div></div>';
+            }
+        };
+        console.log('✅ GR.UI._renderizarModulo adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 4: GR.UI.refreshCurrentView - CORRIGIDO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.refreshCurrentView !== 'function') {
+        GR.UI.refreshCurrentView = function() {
+            var view = GR.State.ui?.viewAtual || 'dashboard';
+            var container = document.getElementById('sectionContainer');
+            if (!container) {
+                container = document.getElementById('view-content');
+            }
+            if (!container) return;
+
+            var renderMap = {
+                'dashboard': GR.UI._renderDashboard,
+                'acoes': GR.UI._renderAcoes,
+                'orcamentos': GR.UI._renderOrcamentos,
+                'credito': GR.UI._renderCredito,
+                'insumos': GR.UI._renderInsumos,
+                'pecuaria': GR.UI._renderPecuaria,
+                'funcionarios': GR.UI._renderFuncionarios,
+                'parceiros': GR.UI._renderParceiros,
+                'contabilidade': GR.UI._renderContabilidade,
+                'documentos': GR.UI._renderDocumentos,
+                'analises': GR.UI._renderAnalises,
+                'viveiro': GR.UI._renderViveiro,
+                'relatorios': GR.UI._renderRelatorios,
+                'configuracoes': GR.UI._renderConfiguracoes,
+                'historico': GR.UI._renderHistorico,
+                'notificacoes': GR.UI._renderNotificacoes,
+                'nfe': GR.UI._renderNFe
+            };
+
+            var renderFn = renderMap[view];
+            if (renderFn && typeof renderFn === 'function') {
+                renderFn(container);
+            } else {
+                container.innerHTML = '<div class="card"><div class="empty-state"><span class="icon">🚧</span><div class="message">Módulo em desenvolvimento: ' + view + '</div></div></div>';
+            }
+        };
+        console.log('✅ GR.UI.refreshCurrentView corrigido!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 5: GR.UI.mudarView - CORRIGIDO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.mudarView !== 'function') {
+        GR.UI.mudarView = function(view) {
+            GR.State.ui.viewAtual = view;
+            
+            var titles = {
+                'dashboard': '📊 Dashboard',
+                'acoes': '📋 Ações',
+                'orcamentos': '💰 Orçamentos',
+                'credito': '💳 Crédito',
+                'insumos': '🧪 Insumos',
+                'pecuaria': '🐄 Pecuária',
+                'funcionarios': '👨‍🌾 Funcionários',
+                'parceiros': '👥 Parceiros',
+                'contabilidade': '🧾 Contabilidade',
+                'documentos': '📁 Documentos',
+                'analises': '🧪 Análises',
+                'viveiro': '🌱 Viveiro',
+                'relatorios': '📊 Relatórios',
+                'configuracoes': '⚙️ Configurações',
+                'historico': '📜 Histórico',
+                'notificacoes': '🔔 Notificações',
+                'nfe': '📄 NF-e'
+            };
+            
+            var titleEl = document.getElementById('view-title');
+            if (titleEl) titleEl.textContent = titles[view] || view;
+            
+            document.querySelectorAll('.nav-btn').forEach(function(btn) {
+                btn.classList.toggle('active', btn.dataset.section === view);
+            });
+            
+            if (typeof GR.UI.refreshCurrentView === 'function') {
+                GR.UI.refreshCurrentView();
+            }
+        };
+        console.log('✅ GR.UI.mudarView corrigido!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 6: GR.UI.init - CORRIGIDO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.init !== 'function') {
+        GR.UI.init = function() {
+            console.log('📱 Inicializando UI...');
+            
+            var self = this;
+            
+            // Carregar tema salvo
+            var savedTheme = localStorage.getItem('gr_theme') || 'claro';
+            if (savedTheme === 'escuro') {
+                document.documentElement.setAttribute('data-theme', 'escuro');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'claro');
+            }
+            var sel = document.getElementById('themeSelector');
+            if (sel) {
+                sel.value = savedTheme;
+                sel.onchange = function() {
+                    var theme = this.value;
+                    if (theme === 'escuro') {
+                        document.documentElement.setAttribute('data-theme', 'escuro');
+                    } else {
+                        document.documentElement.setAttribute('data-theme', 'claro');
+                    }
+                    localStorage.setItem('gr_theme', theme);
+                };
+            }
+
+            // Carregar tamanho da fonte
+            var savedFont = parseFloat(localStorage.getItem('gr_font_size')) || 14;
+            document.documentElement.style.setProperty('--font-size-base', savedFont + 'px');
+            var label = document.getElementById('fontSizeLabel');
+            if (label) label.textContent = Math.round((savedFont / 14) * 100) + '%';
+
+            // Eventos de navegação
+            document.querySelectorAll('.nav-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var section = this.dataset.section;
+                    if (section && typeof GR.UI.mudarView === 'function') {
+                        GR.UI.mudarView(section);
+                    }
+                });
+            });
+
+            // Atualizar abas de propriedades
+            if (typeof GR.UI.atualizarPropTabs === 'function') {
+                GR.UI.atualizarPropTabs();
+            }
+            
+            // Atualizar datalists
+            if (typeof GR.UI.atualizarDatalists === 'function') {
+                GR.UI.atualizarDatalists();
+            }
+            
+            // Navegar para dashboard
+            if (typeof GR.UI.mudarView === 'function') {
+                GR.UI.mudarView('dashboard');
+            }
+
+            // Verificar vencimentos
+            setTimeout(function() {
+                if (typeof GR.State.verificarVencimentos === 'function') {
+                    GR.State.verificarVencimentos();
+                }
+            }, 3000);
+
+            // Verificar vencimentos periodicamente
+            setInterval(function() {
+                if (typeof GR.State.verificarVencimentos === 'function') {
+                    GR.State.verificarVencimentos();
+                }
+            }, 300000);
+
+            console.log('✅ UI inicializada com sucesso!');
+        };
+        console.log('✅ GR.UI.init corrigido!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 7: GR.UI.atualizarDatalists - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.atualizarDatalists !== 'function') {
+        GR.UI.atualizarDatalists = function() {
+            var acoesPadrao = [
+                'Plantio de café', 'Plantio de soja', 'Plantio de milho', 'Plantio de pimenta do reino',
+                'Adubação', 'Adubação de cobertura', 'Calagem', 'Aplicação de defensivos',
+                'Aplicação de herbicidas', 'Aplicação de fungicidas', 'Irrigação', 'Poda',
+                'Colheita de café', 'Colheita de pimenta', 'Colheita de grãos',
+                'Venda de café', 'Venda de pimenta do reino', 'Venda de soja', 'Venda de milho',
+                'Venda de animais', 'Compra de insumos', 'Manutenção de máquinas', 'Reparo de cercas'
+            ];
+
+            // Datalist de ações
+            var datalistAcoes = document.getElementById('acoes-sugestoes');
+            if (datalistAcoes) {
+                datalistAcoes.innerHTML = '';
+                acoesPadrao.forEach(function(a) {
+                    var opt = document.createElement('option');
+                    opt.value = a;
+                    datalistAcoes.appendChild(opt);
+                });
+            }
+
+            // Datalist de fornecedores
+            var datalistFornecedores = document.getElementById('fornecedores-list');
+            if (datalistFornecedores) {
+                datalistFornecedores.innerHTML = '';
+                ['Ureia', 'Superfosfato', 'Cloreto de Potássio', 'Calcário', 'Glifosato', 'Atrazina', 'Sementes'].forEach(function(f) {
+                    var opt = document.createElement('option');
+                    opt.value = f;
+                    datalistFornecedores.appendChild(opt);
+                });
+            }
+
+            // Datalist de nomes de insumos
+            var datalistNomes = document.getElementById('nomes-insumos-list');
+            if (datalistNomes) {
+                datalistNomes.innerHTML = '';
+                ['Ureia', 'Superfosfato', 'Cloreto de Potássio', 'Calcário', 'Glifosato', 'Atrazina', 'Sementes'].forEach(function(n) {
+                    var opt = document.createElement('option');
+                    opt.value = n;
+                    datalistNomes.appendChild(opt);
+                });
+            }
+
+            // Datalist de modalidades
+            var datalistModalidades = document.getElementById('modalidades-list');
+            if (datalistModalidades) {
+                datalistModalidades.innerHTML = '';
+                ['CDC', 'Crédito Rural', 'Pronaf', 'Finame', 'Custeio', 'Investimento'].forEach(function(m) {
+                    var opt = document.createElement('option');
+                    opt.value = m;
+                    datalistModalidades.appendChild(opt);
+                });
+            }
+
+            // Datalist de instituições
+            var datalistInstituicoes = document.getElementById('instituicoes-list');
+            if (datalistInstituicoes) {
+                datalistInstituicoes.innerHTML = '';
+                ['Banco do Brasil', 'Sicoob', 'Sicredi', 'Caixa Econômica', 'Itaú', 'Bradesco', 'Santander', 'Safra'].forEach(function(i) {
+                    var opt = document.createElement('option');
+                    opt.value = i;
+                    datalistInstituicoes.appendChild(opt);
+                });
+            }
+        };
+        console.log('✅ GR.UI.atualizarDatalists adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 8: GR.UI.atualizarBadgeNotificacoes - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.atualizarBadgeNotificacoes !== 'function') {
+        GR.UI.atualizarBadgeNotificacoes = function() {
+            var badge = document.getElementById('notificacao-badge');
+            if (!badge) return;
+            var notificacoes = GR.State.data.notificacoes || [];
+            var naoLidas = notificacoes.filter(function(n) { return !n.lida; });
+            var count = naoLidas.length;
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'inline' : 'none';
+        };
+        console.log('✅ GR.UI.atualizarBadgeNotificacoes adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 9: GR.UI.updateUserInfo - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.updateUserInfo !== 'function') {
+        GR.UI.updateUserInfo = function() {
+            var user = GR.State.data.usuario;
+            if (!user) return;
+            var nomeEl = document.getElementById('user-name');
+            var emailEl = document.getElementById('user-email');
+            if (nomeEl) nomeEl.textContent = user.nome || user.email || 'Usuário';
+            if (emailEl) emailEl.textContent = user.email || '';
+        };
+        console.log('✅ GR.UI.updateUserInfo adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 10: GR.UI.toggleModoEscuro - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.toggleModoEscuro !== 'function') {
+        GR.UI.toggleModoEscuro = function() {
+            var current = document.documentElement.getAttribute('data-theme') || 'claro';
+            var novo = current === 'escuro' ? 'claro' : 'escuro';
+            document.documentElement.setAttribute('data-theme', novo);
+            localStorage.setItem('gr_theme', novo);
+            var sel = document.getElementById('themeSelector');
+            if (sel) sel.value = novo;
+            GR.Toast.success('Tema alterado para ' + (novo === 'escuro' ? '🌙 Escuro' : '☀️ Claro'));
+        };
+        console.log('✅ GR.UI.toggleModoEscuro adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 11: GR.UI.ajustarFonte - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.ajustarFonte !== 'function') {
+        GR.UI.ajustarFonte = function(delta) {
+            var root = document.documentElement;
+            var current = parseFloat(root.style.getPropertyValue('--font-size-base')) || 14;
+            var novo = Math.max(10, Math.min(22, current + delta));
+            root.style.setProperty('--font-size-base', novo + 'px');
+            var label = document.getElementById('fontSizeLabel');
+            if (label) label.textContent = Math.round((novo / 14) * 100) + '%';
+            localStorage.setItem('gr_font_size', novo);
+        };
+        console.log('✅ GR.UI.ajustarFonte adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 12: GR.UI.resetarFonte - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.resetarFonte !== 'function') {
+        GR.UI.resetarFonte = function() {
+            var root = document.documentElement;
+            root.style.setProperty('--font-size-base', '14px');
+            var label = document.getElementById('fontSizeLabel');
+            if (label) label.textContent = '100%';
+            localStorage.setItem('gr_font_size', 14);
+        };
+        console.log('✅ GR.UI.resetarFonte adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 13: GR.UI._atualizarSelectsPropriedade - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI._atualizarSelectsPropriedade !== 'function') {
+        GR.UI._atualizarSelectsPropriedade = function() {
+            var props = GR.State.data.propriedades || [];
+            var propAtiva = GR.State.ui.propriedadeAtiva || 'todas';
+            var selectIds = [
+                'tarefa-propriedade', 'orc-propriedade', 'contrato-propriedade',
+                'insumo-propriedade', 'animal-propriedade', 'func-propriedade',
+                'parceiro-propriedade', 'desp-propriedade', 'rec-propriedade',
+                'doc-propriedade', 'analise-propriedade',
+                'viveiro-insumo-propriedade', 'viveiro-servico-propriedade',
+                'viveiro-muda-propriedade', 'viveiro-trabalhador-propriedade'
+            ];
+
+            selectIds.forEach(function(id) {
+                var select = document.getElementById(id);
+                if (!select) return;
+                var valorAtual = select.value;
+                select.innerHTML = '';
+                var optEmpty = document.createElement('option');
+                optEmpty.value = '';
+                optEmpty.textContent = 'Selecione uma propriedade';
+                select.appendChild(optEmpty);
+                props.forEach(function(p) {
+                    var opt = document.createElement('option');
+                    opt.value = p.nome;
+                    opt.textContent = p.nome;
+                    select.appendChild(opt);
+                });
+                if (valorAtual && Array.from(select.options).some(function(o) { return o.value === valorAtual; })) {
+                    select.value = valorAtual;
+                } else if (propAtiva !== 'todas' && Array.from(select.options).some(function(o) { return o.value === propAtiva; })) {
+                    select.value = propAtiva;
+                }
+            });
+        };
+        console.log('✅ GR.UI._atualizarSelectsPropriedade adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 14: GR.UI.atualizarPropTabs - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.atualizarPropTabs !== 'function') {
+        GR.UI.atualizarPropTabs = function() {
+            var container = document.getElementById('prop-tabs-container');
+            if (!container) return;
+            container.innerHTML = '';
+            var props = GR.State.data.propriedades || [];
+            var propAtiva = GR.State.ui.propriedadeAtiva || 'todas';
+
+            var btnAll = document.createElement('button');
+            btnAll.className = 'prop-tab' + (propAtiva === 'todas' ? ' active' : '');
+            btnAll.textContent = '🏠 Todas';
+            btnAll.onclick = function() { 
+                if (typeof GR.UI.setPropriedadeAtiva === 'function') {
+                    GR.UI.setPropriedadeAtiva('todas');
+                }
+            };
+            container.appendChild(btnAll);
+
+            props.forEach(function(p) {
+                var btn = document.createElement('button');
+                btn.className = 'prop-tab' + (propAtiva === p.nome ? ' active' : '');
+                btn.textContent = p.nome;
+                btn.onclick = function() {
+                    if (typeof GR.UI.setPropriedadeAtiva === 'function') {
+                        GR.UI.setPropriedadeAtiva(p.nome);
+                    }
+                };
+                container.appendChild(btn);
+            });
+        };
+        console.log('✅ GR.UI.atualizarPropTabs adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 15: GR.UI.setPropriedadeAtiva - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.setPropriedadeAtiva !== 'function') {
+        GR.UI.setPropriedadeAtiva = function(nome) {
+            if (typeof GR.State.setPropriedadeAtiva === 'function') {
+                GR.State.setPropriedadeAtiva(nome);
+            }
+            if (typeof GR.UI.atualizarPropTabs === 'function') {
+                GR.UI.atualizarPropTabs();
+            }
+            if (typeof GR.UI._atualizarSelectsPropriedade === 'function') {
+                GR.UI._atualizarSelectsPropriedade();
+            }
+            if (typeof GR.UI.refreshCurrentView === 'function') {
+                GR.UI.refreshCurrentView();
+            }
+        };
+        console.log('✅ GR.UI.setPropriedadeAtiva adicionado!');
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 16: GR.UI.openConfigurations - ADICIONADO (se não existir)
+// ================================================================
+(function() {
+    if (GR.UI && typeof GR.UI.openConfigurations !== 'function') {
+        GR.UI.openConfigurations = function() {
+            if (typeof GR.UI.mudarView === 'function') {
+                GR.UI.mudarView('configuracoes');
+            }
+        };
+        console.log('✅ GR.UI.openConfigurations adicionado!');
+    }
+})();
+
+console.log('✅ BLOCO DE CORREÇÕES - COMPLETO!');
+console.log('📦 Todas as funções foram corrigidas/adicionadas.');    
+// ================================================================
+// BLOCO DE CORREÇÃO PARA CADASTRO - GESTÃO RURAL V2.2
+// ================================================================
+
+// ================================================================
+// CORREÇÃO 1: Verificar se db e auth estão acessíveis
+// ================================================================
+(function() {
+    console.log('🔍 Verificando Firebase...');
+    console.log('📦 db:', typeof db);
+    console.log('📦 auth:', typeof auth);
+    console.log('📦 currentUser:', currentUser);
+    
+    if (typeof db === 'undefined') {
+        console.error('❌ db não está definido!');
+        // Tentar obter do firebase
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+            window.db = firebase.firestore();
+            console.log('✅ db recriado!');
+        }
+    }
+    
+    if (typeof auth === 'undefined') {
+        console.error('❌ auth não está definido!');
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            window.auth = firebase.auth();
+            console.log('✅ auth recriado!');
+        }
+    }
+})();
+
+// ================================================================
+// CORREÇÃO 2: Sobrescrever funções de salvamento com verificação
+// ================================================================
+
+// ----- TAREFAS -----
+if (GR.Modules && GR.Modules.Tarefas) {
+    var salvarTarefaOriginal = GR.Modules.Tarefas.salvar;
+    GR.Modules.Tarefas.salvar = function() {
+        console.log('📋 Salvando tarefa...');
+        
+        var tipo = document.getElementById('tarefa-tipo').value.trim();
+        var data = document.getElementById('tarefa-data').value;
+        var resp = document.getElementById('tarefa-responsavel').value.trim();
+        var custo = GR.Utils.parseMoedaBR(document.getElementById('tarefa-custo').value);
+        var prop = document.getElementById('tarefa-propriedade').value;
+
+        if (!tipo || !data || !resp) {
+            GR.Toast.error('Campos obrigatórios!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            tipo: GR.Utils.escapeHtml(tipo),
+            data: data,
+            responsavel: GR.Utils.escapeHtml(resp),
+            custo: custo || 0,
+            propriedade: GR.Utils.escapeHtml(prop),
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('tarefas').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Tarefa salva! ID:', docRef.id);
+                GR.Modal.close('modal-tarefa');
+                GR.Toast.success('Ação salva!');
+                GR.State.adicionarHistorico('criou ação', 'Ações', 'Ação: ' + tipo);
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Modules.Tarefas.salvar corrigido!');
+}
+
+// ----- INSUMOS -----
+if (GR.Modules && GR.Modules.Insumos) {
+    var salvarInsumoOriginal = GR.Modules.Insumos.salvar;
+    GR.Modules.Insumos.salvar = function() {
+        console.log('🧪 Salvando insumo...');
+        
+        var nome = document.getElementById('insumo-nome').value.trim();
+        var categoria = document.getElementById('insumo-categoria').value;
+        var quantidade = parseFloat(document.getElementById('insumo-quantidade').value) || 0;
+        var unidade = document.getElementById('insumo-unidade').value;
+        var preco = GR.Utils.parseMoedaBR(document.getElementById('insumo-preco').value);
+        var fornecedor = document.getElementById('insumo-fornecedor').value.trim();
+        var validade = document.getElementById('insumo-validade').value;
+        var propriedade = document.getElementById('insumo-propriedade').value;
+        var obs = document.getElementById('insumo-obs').value.trim();
+
+        if (!nome) {
+            GR.Toast.error('Nome é obrigatório!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            nome: GR.Utils.escapeHtml(nome),
+            categoria: categoria,
+            quantidade: quantidade,
+            unidade: unidade,
+            preco: preco || 0,
+            fornecedor: GR.Utils.escapeHtml(fornecedor),
+            validade: validade,
+            propriedade: GR.Utils.escapeHtml(propriedade),
+            obs: GR.Utils.escapeHtml(obs),
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('insumos').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Insumo salvo! ID:', docRef.id);
+                GR.Modal.close('modal-insumo');
+                GR.Toast.success('Insumo salvo!');
+                GR.State.adicionarHistorico('criou insumo', 'Insumos', 'Insumo: ' + nome);
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Modules.Insumos.salvar corrigido!');
+}
+
+// ----- DOCUMENTOS -----
+if (GR.Modules && GR.Modules.Documentos) {
+    var salvarDocumentoOriginal = GR.Modules.Documentos.salvar;
+    GR.Modules.Documentos.salvar = function() {
+        console.log('📁 Salvando documento...');
+        
+        var tipo = document.getElementById('documento-tipo').value;
+        var numero = document.getElementById('documento-numero').value.trim();
+        var propriedade = document.getElementById('doc-propriedade').value;
+        var descricao = document.getElementById('doc-descricao').value.trim();
+
+        if (!propriedade) {
+            GR.Toast.error('Propriedade é obrigatória!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            tipo: tipo,
+            numero: GR.Utils.escapeHtml(numero),
+            propriedade: GR.Utils.escapeHtml(propriedade),
+            descricao: GR.Utils.escapeHtml(descricao),
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('documentos').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Documento salvo! ID:', docRef.id);
+                GR.Modal.close('modal-documento');
+                GR.Toast.success('Documento salvo!');
+                GR.State.adicionarHistorico('criou documento', 'Documentos', 'Documento: ' + tipo);
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Modules.Documentos.salvar corrigido!');
+}
+
+// ----- ANÁLISES -----
+if (GR.Analises) {
+    var salvarAnaliseOriginal = GR.Analises.salvar;
+    GR.Analises.salvar = function() {
+        console.log('🧪 Salvando análise...');
+        
+        var tipo = document.getElementById('analise-tipo').value;
+        var propriedade = document.getElementById('analise-propriedade').value;
+        var data = document.getElementById('analise-data').value;
+        var talhao = document.getElementById('analise-talhao').value.trim();
+        var cultura = document.getElementById('analise-cultura').value.trim();
+
+        if (!propriedade || !data) {
+            GR.Toast.error('Propriedade e data são obrigatórios!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            tipo: tipo,
+            propriedade: GR.Utils.escapeHtml(propriedade),
+            data: data,
+            talhao: GR.Utils.escapeHtml(talhao),
+            cultura: GR.Utils.escapeHtml(cultura),
+            elementos: {},
+            recomendacoes: [],
+            status: 'Equilibrado',
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('analises').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Análise salva! ID:', docRef.id);
+                GR.Modal.close('modal-analise');
+                GR.Toast.success('Análise salva!');
+                GR.State.adicionarHistorico('criou análise', 'Análises', 'Análise: ' + propriedade);
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Analises.salvar corrigido!');
+}
+
+// ----- CONTRATOS -----
+if (GR.Modules && GR.Modules.Contratos) {
+    var salvarContratoOriginal = GR.Modules.Contratos.salvar;
+    GR.Modules.Contratos.salvar = function() {
+        console.log('💳 Salvando contrato...');
+        
+        var propriedade = document.getElementById('contrato-propriedade').value;
+        var numero = document.getElementById('contrato-numero').value.trim();
+        var data = document.getElementById('contrato-data').value;
+        var valor = GR.Utils.parseMoedaBR(document.getElementById('contrato-valor').value);
+        var status = document.getElementById('contrato-status').value;
+
+        if (!propriedade || !numero || !data || !valor) {
+            GR.Toast.error('Campos obrigatórios!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            propriedade: GR.Utils.escapeHtml(propriedade),
+            numero: GR.Utils.escapeHtml(numero),
+            data: data,
+            valor: valor || 0,
+            status: status,
+            parcelas: [],
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('contratos').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Contrato salvo! ID:', docRef.id);
+                GR.Modal.close('modal-contrato');
+                GR.Toast.success('Operação salva!');
+                GR.State.adicionarHistorico('criou contrato', 'Crédito', 'Contrato: ' + numero);
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Modules.Contratos.salvar corrigido!');
+}
+
+// ----- ORÇAMENTOS -----
+if (GR.Modules && GR.Modules.Orcamentos) {
+    var salvarOrcamentoOriginal = GR.Modules.Orcamentos.salvar;
+    GR.Modules.Orcamentos.salvar = function() {
+        console.log('💰 Salvando orçamento...');
+        
+        var numero = document.getElementById('orc-numero').value.trim();
+        var data = document.getElementById('orc-data').value;
+        var nome = document.getElementById('orc-nome').value.trim();
+        var cpfcnpj = document.getElementById('orc-cpfcnpj').value.trim();
+        var valor = GR.Utils.parseMoedaBR(document.getElementById('orc-valor').value);
+        var status = document.getElementById('orc-status').value;
+        var prop = document.getElementById('orc-propriedade').value;
+
+        if (!numero || !data || !nome || !cpfcnpj || !valor) {
+            GR.Toast.error('Campos obrigatórios!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            numero: GR.Utils.escapeHtml(numero),
+            data: data,
+            nome: GR.Utils.escapeHtml(nome),
+            cpfcnpj: cpfcnpj,
+            valor: valor || 0,
+            status: status,
+            propriedade: GR.Utils.escapeHtml(prop),
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('orcamentos').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Orçamento salvo! ID:', docRef.id);
+                GR.Modal.close('modal-orcamento');
+                GR.Toast.success('Orçamento salvo!');
+                GR.State.adicionarHistorico('criou orçamento', 'Orçamentos', 'Orçamento: ' + numero);
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Modules.Orcamentos.salvar corrigido!');
+}
+
+// ----- ANIMAIS -----
+if (GR.Modules && GR.Modules.Pecuaria) {
+    var salvarAnimalOriginal = GR.Modules.Pecuaria.salvarAnimal;
+    GR.Modules.Pecuaria.salvarAnimal = function() {
+        console.log('🐄 Salvando animal...');
+        
+        var id = document.getElementById('animal-id').value.trim();
+        var nome = document.getElementById('animal-nome').value.trim();
+        var especie = document.getElementById('animal-especie').value;
+        var raca = document.getElementById('animal-raca').value.trim();
+        var nascimento = document.getElementById('animal-nascimento').value;
+        var sexo = document.getElementById('animal-sexo').value;
+        var peso = parseFloat(document.getElementById('animal-peso').value) || 0;
+        var propriedade = document.getElementById('animal-propriedade').value;
+        var obs = document.getElementById('animal-obs').value.trim();
+
+        if (!id && !nome) {
+            GR.Toast.error('Identificação ou Nome é obrigatório!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            identificacao: GR.Utils.escapeHtml(id),
+            nome: GR.Utils.escapeHtml(nome || id),
+            especie: especie,
+            raca: GR.Utils.escapeHtml(raca),
+            nascimento: nascimento,
+            sexo: sexo,
+            peso: peso,
+            propriedade: GR.Utils.escapeHtml(propriedade),
+            obs: GR.Utils.escapeHtml(obs),
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('animais').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Animal salvo! ID:', docRef.id);
+                GR.Modal.close('modal-animal');
+                GR.Toast.success('Animal salvo!');
+                GR.State.adicionarHistorico('criou animal', 'Pecuária', 'Animal: ' + (nome || id));
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Modules.Pecuaria.salvarAnimal corrigido!');
+}
+
+// ----- FUNCIONÁRIOS -----
+if (GR.Modules && GR.Modules.Funcionarios) {
+    var salvarFuncionarioOriginal = GR.Modules.Funcionarios.salvar;
+    GR.Modules.Funcionarios.salvar = function() {
+        console.log('👨‍🌾 Salvando funcionário...');
+        
+        var nome = document.getElementById('func-nome').value.trim();
+        var cpf = document.getElementById('func-cpf').value.trim();
+        var ddd = document.getElementById('func-ddd').value.trim();
+        var telefone = document.getElementById('func-telefone').value.trim();
+        var cargo = document.getElementById('func-cargo').value.trim();
+        var salario = GR.Utils.parseMoedaBR(document.getElementById('func-salario').value);
+        var admissao = document.getElementById('func-admissao').value;
+        var status = document.getElementById('func-status').value;
+        var propriedade = document.getElementById('func-propriedade').value;
+
+        if (!nome) {
+            GR.Toast.error('Nome é obrigatório!');
+            return;
+        }
+
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            GR.Toast.error('Usuário não autenticado!');
+            return;
+        }
+
+        var uid = user.uid;
+        var dados = {
+            nome: GR.Utils.escapeHtml(nome),
+            cpf: cpf || '',
+            telefone: (ddd || telefone) ? { ddd: ddd, numero: telefone } : null,
+            cargo: GR.Utils.escapeHtml(cargo),
+            salario: salario || 0,
+            admissao: admissao || '',
+            status: status,
+            propriedade: GR.Utils.escapeHtml(propriedade),
+            dataCriacao: GR.Utils.now()
+        };
+
+        console.log('📤 Enviando dados para Firebase:', dados);
+
+        db.collection('users').doc(uid).collection('funcionarios').add(dados)
+            .then(function(docRef) {
+                console.log('✅ Funcionário salvo! ID:', docRef.id);
+                GR.Modal.close('modal-funcionario');
+                GR.Toast.success('Funcionário salvo!');
+                GR.State.adicionarHistorico('criou funcionário', 'Funcionários', 'Funcionário: ' + nome);
+                GR.UI.refreshCurrentView();
+            })
+            .catch(function(err) {
+                console.error('❌ Erro ao salvar:', err);
+                GR.Toast.error('Erro ao salvar: ' + err.message);
+            });
+    };
+    console.log('✅ GR.Modules.Funcionarios.salvar corrigido!');
+}
+
+console.log('✅ BLOCO DE CORREÇÃO DE CADASTRO - COMPLETO!');
+</body>
     </html>
